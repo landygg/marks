@@ -2816,7 +2816,7 @@ checksum = "fc04a4c58212d57930a24bf47d3fa87485264a3a054e9c10e042eb373573ad3c"
 
 [[package]]
 name = "marks-cli"
-version = "1.0.0"
+version = "1.0.0-rc.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -2827,7 +2827,7 @@ dependencies = [
 
 [[package]]
 name = "marks-core"
-version = "1.0.0"
+version = "1.0.0-rc.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2851,7 +2851,7 @@ dependencies = [
 
 [[package]]
 name = "marks-desktop"
-version = "1.0.0"
+version = "1.0.0-rc.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2877,7 +2877,7 @@ dependencies = [
 
 [[package]]
 name = "marks-i18n"
-version = "1.0.0"
+version = "1.0.0-rc.1"
 dependencies = [
  "anyhow",
  "fluent-pseudo",

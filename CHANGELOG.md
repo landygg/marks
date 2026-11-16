@@ -27,5 +27,10 @@ The first public release, for macOS 14.5 or later. Apple silicon is the only tes
 - marks is not notarized by Apple: the first launch needs System Settings → Privacy & Security → “Open Anyway”.
 - Safari only loads the extension with “Allow unsigned extensions”, which it turns off every time it quits.
 
+## [1.0.0-rc.1] - 2026-11-16
+
+Release candidate of 1.0.0, published as a prerelease to test automatic updates. It has everything listed under 1.0.0.
+
 [Unreleased]: https://github.com/landygg/marks/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/landygg/marks/releases/tag/v1.0.0
+[1.0.0-rc.1]: https://github.com/landygg/marks/releases/tag/v1.0.0-rc.1
