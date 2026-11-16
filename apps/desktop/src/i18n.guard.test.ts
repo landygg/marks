@@ -83,7 +83,7 @@ function allowReason(line: string): string | undefined {
   return line
     .slice(at + MARKER.length)
     .trim()
-    .replace(/(-->|\*\/)$/, '')
+    .replace(/(--!?>|\*\/)$/, '')
     .trim();
 }
 
