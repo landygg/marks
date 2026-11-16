@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- `lang` is the locale's `lang` message, set by translatePage; "en" until then (default_locale). -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="extension.css" />
+  </head>
+  <body class="popup">
+    <header>
+      <span class="wordmark" data-i18n="extName"></span>
+      <kbd id="shortcut" hidden></kbd>
+    </header>
+    <article id="page" class="page" hidden>
+      <span id="page-title" class="page-title"></span>
+      <span id="page-domain" class="page-domain"></span>
+    </article>
+    <p id="status" class="status" role="status" data-state="pending">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="status-text" data-i18n="saving"></span>
+    </p>
+    <a id="options-link" href="#" hidden data-i18n="openOptions"></a>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

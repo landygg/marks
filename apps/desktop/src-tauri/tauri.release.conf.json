@@ -1,0 +1,9 @@
+{
+  "bundle": {
+    "macOS": {
+      "files": {
+        "PlugIns/marks Safari Extension.appex": "../../../target/appex/marks Safari Extension.appex"
+      }
+    }
+  }
+}

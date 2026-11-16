@@ -1,0 +1,223 @@
+/* The app's "Marcador" look (DESIGN.md). Each token below is copied verbatim from
+   apps/desktop/src/app.css; style.test.js checks they still match. */
+:root {
+	--bg: light-dark(#fafafa, #131416);
+	--surface: light-dark(#f0f0f1, #1c1e21);
+	--fg: light-dark(#17181a, #e8e8ea);
+	--muted: light-dark(#63666d, #92959c);
+	--border: light-dark(#dcdde0, #2c2f34);
+	--danger: light-dark(#c81e1e, #ff6b6b);
+	--ok: light-dark(#1f7a3a, #4ade80);
+	--accent: #ffd60a;
+	--accent-hover: #ffe14d;
+	--on-accent: #17170f;
+	--focus: light-dark(#17181a, #ffd60a);
+	--sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	--mono: ui-monospace, 'SF Mono', Menlo, monospace;
+	--type-headline-md: 700 15px/1.3 var(--mono);
+	--type-body-md: 400 13px/1.4 var(--sans);
+	--type-label-lg: 600 13.5px/1.3 var(--sans);
+	--type-label-md: 500 11.5px/1.3 var(--mono);
+	--type-help: 400 12px/1.4 var(--sans);
+	--radius-sm: 2px;
+	--space-xs: 4px;
+	--space-sm: 8px;
+	--space-md: 12px;
+	--space-lg: 16px;
+	--control: 28px;
+	--field: 250px;
+	--indicator: 2px;
+	--dot: 8px;
+
+	color-scheme: dark light;
+	font: var(--type-body-md);
+}
+
+/* Extension-only sizes: the popup's width and the options page's measure. */
+.popup {
+	width: 280px;
+}
+
+.options {
+	max-width: 420px;
+}
+
+body {
+	box-sizing: border-box;
+	display: grid;
+	gap: var(--space-md);
+	margin: 0;
+	padding: var(--space-md);
+	background: var(--bg);
+	color: var(--fg);
+}
+
+/* Top strip on `surface` with an `outline` rule, like the brand's strip atop the app's sidebar. */
+header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: calc(-1 * var(--space-md)) calc(-1 * var(--space-md)) 0;
+	padding: var(--space-sm) var(--space-md);
+	border-bottom: 1px solid var(--border);
+	background: var(--surface);
+}
+
+/* `wordmark`: the brand, lower case, mono. */
+.wordmark {
+	font: var(--type-headline-md);
+}
+
+h1 {
+	margin: 0;
+	font: var(--type-label-lg);
+}
+
+p {
+	margin: 0;
+}
+
+/* The page being saved: a `surface` block whose 2px marker bar lights up once it is in marks. */
+.page {
+	display: grid;
+	gap: var(--space-xs);
+	padding: var(--space-sm) var(--space-sm) var(--space-sm) var(--space-md);
+	border-left: var(--indicator) solid transparent;
+	border-radius: var(--radius-sm);
+	background: var(--surface);
+}
+
+.page.marked {
+	border-left-color: var(--accent);
+}
+
+.page-title {
+	display: -webkit-box;
+	overflow: hidden;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	font: var(--type-label-lg);
+}
+
+.page-domain {
+	overflow: hidden;
+	color: var(--muted);
+	font: var(--type-label-md);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+/* Status with the app's square `status-dot`: pending, ready or failed. */
+.status {
+	display: flex;
+	align-items: baseline;
+	gap: var(--space-sm);
+}
+
+.dot {
+	flex: none;
+	width: var(--dot);
+	height: var(--dot);
+	border-radius: var(--radius-sm);
+	background: var(--muted);
+}
+
+[data-state="ok"] .dot {
+	background: var(--ok);
+}
+
+[data-state="error"] .dot {
+	background: var(--danger);
+}
+
+.field {
+	display: grid;
+	gap: var(--space-xs);
+}
+
+label,
+.help {
+	color: var(--muted);
+	font: var(--type-help);
+}
+
+.row {
+	display: flex;
+	gap: var(--space-sm);
+}
+
+/* `input`, mono because the token is data. */
+.input {
+	box-sizing: border-box;
+	width: var(--field);
+	height: var(--control);
+	padding: 0 var(--space-sm);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	background: var(--surface);
+	color: var(--fg);
+	font: var(--type-body-md);
+}
+
+.input.mono {
+	font: var(--type-label-md);
+}
+
+.input:focus-visible {
+	border-color: var(--focus);
+}
+
+/* `button-secondary` and `button-primary` (the yellow fill is for the main action only). */
+button {
+	height: var(--control);
+	padding: 0 var(--space-md);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	background: var(--bg);
+	color: var(--fg);
+	font: var(--type-body-md);
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+button:hover {
+	background: var(--border);
+}
+
+button.primary {
+	border-color: var(--accent);
+	background: var(--accent);
+	color: var(--on-accent);
+}
+
+button.primary:hover {
+	border-color: var(--accent-hover);
+	background: var(--accent-hover);
+}
+
+:focus-visible {
+	outline: 2px solid var(--focus);
+	outline-offset: 1px;
+}
+
+/* `link`: ink with a marker underline, never yellow text. */
+a {
+	justify-self: start;
+	color: var(--fg);
+	text-decoration: underline var(--indicator) var(--accent);
+	text-underline-offset: var(--space-xs);
+}
+
+/* `kbd`: the action's shortcut in one box, keys split by "·" (popup.js); it sits on `surface`, as in the app. */
+kbd {
+	padding: 0 var(--space-xs);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	background: var(--bg);
+	color: var(--muted);
+	font: var(--type-label-md);
+}
+
+[hidden] {
+	display: none;
+}

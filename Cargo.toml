@@ -1,0 +1,52 @@
+[workspace]
+resolver = "3"
+members = ["crates/core", "crates/cli", "crates/i18n", "apps/desktop/src-tauri"]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+anyhow = "1"
+axum = { version = "0.8", default-features = false, features = ["http1", "json", "tokio"] }
+async-trait = "0.1"
+clap = { version = "4", features = ["derive", "env"] }
+dirs = "7"
+genai = "0.7"
+getrandom = "0.4"
+keyring = "4"
+log = "0.4"
+rusqlite = { version = "0.41", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sqlite-vec = "0.1.9"
+subtle = "2"
+tauri = { version = "2.12", features = ["tray-icon"] }
+tauri-build = "2"
+tauri-plugin-log = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-updater = "2"
+# Only the native alert when the database does not open; already in the tree through tauri-plugin-dialog.
+rfd = { version = "0.17", default-features = false }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net"] }
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
+ureq = "3"
+base64 = "0.23"
+quick-xml = "0.42"
+encoding_rs = "0.8"
+url = "2"
+zerocopy = "0.8"
+marks-core = { path = "crates/core" }
+marks-i18n = { path = "crates/i18n" }
+i18n-embed = { version = "0.16", features = ["fluent-system"] }
+i18n-embed-fl = "0.10"
+rust-embed = "8"
+fluent-pseudo = "0.3"
+fluent-syntax = "0.12"
+syn = { version = "2", features = ["full", "visit"] }
+proc-macro2 = { version = "1", features = ["span-locations"] }
+sys-locale = "0.3"
+objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSArray", "NSBundle", "NSDictionary", "NSProcessInfo", "NSString", "NSUserDefaults"] }

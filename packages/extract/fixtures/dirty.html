@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Sucia</title>
+<link rel="stylesheet" href="/estilo.css"><style>p { color: red }</style>
+<script>window.tracker = 1</script></head>
+<body class="page" onload="init()">
+<!-- comentario de la plantilla -->
+<noscript>Activa JavaScript</noscript>
+<template><p>plantilla</p></template>
+<nav style="display:flex"><a href="/inicio" class="nav" onclick="go()">Inicio</a></nav>
+<article id="main" data-x="1">
+  <h1   title="Título"   >Página   sucia</h1>
+  <p>Texto con <a href="../doc/otra" rel="nofollow">enlace relativo</a>,
+     <a href="//cdn.example.com/x">sin esquema</a>,
+     <a href="javascript:alert(1)">malo</a> y <a href="data:text/html,hola">datos</a>.</p>
+  <img src="img/foto.png" alt="Foto" width="10" onerror="alert(2)">
+  <img src="data:image/png;base64,AAAA" alt="Incrustada">
+  <svg><circle r="5"></circle></svg><math><mi>x</mi></math>
+  <iframe src="https://example.com/embed"></iframe><object data="x.swf"></object><embed src="y.swf">
+  <canvas></canvas>
+  <pre class="code"><code>fn main() {
+    println!("hola");
+}</code></pre>
+  <table><tr><td colspan="2" rowspan="1" style="width:1px">celda</td></tr></table>
+</article>
+<script src="/app.js"></script>
+</body></html>

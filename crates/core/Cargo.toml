@@ -1,0 +1,30 @@
+[package]
+name = "marks-core"
+description = "Local-first bookmarks: core library"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "marks_core"
+path = "src/lib.rs"
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+base64.workspace = true
+quick-xml.workspace = true
+dirs.workspace = true
+encoding_rs.workspace = true
+genai.workspace = true
+getrandom.workspace = true
+keyring.workspace = true
+rusqlite.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlite-vec.workspace = true
+subtle.workspace = true
+tokio.workspace = true
+ureq.workspace = true
+url.workspace = true
+zerocopy.workspace = true

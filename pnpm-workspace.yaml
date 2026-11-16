@@ -1,0 +1,9 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+allowBuilds:
+  # esbuild ships its binary as an optional dependency; its postinstall is only an optimisation.
+  esbuild: false
+# Root node_modules/typescript lets the TypeScript language server find it from the repo root.
+publicHoistPattern:
+  - typescript

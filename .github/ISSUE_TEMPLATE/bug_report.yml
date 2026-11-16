@@ -1,0 +1,54 @@
+name: Bug report
+description: Something in marks doesn't work as it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a security problem, don't open an issue: use a [private security advisory](https://github.com/landygg/marks/security/advisories/new).
+
+        Logs, databases and `bookmarks.html` files contain your URLs and page content. Review them before attaching anything (see [Troubleshooting](https://github.com/landygg/marks/blob/main/docs/en/troubleshooting.md)), and never paste the extension token or an API key.
+  - type: input
+    id: version
+    attributes:
+      label: marks version
+      description: Settings → Updates shows it.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: "15.5"
+    validations:
+      required: true
+  - type: dropdown
+    id: chip
+    attributes:
+      label: Chip
+      options:
+        - Apple silicon
+        - Intel
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. …
+        2. …
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: What you expected and what happened
+      description: Include the text of the notification or error, if there is one.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version, if the extension is involved

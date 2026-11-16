@@ -1,0 +1,171 @@
+name: Release
+
+# A version tag builds, signs and uploads everything to a draft release. Publishing the draft is manual.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    # The signing secrets live in the "release" environment, limited to v* tags.
+    environment: release
+    strategy:
+      matrix:
+        target: [aarch64-apple-darwin, x86_64-apple-darwin]
+    env:
+      TARGET: ${{ matrix.target }}
+      OUT: ${{ github.workspace }}/out
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+      # Installs the toolchain, components and targets that rust-toolchain.toml pins.
+      - name: Install the Rust toolchain
+        run: rustup show
+      - name: Cache Rust builds
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - name: Check the tag against the versions
+        run: scripts/check-version.sh "$GITHUB_REF_NAME"
+      # A missing secret reads as empty: fail here, not after a build signed ad-hoc or not at all.
+      - name: Check that the signing secrets are set
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          missing=0
+          for name in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY \
+            TAURI_SIGNING_PRIVATE_KEY TAURI_SIGNING_PRIVATE_KEY_PASSWORD; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::secret $name is empty or missing in the release environment"
+              missing=1
+            fi
+          done
+          exit "$missing"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Import the signing certificate into a temporary keychain
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          keychain="$RUNNER_TEMP/release.keychain-db"
+          keychain_password=$(openssl rand -base64 24)
+          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          security import "$RUNNER_TEMP/cert.p12" -k "$keychain" -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -k "$keychain_password" "$keychain" > /dev/null
+          # As in GitHub's signing guide: codesign finds the identity in the only user keychain.
+          security list-keychains -d user -s "$keychain"
+          rm -f "$RUNNER_TEMP/cert.p12"
+          echo "KEYCHAIN=$keychain" >> "$GITHUB_ENV"
+      - name: Check that the signing identity is in the keychain
+        env:
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+        run: |
+          # Capture first: grep -q exits early, and the SIGPIPE to security fails the pipe under pipefail.
+          identities=$(security find-identity -p codesigning "$KEYCHAIN")
+          [[ "$identities" == *"\"$APPLE_SIGNING_IDENTITY\""* ]] || {
+            echo "::error::identity $APPLE_SIGNING_IDENTITY is not in the temporary keychain"
+            exit 1
+          }
+
+      # No APPLE_API_* or APPLE_ID here: without them tauri build does not try to notarize.
+      - name: Build, sign and package
+        env:
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: scripts/build-app.sh --target "$TARGET" --dmg --config '{"bundle":{"createUpdaterArtifacts":true}}'
+      - name: Verify the bundle and the updater archive
+        run: |
+          bundle="target/$TARGET/release/bundle"
+          scripts/verify-bundle.sh "$bundle/macos/marks.app"
+          extracted="$RUNNER_TEMP/updater"
+          mkdir -p "$extracted"
+          tar -xzf "$bundle/macos/marks.app.tar.gz" -C "$extracted"
+          scripts/verify-bundle.sh "$extracted/marks.app"
+          mkdir -p "$OUT"
+          cp "$bundle"/dmg/marks_*.dmg "$OUT/"
+
+      # The stable channel only publishes the updater files and the Chromium zip from Apple silicon.
+      - name: Prepare the updater files and the Chromium zip
+        if: matrix.target == 'aarch64-apple-darwin'
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          archive="marks_${version}_aarch64.app.tar.gz"
+          macos="target/$TARGET/release/bundle/macos"
+          cp "$macos/marks.app.tar.gz" "$OUT/$archive"
+          cp "$macos/marks.app.tar.gz.sig" "$OUT/$archive.sig"
+          node scripts/updater-manifest.mjs --version "$version" --sig "$OUT/$archive.sig" \
+            --url "https://github.com/landygg/marks/releases/download/$GITHUB_REF_NAME/$archive" \
+            --notes CHANGELOG.md --out "$OUT"
+          EXT_VERSION=$(node -p "require('./apps/extension/manifest.json').version")
+          (cd apps/extension/dist && zip -qr "$OUT/marks-chromium-$EXT_VERSION.zip" .)
+      - name: Upload the build
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.target }}
+          path: out/
+          if-no-files-found: error
+
+      - name: Remove the temporary keychain
+        if: always()
+        run: |
+          [[ -z "${KEYCHAIN:-}" ]] || security delete-keychain "$KEYCHAIN" || true
+          rm -f "$RUNNER_TEMP/cert.p12"
+
+  publish:
+    needs: build
+    runs-on: macos-15
+    permissions:
+      contents: write
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+      - name: Download the builds
+        uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          ext_version=$(node -p "require('./apps/extension/manifest.json').version")
+          notes="$RUNNER_TEMP/notes.md"
+          node --input-type=module -e '
+            import { readFileSync } from "node:fs";
+            import { changelogSection } from "./scripts/updater-manifest.mjs";
+            console.log(changelogSection(readFileSync("CHANGELOG.md", "utf8"), process.argv[1]));
+          ' "$version" > "$notes"
+          {
+            echo
+            echo "---"
+            echo
+            echo "- Intel (x86_64): untested."
+            echo "- Not notarized: the first launch needs System Settings → Privacy & Security → Open Anyway. See [Installation](https://github.com/landygg/marks/blob/$GITHUB_REF_NAME/docs/en/installation.md)."
+            echo "- Recommended browser extension: marks-chromium-$ext_version.zip. The Safari extension is experimental."
+          } >> "$notes"
+          prerelease=()
+          [[ "$GITHUB_REF_NAME" != *-* ]] || prerelease=(--prerelease)
+          gh release create "$GITHUB_REF_NAME" --draft "${prerelease[@]}" \
+            --title "marks $version" --notes-file "$notes" out/*

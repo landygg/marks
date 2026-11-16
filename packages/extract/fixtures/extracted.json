@@ -1,0 +1,15 @@
+{
+  "title": "Guía del contrato",
+  "markdown": "El extractor devuelve el título, el Markdown y los metadatos de la página, y el núcleo los guarda tal cual sin volver a interpretar el HTML original.\n\nConsulta la [referencia](https://example.com/docs/contrato) para ver todos los campos y sus límites de tamaño, que se aplican siempre en el lado de Rust.",
+  "meta": {
+    "description": "Resumen del contrato entre extractor y núcleo.",
+    "author": "Luis Gómez",
+    "site": "Sitio de Luis",
+    "published": "2024-05-01T08:00:00Z",
+    "language": "es",
+    "image": "https://cdn.example.com/i.png",
+    "favicon": "https://example.com/favicon.ico",
+    "word_count": 49,
+    "extractor": "defuddle@0.19.6"
+  }
+}

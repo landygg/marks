@@ -1,0 +1,17 @@
+[package]
+name = "marks-cli"
+description = "Local-first bookmarks: command line"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "marks"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap = { workspace = true, features = ["string"] }
+marks-core.workspace = true
+marks-i18n.workspace = true
+sys-locale.workspace = true

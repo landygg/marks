@@ -1,0 +1,30 @@
+<!doctype html>
+<!-- `lang` is the locale's `lang` message, set by translatePage; "en" until then (default_locale). -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="extension.css" />
+  </head>
+  <body class="options">
+    <header>
+      <span class="wordmark" data-i18n="extName"></span>
+    </header>
+    <h1 data-i18n="optionsTitle"></h1>
+    <div class="field">
+      <label for="token" data-i18n="tokenLabel"></label>
+      <input id="token" class="input mono" type="password" autocomplete="off" spellcheck="false" />
+      <span class="help" data-i18n="tokenHelp"></span>
+    </div>
+    <div class="row">
+      <button id="save" class="primary" data-i18n="saveToken"></button>
+      <button id="test" data-i18n="testConnection"></button>
+    </div>
+    <p id="status" class="status" role="status" hidden>
+      <span class="dot" aria-hidden="true"></span>
+      <span id="status-text"></span>
+    </p>
+    <p id="version" class="help"></p>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Unsafe</title></head><body>
+<article>
+<h1>Unsafe page</h1>
+<p>This paragraph has enough text to be treated as the main content of the page, with a <a href="javascript:alert(1)">bad link</a> inside it and a button <button onclick="alert(2)">press</button> too.</p>
+<script>alert(3)</script>
+<p>Second paragraph with more words so the extractor keeps the article body: nothing here should execute, and nothing dangerous should survive the conversion to Markdown.</p>
+</article></body></html>

@@ -1,0 +1,211 @@
+/* Design tokens from DESIGN.md (dark is the reference theme); designTokens.test.ts checks them. */
+/* Themed colors are written once as light-dark(<light>, <dark>); `color-scheme` picks the side. */
+/* This file holds tokens, the reset and the few element-level styles. Components live in lib/ui. */
+:root {
+  --bg: light-dark(#fafafa, #131416);
+  --surface: light-dark(#f0f0f1, #1c1e21);
+  --fg: light-dark(#17181a, #e8e8ea);
+  --muted: light-dark(#63666d, #92959c);
+  --border: light-dark(#dcdde0, #2c2f34);
+  --danger: light-dark(#c81e1e, #ff6b6b);
+  --ok: light-dark(#1f7a3a, #4ade80);
+  --warn: light-dark(#b45309, #ff9f43);
+  --accent: #ffd60a;
+  --accent-hover: #ffe14d;
+  --on-accent: #17170f;
+  /* Keyboard focus ring: the marker yellow has no contrast on the light theme, so that one uses ink. */
+  --focus: light-dark(#17181a, #ffd60a);
+
+  /* typography */
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  --type-headline-lg: 600 20px/1.25 var(--sans);
+  --type-headline-md: 700 15px/1.3 var(--mono);
+  --type-body-lg: 400 15px/1.6 var(--sans);
+  --type-body-md: 400 13px/1.4 var(--sans);
+  --type-body-sm: 400 12.5px/1.4 var(--sans);
+  --type-label-lg: 600 13.5px/1.3 var(--sans);
+  --type-label-md: 500 11.5px/1.3 var(--mono);
+  --type-label-sm: 500 10.5px/1.3 var(--mono);
+  --type-help: 400 12px/1.4 var(--sans);
+  --tracking-headline-lg: -0.01em;
+  --tracking-label-sm: 0.06em;
+
+  /* rounded */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  /* spacing */
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --rail: 48px;
+  --sidebar: 200px;
+  --list: 340px;
+  --detail-min: 420px;
+  --content: 720px;
+  --control: 28px;
+  --topbar: 38px;
+  --palette: 640px;
+  --row: 26px;
+  --command-item: 36px;
+  --command-hit: 52px;
+  --palette-search: 46px;
+  --palette-top: 96px;
+  --setting-row: 40px;
+  --field: 250px;
+  --icon: 16px;
+  --indicator: 2px;
+  --gap: 8px;
+  --resize-hit: 8px;
+  --window-controls: 76px;
+  --icon-small: 12px;
+  /* In the units of the icons' 24-unit grid. */
+  --icon-stroke: 1.5px;
+  --dot: 8px;
+  --palette-list: 320px;
+  --textarea: 96px;
+  --dialog: 512px;
+  --tag: 24px;
+  --tag-field: 208px;
+  --notification-panel: 360px;
+  --notification-panel-max: 400px;
+
+  font: var(--type-body-md);
+  /* Follows the system unless Settings pins a theme (themeState.svelte.ts sets `data-theme`). */
+  color-scheme: dark light;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Reset: a control has no look of its own; lib/ui gives it one. */
+button,
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+/* Disabled, the same for every control: dimmed (and no hover look, which each component guards). */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+}
+
+/* `[data-cancel]`: the safe answer of a delete question takes the focus from code, and after a click
+   WebKit does not count that as keyboard focus. */
+:focus-visible,
+[data-cancel]:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* `input` and `input-inset`: the look shared by TextField, SelectField and TextArea. */
+.input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: var(--control);
+  padding: 0 var(--space-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg);
+  font: var(--type-body-md);
+}
+
+/* On a `surface` block (setting rows, dialog). */
+.input.inset {
+  background: var(--bg);
+}
+
+/* Data (URLs, model names, tokens) goes in mono. */
+.input.mono {
+  font: var(--type-label-md);
+}
+
+/* Fixed `field-width` instead of filling its container. */
+.input.field {
+  flex: none;
+  width: var(--field);
+}
+
+.input:focus-visible {
+  border-color: var(--focus);
+}
+
+/* `link`: ink with a marker underline, never yellow text. */
+a {
+  color: var(--fg);
+  text-decoration: underline var(--indicator) var(--accent);
+  text-underline-offset: var(--space-xs);
+}
+
+/* `error-text`: a message that reports a failure, wherever it appears. */
+.error-text {
+  color: var(--danger);
+}
+
+/* `kbd` (DESIGN.md, Components). */
+kbd {
+  padding: 0 var(--space-xs);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--muted);
+  font: var(--type-label-md);
+}
+
+/* `search-highlight`: a marker stroke, so no radius. */
+mark {
+  padding: 0 var(--space-xxs);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* `section-label`: heading inside the detail, the palette and a Settings section. */
+.section-label {
+  display: block;
+  margin: var(--space-md) 0 var(--space-xs);
+  color: var(--muted);
+  font: var(--type-label-sm);
+  letter-spacing: var(--tracking-label-sm);
+  text-transform: uppercase;
+}
+
+/* `dialog`. */
+dialog {
+  width: min(var(--dialog), calc(100vw - 2 * var(--space-xl)));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+}
+
+/* Veil: `neutral` at 60%. */
+dialog::backdrop {
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+}

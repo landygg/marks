@@ -1,0 +1,40 @@
+[package]
+name = "marks-desktop"
+description = "Local-first bookmarks: desktop app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+# Distinct lib name avoids a bin/lib name clash on Windows (cargo#8519).
+name = "marks_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+axum.workspace = true
+log.workspace = true
+marks-core.workspace = true
+marks-i18n.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sys-locale.workspace = true
+tauri.workspace = true
+tauri-plugin-dialog.workspace = true
+tauri-plugin-updater.workspace = true
+rfd.workspace = true
+tauri-plugin-log.workspace = true
+tauri-plugin-opener.workspace = true
+tokio.workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-foundation.workspace = true
+
+[dev-dependencies]
+tauri = { workspace = true, features = ["test"] }
+http-body-util.workspace = true
+tower.workspace = true

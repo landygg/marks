@@ -1,0 +1,18 @@
+[package]
+name = "marks-i18n"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+marks-core = { workspace = true }
+anyhow = { workspace = true }
+i18n-embed = { workspace = true }
+i18n-embed-fl = { workspace = true }
+rust-embed = { workspace = true }
+fluent-pseudo = { workspace = true }
+
+[dev-dependencies]
+fluent-syntax = { workspace = true }
+syn = { workspace = true }
+proc-macro2 = { workspace = true }

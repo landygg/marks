@@ -1,0 +1,79 @@
+table bookmarks
+col bookmarks.id INTEGER notnull=0 dflt=NULL pk=1 hidden=0
+col bookmarks.url TEXT notnull=1 dflt=NULL pk=0 hidden=0
+col bookmarks.title TEXT notnull=1 dflt=NULL pk=0 hidden=0
+col bookmarks.summary TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.category TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.tags TEXT notnull=1 dflt='' pk=0 hidden=0
+col bookmarks.content TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.created_at TEXT notnull=1 dflt=strftime('%Y-%m-%dT%H:%M:%SZ', 'now') pk=0 hidden=0
+col bookmarks.updated_at TEXT notnull=1 dflt=strftime('%Y-%m-%dT%H:%M:%SZ', 'now') pk=0 hidden=0
+col bookmarks.notes TEXT notnull=1 dflt='' pk=0 hidden=0
+col bookmarks.status TEXT notnull=1 dflt='pending' pk=0 hidden=0
+col bookmarks.error TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.embedding_id TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.description TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.author TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.site TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.published TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.language TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.image_url TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.favicon_url TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.word_count INTEGER notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.extractor TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.error_kind TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.favicon BLOB notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.favicon_type TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.favicon_at TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.favicon_failures INTEGER notnull=1 dflt=0 pk=0 hidden=0
+col bookmarks.favicon_retry_at TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.original_url TEXT notnull=0 dflt=NULL pk=0 hidden=0
+col bookmarks.error_msg TEXT notnull=0 dflt=NULL pk=0 hidden=0
+index sqlite_autoindex_bookmarks_1 on bookmarks unique=1 origin=u
+key sqlite_autoindex_bookmarks_1.url desc=0 coll=BINARY
+table bookmarks_fts CREATE VIRTUAL TABLE bookmarks_fts USING fts5( title, summary, tags, notes, description, author, site, content, content='bookmarks', content_rowid='id' )
+table bookmarks_fts_config
+col bookmarks_fts_config.k  notnull=1 dflt=NULL pk=1 hidden=0
+col bookmarks_fts_config.v  notnull=0 dflt=NULL pk=0 hidden=0
+index sqlite_autoindex_bookmarks_fts_config_1 on bookmarks_fts_config unique=1 origin=pk
+key sqlite_autoindex_bookmarks_fts_config_1.k desc=0 coll=BINARY
+table bookmarks_fts_data
+col bookmarks_fts_data.id INTEGER notnull=0 dflt=NULL pk=1 hidden=0
+col bookmarks_fts_data.block BLOB notnull=0 dflt=NULL pk=0 hidden=0
+table bookmarks_fts_docsize
+col bookmarks_fts_docsize.id INTEGER notnull=0 dflt=NULL pk=1 hidden=0
+col bookmarks_fts_docsize.sz BLOB notnull=0 dflt=NULL pk=0 hidden=0
+table bookmarks_fts_idx
+col bookmarks_fts_idx.segid  notnull=1 dflt=NULL pk=1 hidden=0
+col bookmarks_fts_idx.term  notnull=1 dflt=NULL pk=2 hidden=0
+col bookmarks_fts_idx.pgno  notnull=0 dflt=NULL pk=0 hidden=0
+index sqlite_autoindex_bookmarks_fts_idx_1 on bookmarks_fts_idx unique=1 origin=pk
+key sqlite_autoindex_bookmarks_fts_idx_1.segid desc=0 coll=BINARY
+key sqlite_autoindex_bookmarks_fts_idx_1.term desc=0 coll=BINARY
+table chunks
+col chunks.id INTEGER notnull=0 dflt=NULL pk=1 hidden=0
+col chunks.bookmark_id INTEGER notnull=1 dflt=NULL pk=0 hidden=0
+col chunks.ord INTEGER notnull=1 dflt=NULL pk=0 hidden=0
+col chunks.text TEXT notnull=1 dflt=NULL pk=0 hidden=0
+fk chunks.bookmark_id -> bookmarks.id on_delete=CASCADE
+index chunks_bookmark_idx on chunks unique=0 origin=c
+key chunks_bookmark_idx.bookmark_id desc=0 coll=BINARY
+table settings
+col settings.key TEXT notnull=0 dflt=NULL pk=1 hidden=0
+col settings.value TEXT notnull=1 dflt=NULL pk=0 hidden=0
+index sqlite_autoindex_settings_1 on settings unique=1 origin=pk
+key sqlite_autoindex_settings_1.key desc=0 coll=BINARY
+table tag_group_members
+col tag_group_members.tag TEXT notnull=0 dflt=NULL pk=1 hidden=0
+col tag_group_members.group_id INTEGER notnull=1 dflt=NULL pk=0 hidden=0
+fk tag_group_members.group_id -> tag_groups.id on_delete=CASCADE
+index sqlite_autoindex_tag_group_members_1 on tag_group_members unique=1 origin=pk
+key sqlite_autoindex_tag_group_members_1.tag desc=0 coll=BINARY
+table tag_groups
+col tag_groups.id INTEGER notnull=0 dflt=NULL pk=1 hidden=0
+col tag_groups.name TEXT notnull=1 dflt=NULL pk=0 hidden=0
+index sqlite_autoindex_tag_groups_1 on tag_groups unique=1 origin=u
+key sqlite_autoindex_tag_groups_1.name desc=0 coll=NOCASE
+trigger bookmarks_ad CREATE TRIGGER bookmarks_ad AFTER DELETE ON bookmarks BEGIN INSERT INTO bookmarks_fts(bookmarks_fts, rowid, title, summary, tags, notes, description, author, site, content) VALUES ('delete', old.id, old.title, old.summary, old.tags, old.notes, old.description, old.author, old.site, old.content); END
+trigger bookmarks_ai CREATE TRIGGER bookmarks_ai AFTER INSERT ON bookmarks BEGIN INSERT INTO bookmarks_fts(rowid, title, summary, tags, notes, description, author, site, content) VALUES (new.id, new.title, new.summary, new.tags, new.notes, new.description, new.author, new.site, new.content); END
+trigger bookmarks_au CREATE TRIGGER bookmarks_au AFTER UPDATE ON bookmarks BEGIN INSERT INTO bookmarks_fts(bookmarks_fts, rowid, title, summary, tags, notes, description, author, site, content) VALUES ('delete', old.id, old.title, old.summary, old.tags, old.notes, old.description, old.author, old.site, old.content); INSERT INTO bookmarks_fts(rowid, title, summary, tags, notes, description, author, site, content) VALUES (new.id, new.title, new.summary, new.tags, new.notes, new.description, new.author, new.site, new.content); END

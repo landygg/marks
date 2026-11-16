@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<title>Propiedad en Rust | Blog</title>
+<meta name="author" content="Ana Pérez">
+<meta property="og:site_name" content="Blog de Ana">
+<meta property="og:title" content="Propiedad en Rust">
+<meta name="description" content="Una introducción a la propiedad en Rust.">
+<meta property="article:published_time" content="2024-03-05T10:00:00Z">
+</head><body>
+<header><nav><a href="/">Inicio</a> <a href="/acerca">Acerca</a></nav></header>
+<article>
+<h1>Propiedad en Rust</h1>
+<p>La propiedad es la idea central de Rust. Cada valor tiene un único dueño y, cuando el dueño sale del ámbito, el valor se libera sin necesidad de recolector de basura.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref">1</a></sup></p>
+<p>Para entender cómo se mueven los valores, mira este ejemplo y la guía de <a href="/docs/ownership">propiedad</a>, que explica los préstamos con más detalle y con muchos casos prácticos.</p>
+<pre><code class="language-rust">fn main() {
+    let s = String::from("hola");
+    let t = s;
+    println!("{t}");
+}</code></pre>
+<table>
+<thead><tr><th>Tipo</th><th>Copia</th></tr></thead>
+<tbody><tr><td>i32</td><td>sí</td></tr><tr><td>String</td><td>no</td></tr></tbody>
+</table>
+<p>En resumen, los tipos que implementan Copy se duplican al asignarlos y el resto se mueve, de modo que el origen deja de ser válido tras la asignación.</p>
+<div class="footnotes"><ol><li id="fn:1"><p>Ver el capítulo 4 del libro oficial. <a href="#fnref:1">↩</a></p></li></ol></div>
+</article>
+<footer><p>Contacto</p></footer>
+</body></html>
