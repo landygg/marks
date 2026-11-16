@@ -8,6 +8,8 @@ All notable changes to marks are listed here. The format follows [Keep a Changel
 
 The first public release, for macOS 14.5 or later. Apple silicon is the only tested platform; the Intel build is untested.
 
+marks is local-first: your library is a set of SQLite files on your Mac, with no account, no marks server, no sync and no telemetry. The user guide is in [`docs/en`](https://github.com/landygg/marks/tree/v1.0.0/docs/en/README.md) (and in Spanish in [`docs/es`](https://github.com/landygg/marks/tree/v1.0.0/docs/es/README.md)).
+
 ### Added
 
 - Save a URL and marks downloads the page, turns it into Markdown and keeps it in a SQLite file on your Mac, with full-text search.
@@ -17,7 +19,7 @@ The first public release, for macOS 14.5 or later. Apple silicon is the only tes
 - Browser extension that saves the page as you see it: for Chromium browsers (recommended, `marks-chromium-<version>.zip` in each release) and for Safari (experimental, inside marks.app). The app and the extension check that their versions are compatible.
 - Import and export of the `bookmarks.html` file Chrome and Safari use.
 - Command palette (⌘K), notifications, a status bar and resizable panels.
-- English and Spanish.
+- English and Spanish, and light and dark themes.
 - Automatic updates from GitHub Releases on Apple silicon, which you can turn off in Settings → Updates.
 - Database safety: marks refuses a database from a newer version or one it didn't create, and backs up each database before migrating it.
 - The `marks` command-line tool (built from source) to queue URLs, search, and export.
@@ -26,6 +28,7 @@ The first public release, for macOS 14.5 or later. Apple silicon is the only tes
 
 - marks is not notarized by Apple: the first launch needs System Settings → Privacy & Security → “Open Anyway”.
 - Safari only loads the extension with “Allow unsigned extensions”, which it turns off every time it quits.
+- After each update, marks asks once for your login password to read the AI provider's API key from the keychain.
 
 ## [1.0.0-rc.2] - 2026-11-16
 
