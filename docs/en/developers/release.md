@@ -110,10 +110,13 @@ From v1.1 on, every release that brings a migration checks, with a copy of a dat
 `.github/workflows/release.yml` makes the release when a `v*` tag is pushed:
 
 1. With the version bumped in the files and `## [<version>]` in `CHANGELOG.md`, create and push the tag: `git tag v1.0.0 && git push origin v1.0.0`.
-2. The `build` job, in the `release` environment, checks the tag with `scripts/check-version.sh`, imports the certificate into a temporary keychain and, for `aarch64` and `x86_64`, runs `scripts/build-app.sh --target … --dmg` with the updater files and `scripts/verify-bundle.sh` on the app and on the one inside the `.app.tar.gz`. On `aarch64` it also prepares `latest-darwin-aarch64.json` and the Chromium zip. At the end it deletes the temporary keychain.
-3. The `publish` job creates a **draft** release with every file. If the tag has a `-` (`v1.0.0-rc.1`), it marks it as a prerelease.
-4. Review the draft: the files, the notes, and an install from the DMG.
-5. Publish it by hand. From then on, `releases/latest` serves the new `latest-darwin-aarch64.json` and older installs update.
+2. Approve the deployment: the `release` environment requires the owner's review, so the `build` job waits, without the secrets, until you open the run and choose **Review deployments → Approve and deploy**.
+3. The `build` job checks the tag with `scripts/check-version.sh`, imports the certificate into a temporary keychain and, for `aarch64` and `x86_64`, runs `scripts/build-app.sh --target … --dmg` with the updater files and `scripts/verify-bundle.sh` on the app and on the one inside the `.app.tar.gz`. On `aarch64` it also prepares `latest-darwin-aarch64.json` and the Chromium zip. It records the build provenance of every file and, at the end, deletes the temporary keychain. It restores no caches, so it builds from scratch.
+4. The `publish` job creates a **draft** release with every file. If the tag has a `-` (`v1.0.0-rc.1`), it marks it as a prerelease.
+5. Review the draft: the files, the notes, and an install from the DMG.
+6. Publish it by hand. From then on, `releases/latest` serves the new `latest-darwin-aarch64.json` and older installs update.
+
+Releases are immutable once published, and a ruleset keeps `v*` tags from being moved or deleted: a broken release is fixed with a new version, not by editing it. Before publishing, a draft and its tag can still be removed after turning off the `tags v*` ruleset for a moment (Settings → Rules → Rulesets). Anyone can check where a file came from with `gh attestation verify <file> -R landygg/marks`.
 
 The secrets live in GitHub's `release` environment, not in the repository's secrets, and that environment only accepts `v*` tags:
 

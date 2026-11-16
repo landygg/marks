@@ -110,10 +110,13 @@ Desde la v1.1, cada release que traiga una migración prueba, con una copia de u
 `.github/workflows/release.yml` hace la release al subir una etiqueta `v*`:
 
 1. Con la versión ya subida en los ficheros y `## [<versión>]` en `CHANGELOG.md`, crea y sube la etiqueta: `git tag v1.0.0 && git push origin v1.0.0`.
-2. El job `build`, en el Environment `release`, comprueba la etiqueta con `scripts/check-version.sh`, importa el certificado en un llavero temporal y, para `aarch64` y `x86_64`, ejecuta `scripts/build-app.sh --target … --dmg` con los ficheros del updater y `scripts/verify-bundle.sh` sobre la app y sobre la del `.app.tar.gz`. En `aarch64` prepara además `latest-darwin-aarch64.json` y el zip de Chromium. Al final borra el llavero temporal.
-3. El job `publish` crea una release **en borrador** con todos los ficheros. Si la etiqueta lleva `-` (`v1.0.0-rc.1`), la marca como prerelease.
-4. Revisa el borrador: los ficheros, las notas, y una instalación desde el DMG.
-5. Publícalo a mano. Desde ese momento, `releases/latest` sirve el `latest-darwin-aarch64.json` nuevo y las instalaciones anteriores se actualizan.
+2. Aprueba el despliegue: el Environment `release` exige la revisión del dueño, así que el job `build` espera, sin los secrets, hasta que abras la ejecución y elijas **Review deployments → Approve and deploy**.
+3. El job `build` comprueba la etiqueta con `scripts/check-version.sh`, importa el certificado en un llavero temporal y, para `aarch64` y `x86_64`, ejecuta `scripts/build-app.sh --target … --dmg` con los ficheros del updater y `scripts/verify-bundle.sh` sobre la app y sobre la del `.app.tar.gz`. En `aarch64` prepara además `latest-darwin-aarch64.json` y el zip de Chromium. Registra la procedencia de cada fichero y, al final, borra el llavero temporal. No restaura cachés, así que compila desde cero.
+4. El job `publish` crea una release **en borrador** con todos los ficheros. Si la etiqueta lleva `-` (`v1.0.0-rc.1`), la marca como prerelease.
+5. Revisa el borrador: los ficheros, las notas, y una instalación desde el DMG.
+6. Publícalo a mano. Desde ese momento, `releases/latest` sirve el `latest-darwin-aarch64.json` nuevo y las instalaciones anteriores se actualizan.
+
+Las releases publicadas son inmutables, y un ruleset impide mover o borrar las etiquetas `v*`: una release que sale mal se arregla con una versión nueva, no editándola. Antes de publicar, el borrador y su etiqueta aún se pueden quitar desactivando un momento el ruleset `tags v*` (Settings → Rules → Rulesets). Cualquiera puede comprobar de dónde sale un fichero con `gh attestation verify <fichero> -R landygg/marks`.
 
 Los secrets están en el Environment `release` de GitHub, no en los del repo, y ese Environment solo admite etiquetas `v*`:
 
