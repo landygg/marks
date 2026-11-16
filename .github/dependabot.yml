@@ -1,0 +1,42 @@
+# Security updates are on in the repo settings and skip the cooldown; these are the version updates.
+version: 2
+updates:
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+    # Waits a week after a release: malicious versions are usually pulled sooner.
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+    groups:
+      cargo-minor:
+        update-types: [minor, patch]
+
+  # npm reads the pnpm workspace lockfile at the root.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+    groups:
+      npm-minor:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']
