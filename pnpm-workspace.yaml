@@ -7,3 +7,8 @@ allowBuilds:
 # Root node_modules/typescript lets the TypeScript language server find it from the repo root.
 publicHoistPattern:
   - typescript
+# GHSA-g3hv-75wg-m249 (fixed in 11.0.1): eslint asks for minimatch ^10, which has no fix, and 11
+# keeps the API eslint uses. Pinned to a release older than a week, like Dependabot's cooldown.
+# Remove once eslint and typescript-eslint depend on minimatch 11.
+overrides:
+  minimatch: 11.0.5
