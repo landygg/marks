@@ -114,7 +114,7 @@ Es la verificación completa. Tiene que pasar antes de cada commit. Ejecuta, en 
 | Tests de `packages/extract` | `pnpm --dir packages/extract test` |
 | Formato del frontend | `pnpm --dir apps/desktop format:check` (Prettier) |
 | Lints del frontend | `pnpm --dir apps/desktop lint` (ESLint) |
-| Tipos del frontend | `pnpm --dir apps/desktop check` (svelte-check) |
+| Tipos del frontend | `pnpm --dir apps/desktop check` (svelte-check con TypeScript 7) |
 | Tests del frontend | `pnpm --dir apps/desktop test` (vitest) |
 | Tipos del manejador Swift | `xcrun swiftc -typecheck …`, solo en macOS |
 

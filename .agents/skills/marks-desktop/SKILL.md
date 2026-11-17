@@ -78,7 +78,7 @@ Dos mitades con una frontera estrecha: `src-tauri` (Rust) solo expone `crates/co
 ## Verificación
 
 - Rust: `cargo test -p marks-desktop`, `cargo clippy -p marks-desktop -- -D warnings`
-- Frontend: `pnpm --dir apps/desktop check` (svelte-check), `test` (vitest), `lint` (ESLint 10 + `eslint-plugin-svelte` + `typescript-eslint`, `eslint.config.js`) y `format:check` (Prettier + `prettier-plugin-svelte`, `.prettierrc.json`). El formato no se discute a mano: `pnpm --dir apps/desktop format`
+- Frontend: `pnpm --dir apps/desktop check` (`svelte-check --tsgo`, con TypeScript 7; ver `AGENTS.md`), `test` (vitest), `lint` (ESLint 10 + `eslint-plugin-svelte` + `typescript-eslint`, `eslint.config.js`) y `format:check` (Prettier + `prettier-plugin-svelte`, `.prettierrc.json`). El formato no se discute a mano: `pnpm --dir apps/desktop format`
 - Antes de commit: `scripts/check.sh`
 - A mano: `MARKS_DB=/tmp/marks-scratch.db pnpm --dir apps/desktop tauri dev` (nunca la base real para pruebas). Idioma: `MARKS_LOCALE=es|en|pseudo` delante. Cambiar el idioma en Ajustes relanza la app y termina `tauri dev`; hay que lanzarlo otra vez. Una ventana tapada por otra a pantalla completa no la pinta WebKit: traerla al frente antes de mirar la interfaz. Los `target` de pruebas, en `/private/tmp` (Tauri no relanza un binario con un enlace simbólico en la ruta).
 

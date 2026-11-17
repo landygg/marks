@@ -73,6 +73,7 @@ Las skills están en `.agents/skills`. `.claude/skills` es un enlace a esa carpe
 - Tests de la extensión: `node --test "apps/extension/*.test.js"`.
 - Probar la API, con `MARKS_DB=…` y la app en marcha (el token está en Ajustes): `curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:47821/v1/ping`.
 - Frontend: `pnpm --dir apps/desktop check`, `test`, `lint`, `format` y `format:check` (detalle en la skill `marks-desktop`).
+- TypeScript 7 y 6 a la vez, como recomienda el anuncio de TS 7.0: `@typescript/native` (`npm:typescript@^7`) da el `tsc` de `packages/extract` y el `svelte-check --tsgo`; `typescript` es `npm:@typescript/typescript6`, porque TS 7.0 no tiene API de JS y la usan `typescript-eslint` y `svelte-check`. Quitar el alias de 6 cuando esas dos soporten la API de TS 7 (prevista en 7.1). `--tsgo` deja su caché en `apps/desktop/.svelte-check/`, ignorada por git, ESLint y Prettier.
 
 **Base real:** `~/Library/Application Support/marks/marks.db`.
 
