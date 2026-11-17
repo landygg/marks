@@ -24,7 +24,7 @@ function leaves(value: object, prefix = ''): string[] {
   );
 }
 
-const escape = (path: string) => path.replace(/\./g, '\\.');
+const escape = (path: string) => path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 describe('catalogs', () => {
   it('es and en have the same keys', () => {
