@@ -114,7 +114,7 @@ This is the full check. It must pass before every commit. It runs, in this order
 | `packages/extract` tests | `pnpm --dir packages/extract test` |
 | Frontend formatting | `pnpm --dir apps/desktop format:check` (Prettier) |
 | Frontend lints | `pnpm --dir apps/desktop lint` (ESLint) |
-| Frontend types | `pnpm --dir apps/desktop check` (svelte-check) |
+| Frontend types | `pnpm --dir apps/desktop check` (svelte-check on TypeScript 7) |
 | Frontend tests | `pnpm --dir apps/desktop test` (vitest) |
 | Swift handler types | `xcrun swiftc -typecheck …`, on macOS only |
 
