@@ -24,6 +24,9 @@ impl Localize for Msg {
             Msg::DatabaseUnknown { path } => {
                 fl!(l, "error-database-unknown", path = path.as_str())
             }
+            Msg::DatabaseUnreadable { path } => {
+                fl!(l, "error-database-unreadable", path = path.as_str())
+            }
             Msg::Backup { path } => fl!(l, "error-backup", path = path.as_str()),
             Msg::InvalidUrl => fl!(l, "error-invalid-url"),
             Msg::GroupNameEmpty => fl!(l, "error-group-name-empty"),
@@ -184,6 +187,7 @@ mod tests {
             Msg::OpenDatabase { path: "/x".into() },
             Msg::DatabaseTooNew { path: "/x".into() },
             Msg::DatabaseUnknown { path: "/x".into() },
+            Msg::DatabaseUnreadable { path: "/x".into() },
             Msg::Backup { path: "/x".into() },
             Msg::InvalidUrl,
             Msg::GroupNameEmpty,

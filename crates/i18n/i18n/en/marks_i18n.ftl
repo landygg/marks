@@ -11,6 +11,7 @@ error-unknown-error-kind = unknown error kind: { $value }
 error-open-database = could not open { $path }
 error-database-too-new = This database ({ $path }) comes from a newer version of marks, and this version can't open it. Install the latest marks, or restore the copy made before the migration.
 error-database-unknown = marks doesn't recognize this database ({ $path }): it wasn't created by marks 1.0 or later. It was left untouched.
+error-database-unreadable = marks can't read this database ({ $path }): it isn't an SQLite database, or it's damaged. It was left untouched. If marks backed it up before an update, the copies are in the backups folder next to it.
 error-backup = Couldn't copy the database to { $path } before updating it, so it was left untouched. Check that the disk has free space and open marks again.
 error-invalid-url = invalid URL
 error-group-name-empty = the group name cannot be empty

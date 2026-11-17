@@ -11,6 +11,7 @@ error-unknown-error-kind = tipo de error desconocido: { $value }
 error-open-database = no se pudo abrir { $path }
 error-database-too-new = Esta base de datos ({ $path }) es de una versión más nueva de marks y esta versión no sabe abrirla. Instala la versión más reciente de marks, o restaura la copia hecha antes de la migración.
 error-database-unknown = marks no reconoce esta base de datos ({ $path }): no la ha creado marks 1.0 ni una versión posterior. No se ha tocado.
+error-database-unreadable = marks no puede leer esta base de datos ({ $path }): no es una base de datos SQLite o está dañada. No se ha tocado. Si marks la copió antes de alguna actualización, las copias están en la carpeta backups, junto a ella.
 error-backup = No se pudo copiar la base de datos a { $path } antes de actualizarla, así que no se ha tocado. Comprueba que hay espacio libre en el disco y vuelve a abrir marks.
 error-invalid-url = URL no válida
 error-group-name-empty = el nombre del grupo no puede estar vacío
