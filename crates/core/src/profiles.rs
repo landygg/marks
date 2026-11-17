@@ -68,8 +68,14 @@ fn profile_from_row(r: &rusqlite::Row) -> rusqlite::Result<Profile> {
     })
 }
 
+/// Id read back from the profile's registry row, never taken from the caller: only an existing
+/// profile names a file, and the name is the digits of an id SQLite assigned.
+#[derive(Clone, Copy, Debug)]
+struct ProfileId(i64);
+
 /// `<primary without extension>-profiles/<id>.db`; for `id == 1`, the primary.
-pub fn profile_db_path(primary: &Path, id: i64) -> PathBuf {
+fn profile_db_path(primary: &Path, id: ProfileId) -> PathBuf {
+    let ProfileId(id) = id;
     if id == DEFAULT_PROFILE_ID {
         return primary.to_path_buf();
     }
@@ -164,6 +170,11 @@ impl Library {
         self.get(id)?.msg(Msg::ProfileNotFound)
     }
 
+    /// The registry's id for `id`, the only one a profile's file path is built from.
+    fn registered(&self, id: i64) -> Result<ProfileId> {
+        Ok(ProfileId(self.require(id)?.id))
+    }
+
     /// Profiles by ascending id.
     pub fn profiles(&self) -> Result<Vec<Profile>> {
         let registry = self.registry()?;
@@ -222,12 +233,12 @@ impl Library {
 
     /// The profile's store: opened the first time (outside the map lock) and reused.
     pub fn store(&self, id: i64) -> Result<Arc<Mutex<Store>>> {
-        self.require(id)?;
+        let registered = self.registered(id)?;
         if let Some(store) = self.stores()?.get(&id) {
             return Ok(store.clone());
         }
-        let opened = Store::open(&profile_db_path(&self.primary_path, id))?;
-        self.register(id, opened)
+        let opened = Store::open(&profile_db_path(&self.primary_path, registered))?;
+        self.register(registered, opened)
     }
 
     /// Like `store`, but `None` if the profile no longer exists (deleted): callers iterating profiles
@@ -242,7 +253,8 @@ impl Library {
 
     /// Puts the freshly opened store in the map, or discards it with its file if the profile no
     /// longer exists.
-    fn register(&self, id: i64, opened: Store) -> Result<Arc<Mutex<Store>>> {
+    fn register(&self, registered: ProfileId, opened: Store) -> Result<Arc<Mutex<Store>>> {
+        let ProfileId(id) = registered;
         // `delete` removes the row and the map entry while holding this same lock, so here either the
         // row is still there (and `delete`, coming later, will remove this entry and the file) or it is
         // gone and the file we just created is removed here. Order: map, then registry.
@@ -250,7 +262,7 @@ impl Library {
         if self.get(id)?.is_none() {
             drop(stores);
             drop(opened);
-            remove_db_files(&profile_db_path(&self.primary_path, id))?;
+            remove_db_files(&profile_db_path(&self.primary_path, registered))?;
             return Err(Msg::ProfileNotFound.err());
         }
         // If another thread opened it concurrently, the first one wins and this one is discarded.
@@ -326,6 +338,7 @@ impl Library {
         if id == DEFAULT_PROFILE_ID {
             return Err(Msg::DefaultProfile.err());
         }
+        let registered = self.registered(id)?;
         let was_active = self.active()? == id;
         let released = {
             // Row and map entry under the map lock: see `register`.
@@ -340,7 +353,7 @@ impl Library {
         if was_active {
             self.set_active(DEFAULT_PROFILE_ID)?;
         }
-        remove_db_files(&profile_db_path(&self.primary_path, id))
+        remove_db_files(&profile_db_path(&self.primary_path, registered))
     }
 
     /// Returns the copy created in the target. Inserts into the target first and then deletes from
@@ -478,7 +491,7 @@ mod tests {
         let (lib, dir) = temp_library();
         lib.create("Trabajo", "TR").unwrap();
         drop(lib.store(2).unwrap());
-        let path = profile_db_path(&dir.join("marks.db"), 2);
+        let path = profile_db_path(&dir.join("marks.db"), ProfileId(2));
         drop(lib);
         rusqlite::Connection::open(&path)
             .unwrap()
@@ -545,10 +558,13 @@ mod tests {
     fn profile_db_path_sits_next_to_the_primary() {
         let primary = Path::new("/d/marks.db");
         assert_eq!(
-            profile_db_path(primary, 2),
+            profile_db_path(primary, ProfileId(2)),
             PathBuf::from("/d/marks-profiles/2.db")
         );
-        assert_eq!(profile_db_path(primary, 1), PathBuf::from("/d/marks.db"));
+        assert_eq!(
+            profile_db_path(primary, ProfileId(1)),
+            PathBuf::from("/d/marks.db")
+        );
     }
 
     #[test]
@@ -652,9 +668,11 @@ mod tests {
         assert!(two.list().unwrap().is_empty());
         assert!(two.search("palabraunica", 10).unwrap().is_empty());
         drop(two);
-        assert!(profile_db_path(&dir.join("marks.db"), 2).exists());
+        assert!(profile_db_path(&dir.join("marks.db"), ProfileId(2)).exists());
         assert!(Arc::ptr_eq(&lib.store(2).unwrap(), &lib.store(2).unwrap()));
         assert_eq!(err_of(lib.store(99)), Msg::ProfileNotFound);
+        // An id with no registry row names no file: nothing is created for it.
+        assert!(!profile_db_path(&dir.join("marks.db"), ProfileId(99)).exists());
         cleanup(lib, dir);
     }
 
@@ -707,7 +725,7 @@ mod tests {
             .add(new_bookmark("https://a.com"))
             .unwrap();
         drop(lib);
-        let path = profile_db_path(&primary, p.id);
+        let path = profile_db_path(&primary, ProfileId(p.id));
         assert!(path.exists());
         for file in sidecars(&path) {
             let _ = std::fs::remove_file(file);
@@ -741,7 +759,7 @@ mod tests {
             .unwrap()
             .add(new_bookmark("https://a.com"))
             .unwrap();
-        let path = profile_db_path(&dir.join("marks.db"), 2);
+        let path = profile_db_path(&dir.join("marks.db"), ProfileId(2));
         assert!(path.exists());
         lib.delete(2).unwrap();
         assert_eq!(
@@ -770,10 +788,13 @@ mod tests {
         let (lib, dir) = temp_library();
         lib.create("Trabajo", "TR").unwrap();
         lib.delete(2).unwrap();
-        let path = profile_db_path(&dir.join("marks.db"), 2);
+        let path = profile_db_path(&dir.join("marks.db"), ProfileId(2));
         let late = Store::open(&path).unwrap();
         assert!(path.exists());
-        assert_eq!(err_of(lib.register(2, late)), Msg::ProfileNotFound);
+        assert_eq!(
+            err_of(lib.register(ProfileId(2), late)),
+            Msg::ProfileNotFound
+        );
         for file in sidecars(&path) {
             assert!(!file.exists(), "quedó {}", file.display());
         }
@@ -816,7 +837,7 @@ mod tests {
         lib.create("Trabajo", "TR").unwrap();
         lib.set_active(2).unwrap();
         drop(lib.store(2).unwrap());
-        let profiles_dir = profile_db_path(&dir.join("marks.db"), 2)
+        let profiles_dir = profile_db_path(&dir.join("marks.db"), ProfileId(2))
             .parent()
             .unwrap()
             .to_path_buf();
@@ -888,7 +909,7 @@ mod tests {
         let (lib, dir) = temp_library();
         lib.create("Trabajo", "TR").unwrap();
         let s = lib.store(2).unwrap();
-        let path = profile_db_path(&dir.join("marks.db"), 2);
+        let path = profile_db_path(&dir.join("marks.db"), ProfileId(2));
         assert!(path.exists());
         lib.delete(2).unwrap();
         lock(&s)
