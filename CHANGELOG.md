@@ -4,6 +4,17 @@ All notable changes to marks are listed here. The format follows [Keep a Changel
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-17
+
+### Fixed
+
+- If the database file isn't an SQLite database or is damaged, marks now says so in plain words when it starts, leaves the file untouched and tells you where its backups are, instead of showing SQLite's raw error.
+- marks only builds the path of a profile's file from a profile that exists in its registry, so no request can make it create or remove a file for a profile that doesn't exist.
+
+### Changed
+
+- Dependencies and build tools are up to date.
+
 ## [1.0.0] - 2026-11-16
 
 The first public release, for macOS 14.5 or later. Apple silicon is the only tested platform; the Intel build is untested.
@@ -38,7 +49,8 @@ Second release candidate of 1.0.0, published as a prerelease so that 1.0.0-rc.1 
 
 Release candidate of 1.0.0, published as a prerelease to test automatic updates. It has everything listed under 1.0.0.
 
-[Unreleased]: https://github.com/landygg/marks/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/landygg/marks/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/landygg/marks/releases/tag/v1.0.1
 [1.0.0]: https://github.com/landygg/marks/releases/tag/v1.0.0
 [1.0.0-rc.1]: https://github.com/landygg/marks/releases/tag/v1.0.0-rc.1
 [1.0.0-rc.2]: https://github.com/landygg/marks/releases/tag/v1.0.0-rc.2
