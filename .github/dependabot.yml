@@ -9,6 +9,11 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
+    # rfd stays on the line tauri-plugin-dialog asks for (^0.17 in 2.8.4): a newer one would put two
+    # copies in the binary. Lift this together with the plugin release that moves to rfd 0.18.
+    ignore:
+      - dependency-name: rfd
+        versions: ['>= 0.18']
     commit-message:
       prefix: build
     groups:
