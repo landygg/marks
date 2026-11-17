@@ -2887,7 +2887,7 @@ dependencies = [
  "marks-core",
  "proc-macro2",
  "rust-embed",
- "syn 2.0.119",
+ "syn 3.0.10",
 ]
 
 [[package]]

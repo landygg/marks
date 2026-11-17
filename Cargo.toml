@@ -46,7 +46,7 @@ i18n-embed-fl = "0.10"
 rust-embed = "8"
 fluent-pseudo = "0.3"
 fluent-syntax = "0.12"
-syn = { version = "2", features = ["full", "visit"] }
+syn = { version = "3", features = ["full", "visit"] }
 proc-macro2 = { version = "1", features = ["span-locations"] }
 sys-locale = "0.3"
 objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSArray", "NSBundle", "NSDictionary", "NSProcessInfo", "NSString", "NSUserDefaults"] }
