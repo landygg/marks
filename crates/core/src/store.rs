@@ -1289,8 +1289,17 @@ fn with_path(err: anyhow::Error, path: &Path) -> anyhow::Error {
     match failure_msg(&err) {
         Some(Msg::DatabaseTooNew { .. }) => Msg::DatabaseTooNew { path }.err(),
         Some(Msg::DatabaseUnknown { .. }) => Msg::DatabaseUnknown { path }.err(),
+        _ if is_unreadable(&err) => Msg::DatabaseUnreadable { path }.err(),
         _ => err,
     }
+}
+
+/// `Connection::open` does not read the file: a non-SQLite or damaged one fails on first access.
+fn is_unreadable(err: &anyhow::Error) -> bool {
+    use rusqlite::ErrorCode::{DatabaseCorrupt, NotADatabase};
+    err.chain()
+        .filter_map(|e| e.downcast_ref::<rusqlite::Error>())
+        .any(|e| matches!(e.sqlite_error_code(), Some(NotADatabase | DatabaseCorrupt)))
 }
 
 /// Applies pending migrations, each in its own transaction together with `user_version` and
@@ -2089,6 +2098,24 @@ mod tests {
             Some(Msg::DatabaseUnknown { .. })
         ));
         assert!(!created);
+    }
+
+    #[test]
+    fn refuses_unreadable_database() {
+        let path = std::env::temp_dir().join(format!("marks-notadb-{}.db", std::process::id()));
+        // Longer than a SQLite header, so SQLite reads it and rejects it.
+        std::fs::write(&path, "not a database\n".repeat(200)).unwrap();
+        let before = std::fs::read(&path).unwrap();
+        let err = Store::open(&path).err().unwrap();
+        let after = std::fs::read(&path).unwrap();
+        let _ = std::fs::remove_file(&path);
+        assert_eq!(
+            failure_msg(&err),
+            Some(&Msg::DatabaseUnreadable {
+                path: path.display().to_string()
+            })
+        );
+        assert_eq!(after, before, "the file changed");
     }
 
     #[test]

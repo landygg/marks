@@ -18,6 +18,7 @@ pub enum Msg {
     OpenDatabase { path: String },
     DatabaseTooNew { path: String },
     DatabaseUnknown { path: String },
+    DatabaseUnreadable { path: String },
     Backup { path: String },
     InvalidUrl,
     GroupNameEmpty,
