@@ -28,7 +28,8 @@ tauri-plugin-log = "2"
 tauri-plugin-opener = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-updater = "2"
-# Only the native alert when the database does not open; already in the tree through tauri-plugin-dialog.
+# Only the native alert when the database does not open. Same line as tauri-plugin-dialog (one copy);
+# move both together (see the rfd ignore in .github/dependabot.yml).
 rfd = { version = "0.17", default-features = false }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net"] }
 tower = { version = "0.5", features = ["util"] }
