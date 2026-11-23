@@ -15,7 +15,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@humanspeak/svelte-markdown": "2.2.0",
+    "@humanspeak/svelte-markdown": "2.3.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
     "marks-extract": "workspace:*"
@@ -26,11 +26,11 @@
     "@tauri-apps/cli": "^2.12",
     "@tsconfig/svelte": "^5",
     "@typescript/native": "npm:typescript@^7.0.2",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "eslint-plugin-svelte": "^3.24.1",
     "globals": "^17.14.0",
-    "jsdom": "^31.0.0",
-    "prettier": "^3.9.10",
+    "jsdom": "^31.0.1",
+    "prettier": "^3.10.1",
     "prettier-plugin-svelte": "^4.1.1",
     "svelte": "^5",
     "svelte-check": "^4.7.8",
