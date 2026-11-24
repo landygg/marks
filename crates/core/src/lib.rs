@@ -1,6 +1,7 @@
 //! Bookmarks core. The Tauri app, the MCP server and the CLI only wrap it.
 
 pub mod ai;
+pub mod ai_health;
 pub mod blocked;
 pub mod capture;
 pub mod chunk;

@@ -34,7 +34,7 @@ La ventana tiene cuatro zonas, de izquierda a derecha, y una barra de estado aba
 3. **Lista.** Los bookmarks de lo que esté seleccionado en la barra lateral.
 4. **Detalle.** El bookmark seleccionado: título, resumen, etiquetas, notas y contenido. Ver [Guardar y leer bookmarks](bookmarks.md).
 
-La **barra de estado** muestra lo que marks está extrayendo, cuántos bookmarks quedan pendientes o han fallado, el acceso a la paleta de comandos y la campana de notificaciones.
+La **barra de estado** muestra lo que marks está extrayendo, cuántos bookmarks quedan pendientes o han fallado, el estado de la IA y de la API local, el acceso a la paleta de comandos y la campana de notificaciones.
 
 No hay campos de búsqueda en las zonas. Todo se busca y se ejecuta desde la **paleta de comandos** (⌘K). Ver [Buscar y paleta de comandos](search.md).
 

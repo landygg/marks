@@ -73,6 +73,7 @@
   --tag-field: 208px;
   --notification-panel: 360px;
   --notification-panel-max: 400px;
+  --status-item-max: 240px;
 
   font: var(--type-body-md);
   /* Follows the system unless Settings pins a theme (themeState.svelte.ts sets `data-theme`). */

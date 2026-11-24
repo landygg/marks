@@ -5,6 +5,7 @@
 La barra lateral ordena la biblioteca del perfil activo. De arriba abajo:
 
 - **«Todos»**: todos los bookmarks del perfil.
+- **«Fallidos»**: solo los que fallaron, con «Reintentar todos». Sale solo si hay alguno. Ver [Guardar y leer bookmarks](bookmarks.md#ver-y-reintentar-todos-los-fallidos).
 - **«Categorías»**: las que asigna la IA.
 - **«Etiquetas»**: las tuyas y las de la IA, sueltas («Sin grupo») o dentro de grupos.
 

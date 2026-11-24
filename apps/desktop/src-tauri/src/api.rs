@@ -3,6 +3,7 @@
 
 use crate::notifications::{notify, warn};
 use crate::state::AppState;
+use crate::status::ApiStatus;
 use crate::worker;
 use axum::body::{Body, HttpBody};
 use axum::extract::rejection::JsonRejection;
@@ -20,7 +21,6 @@ use marks_i18n::{AppText, Localize, chain};
 use serde::Serialize;
 use std::net::Ipv4Addr;
 use std::sync::Arc;
-use std::sync::atomic::Ordering;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};
 use tokio::net::TcpListener;
@@ -111,10 +111,11 @@ async fn serve(app: AppHandle) {
                     ),
                 ),
             );
+            state.set_api_status(&app, ApiStatus::Busy);
             return;
         }
     };
-    state.api_listening.store(true, Ordering::Relaxed);
+    state.set_api_status(&app, ApiStatus::Listening);
     let notifier = app.clone();
     let ctx = ApiContext {
         library: state.library.clone(),
@@ -125,6 +126,7 @@ async fn serve(app: AppHandle) {
     };
     if let Err(e) = axum::serve(listener, router(ctx)).await {
         log::error!("api: el servidor se detuvo: {e}");
+        state.set_api_status(&app, ApiStatus::Stopped);
         notify(
             &app,
             extension_notice(
@@ -327,6 +329,7 @@ mod tests {
     use marks_core::store::lock;
     use serde_json::json;
     use std::sync::atomic::AtomicUsize;
+    use std::sync::atomic::Ordering;
     use tower::ServiceExt;
 
     const TEST_SEED: ProfileSeed = ProfileSeed {

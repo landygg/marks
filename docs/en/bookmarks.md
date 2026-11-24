@@ -60,6 +60,12 @@ The detail of a failed bookmark shows the error message, with “Copy message”
 
 Every failure also leaves a notification. See [Settings, notifications and the status bar](settings.md#notifications).
 
+### Seeing and retrying every failed bookmark
+
+When a bookmark has failed, the sidebar shows “Failed” under “All”; clicking “N failed” in the status bar also takes you there. The list shows only the failed bookmarks of the active profile, and its header has the “Retry all” button. marks asks first (“Retry N bookmarks?”) and, with AI on a remote provider, warns that their pages will go to it. Once you confirm, they all go back to the queue and the list is left empty with “No bookmark has failed.”. Any that fail again come back. The palette command “Retry the N failed bookmarks” does the same.
+
+Retry all includes pages blocked by an anti-bot check: they will most likely be blocked again, and you rescue them with the extension, as before.
+
 ## Reading
 
 Select a bookmark in the list. The detail shows:

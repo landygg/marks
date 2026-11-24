@@ -2,8 +2,10 @@
 
 use crate::extracting::Extracting;
 use crate::notifications::warn;
+use crate::status::{self, ApiStatus, AppStatusView};
 use anyhow::{Result, anyhow};
 use marks_core::ai::Model;
+use marks_core::ai_health::{AiHealth, AiStatus, Watched};
 use marks_core::genai_model::GenaiModel;
 use marks_core::msg::{ErrorPart, Msg, MsgExt, parts};
 use marks_core::notifications::{NewNotification, Notifications, Severity, Target};
@@ -14,7 +16,6 @@ use marks_core::transfer;
 use marks_core::{DB_ENV, default_db_path, settings};
 use marks_i18n::{AppText, DataText, Localize, chain};
 use std::path::PathBuf;
-use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex, RwLock};
 use tauri::{AppHandle, Runtime};
 use tokio::sync::Notify;
@@ -28,8 +29,13 @@ pub struct AppState {
     pub model: RwLock<Option<Arc<dyn Model>>>,
     pub extraction_model: RwLock<Option<ExtractionModel>>,
     pub wake: Arc<Notify>,
-    /// False until the local API manages to open its port.
-    pub api_listening: AtomicBool,
+    /// Whether the summary model works, for the status bar. Never taken while holding a store.
+    pub ai_health: Arc<AiHealth>,
+    /// The local API's state (`set_api_status`).
+    pub api_status: Mutex<ApiStatus>,
+    /// Held for a whole `rebuild_model`, from reading the settings to storing the models: two saves
+    /// at once would otherwise let the older one store its model last, with a stale generation.
+    rebuilding: Mutex<()>,
     /// A single lock for both hidden windows, `extractor` and `parser`: held only while one is alive,
     /// so there are never two at once, even when the worker and a command both use them
     /// (`webview_fetcher::in_hidden_window`).
@@ -104,7 +110,9 @@ impl AppState {
             model: RwLock::new(None),
             extraction_model: RwLock::new(None),
             wake: Arc::new(Notify::new()),
-            api_listening: AtomicBool::new(false),
+            ai_health: Arc::new(AiHealth::default()),
+            api_status: Mutex::new(ApiStatus::Starting),
+            rebuilding: Mutex::new(()),
             hidden_window: tokio::sync::Mutex::new(()),
             extracting: Mutex::new(Vec::new()),
             notifications: Mutex::new(Notifications::new(AppText::EmptyNotification.localize())),
@@ -151,15 +159,35 @@ impl AppState {
     }
 
     /// `rebuild_model` with `api_key` as the key reader: tests do not touch the keychain.
-    fn rebuild_model_with(&self, api_key: ApiKey<'_>) -> Rebuilt {
+    pub(crate) fn rebuild_model_with(&self, api_key: ApiKey<'_>) -> Rebuilt {
+        // Guards no data: a poisoned lock only means another rebuild panicked.
+        let _rebuilding = self.rebuilding.lock().unwrap_or_else(|e| e.into_inner());
         let (summary, extraction) = match self.load_ai() {
             Ok((ai, own)) => {
                 let summary = build_summary(&ai, api_key);
+                // Before storing the model, so no call of the new one notes with the old generation.
+                let generation = self.ai_health.built(AiStatus::after_build(
+                    ai.enabled,
+                    &ai.chat_model,
+                    summary.as_ref().map(drop),
+                ));
+                let summary = summary.map(|model| {
+                    model.map(|m| {
+                        Arc::new(Watched::new(m, self.ai_health.clone(), generation))
+                            as Arc<dyn Model>
+                    })
+                });
                 let shared = summary.as_ref().ok().cloned().flatten();
                 (summary, build_extraction(&ai, &own, shared, api_key))
             }
             // Without readable settings there is neither.
-            Err(e) => (Err(copy_error(&e)), Err(e)),
+            Err(e) => {
+                self.ai_health.built(AiStatus::Failed {
+                    model: None,
+                    error: parts(&e),
+                });
+                (Err(copy_error(&e)), Err(e))
+            }
         };
         // They only store an `Arc`: a poisoned lock leaves no half-written data.
         *self.model.write().unwrap_or_else(|e| e.into_inner()) =
@@ -185,6 +213,25 @@ impl AppState {
             .read()
             .unwrap_or_else(|e| e.into_inner())
             .clone()
+    }
+
+    /// Stores the local API's state and tells the window.
+    pub fn set_api_status<R: Runtime>(&self, app: &AppHandle<R>, api: ApiStatus) {
+        *self.api_status.lock().unwrap_or_else(|e| e.into_inner()) = api;
+        status::emit_changed(app);
+    }
+
+    pub fn api_status(&self) -> ApiStatus {
+        *self.api_status.lock().unwrap_or_else(|e| e.into_inner())
+    }
+
+    /// The AI and API state for the status bar.
+    pub fn app_status(&self) -> AppStatusView {
+        AppStatusView {
+            ai: self.ai_health.status().into(),
+            api: self.api_status(),
+            api_port: crate::api::API_PORT,
+        }
     }
 
     /// AI settings are global: they live in the primary store.
@@ -293,6 +340,37 @@ mod tests {
         state.rebuild_model().summary.expect("desactivada");
         assert!(state.model().is_none());
         assert!(state.extraction_model().is_none());
+        assert_eq!(state.ai_health.status(), AiStatus::Off);
+        std::fs::remove_dir_all(dir).expect("borrar temp dir");
+    }
+
+    /// AI enabled: `Ready` with the chat model, and extraction shares the watched summary model.
+    #[test]
+    fn rebuild_sets_ready_with_the_chat_model() {
+        let dir = std::env::temp_dir().join(format!("marks-state-ready-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).expect("temp dir");
+        let state =
+            AppState::new(Library::open(&dir.join("marks.db"), &TEST_SEED).expect("library"));
+        let on = AiSettings {
+            enabled: true,
+            chat_model: "qwen".into(),
+            connection: AiConnection {
+                provider: Provider::Ollama,
+                endpoint: None,
+            },
+            ..AiSettings::default()
+        };
+        settings::save(&lock(&state.library.primary()).expect("lock"), &on).expect("guardar");
+        state.rebuild_model_with(&no_key).summary.expect("resumen");
+        assert_eq!(
+            state.ai_health.status(),
+            AiStatus::Ready {
+                model: "qwen".into()
+            }
+        );
+        let summary = state.model().expect("modelo");
+        let extraction = state.extraction_model().expect("extracción");
+        assert!(Arc::ptr_eq(&summary, &extraction.model));
         std::fs::remove_dir_all(dir).expect("borrar temp dir");
     }
 
@@ -394,6 +472,14 @@ mod tests {
             let text = localize_in(Locale::Es, &ErrorText(e));
             assert!(text.starts_with(&invalid), "{text}");
         }
+        // unreadable_settings_make_the_ai_failed
+        assert_eq!(
+            state.ai_health.status(),
+            AiStatus::Failed {
+                model: None,
+                error: parts(&summary)
+            }
+        );
         std::fs::remove_dir_all(dir).expect("borrar temp dir");
     }
 

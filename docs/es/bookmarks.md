@@ -60,6 +60,12 @@ El detalle de un bookmark fallido muestra el mensaje de error, con «Copiar mens
 
 Cada fallo deja además una notificación. Ver [Ajustes, notificaciones y barra de estado](settings.md#notificaciones).
 
+### Ver y reintentar todos los fallidos
+
+Con algún bookmark fallido, la barra lateral muestra «Fallidos» bajo «Todos»; también se llega con un clic en «N fallidos» de la barra de estado. La lista enseña solo los fallidos del perfil activo y, en su cabecera, el botón «Reintentar todos». marks pregunta antes («¿Reintentar N bookmarks?») y, con la IA activada en un proveedor remoto, avisa de que sus páginas irán a él. Al confirmar, todos vuelven a la cola y la lista queda vacía con «Ningún bookmark ha fallado.». Los que vuelvan a fallar reaparecen. Desde la paleta, el comando «Reintentar los N fallidos» hace lo mismo.
+
+Reintentar todos incluye las páginas bloqueadas por una verificación antibots: lo normal es que vuelvan a quedar bloqueadas, y se rescatan con la extensión, como antes.
+
 ## Leer
 
 Selecciona un bookmark en la lista. El detalle muestra:

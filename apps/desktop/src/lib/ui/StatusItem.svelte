@@ -14,11 +14,22 @@
     shortcut?: string;
     /** Asks for attention: `on-surface` instead of `secondary`. */
     strong?: boolean;
+    /** At most `status-item-max-width`, cutting `text` with an ellipsis: for text of any length. */
+    capped?: boolean;
     title?: string;
     onclick?: () => void;
   }
 
-  let { text, icon, dot, shortcut, strong = false, title, onclick }: Props = $props();
+  let {
+    text,
+    icon,
+    dot,
+    shortcut,
+    strong = false,
+    capped = false,
+    title,
+    onclick,
+  }: Props = $props();
 </script>
 
 {#snippet body()}
@@ -29,9 +40,11 @@
 {/snippet}
 
 {#if onclick}
-  <button type="button" class={['item', { strong }]} {title} {onclick}>{@render body()}</button>
+  <button type="button" class={['item', { strong, capped }]} {title} {onclick}
+    >{@render body()}</button
+  >
 {:else}
-  <span class={['item', { strong }]} {title}>{@render body()}</span>
+  <span class={['item', { strong, capped }]} {title}>{@render body()}</span>
 {/if}
 
 <style>
@@ -62,6 +75,10 @@
 
   .strong {
     color: var(--fg);
+  }
+
+  .capped {
+    max-width: var(--status-item-max);
   }
 
   .text {

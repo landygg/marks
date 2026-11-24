@@ -5,6 +5,7 @@
 The sidebar organizes the library of the active profile. Top to bottom:
 
 - **“All”**: every bookmark in the profile.
+- **“Failed”**: only the ones that failed, with “Retry all”. It shows only when there is one. See [Saving and reading bookmarks](bookmarks.md#seeing-and-retrying-every-failed-bookmark).
 - **“Categories”**: the ones AI assigns.
 - **“Tags”**: yours and AI's, loose (“No group”) or inside groups.
 

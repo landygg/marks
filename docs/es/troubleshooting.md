@@ -67,6 +67,10 @@ La búsqueda semántica necesita la IA activada, un modelo de embeddings y bookm
 - **«este proveedor requiere una clave de API»:** escríbela y pulsa «Guardar».
 - «Probar conexión» prueba lo **guardado**: guarda antes de probar.
 
+### «IA con error» en la barra de estado
+
+El modelo de resumen no se pudo preparar o su última llamada falló. Pasa el puntero por «IA con error» para ver el error, y haz clic para abrir Ajustes → «Inteligencia artificial». Comprueba que el proveedor está en marcha (con Ollama, que la app está abierta y el modelo descargado) y pulsa «Probar conexión»: si sale bien, el error se borra. También se borra con la siguiente búsqueda o el siguiente bookmark que salgan bien, o al guardar los ajustes.
+
 ### «la IA está activada, pero el modelo no se pudo preparar»
 
 Los ajustes guardados no permiten crear el modelo (falta la clave, el endpoint o un nombre de modelo). Revisa Ajustes → «Inteligencia artificial».
@@ -91,7 +95,7 @@ marks está cerrado, o no pudo abrir su puerto. Abre marks y mira Ajustes → «
 
 ### «El puerto 47821 está ocupado»
 
-Otro programa, u otra copia de marks, usa ese puerto. Cierra la otra copia y reinicia marks. El puerto no se puede cambiar.
+Otro programa, u otra copia de marks, usa ese puerto; la barra de estado lo dice con «Puerto 47821 ocupado». Cierra la otra copia y reinicia marks. El puerto no se puede cambiar. Para ver qué programa lo usa: `lsof -nP -iTCP:47821 -sTCP:LISTEN` en Terminal.
 
 ### «El token no es válido.»
 

@@ -11,6 +11,7 @@ use crate::locale;
 use crate::notifications;
 use crate::parser_window::load_clean_html;
 use crate::state::{AppState, PendingImport, set_pending_import, take_pending_import};
+use crate::status::{ApiStatus, AppStatusView};
 use crate::tray::MAIN_WINDOW;
 use crate::updater;
 use crate::worker::{app_fetcher, notify_changed};
@@ -29,7 +30,6 @@ use marks_core::transfer::{self, ImportSummary};
 use marks_i18n::{AppText, DataText, Localize, bookmark_error};
 use serde::Serialize;
 use std::path::PathBuf;
-use std::sync::atomic::Ordering;
 use std::time::Instant;
 use tauri::{AppHandle, Manager, State};
 use tauri_plugin_dialog::{DialogExt, FileDialogBuilder, FilePath};
@@ -512,8 +512,14 @@ pub fn api_info(profile: i64, state: State<'_, AppState>) -> Result<ApiInfo, Str
     Ok(ApiInfo {
         port: API_PORT,
         token: state.library.token(profile).map_err(to_ipc)?,
-        listening: state.api_listening.load(Ordering::Relaxed),
+        listening: state.api_status() == ApiStatus::Listening,
     })
+}
+
+/// The AI and local API state, for the status bar.
+#[tauri::command(async)]
+pub fn app_status(state: State<'_, AppState>) -> Result<AppStatusView, String> {
+    Ok(state.app_status())
 }
 
 #[tauri::command]
@@ -665,6 +671,12 @@ pub fn extract_imported(
     state: State<'_, AppState>,
 ) -> Result<usize, String> {
     waking_profile(&state, profile, |s| s.queue_imported(&ids))
+}
+
+/// "Retry all" in the Failed filter: requeues the profile's failed bookmarks.
+#[tauri::command(async)]
+pub fn retry_failed(profile: i64, state: State<'_, AppState>) -> Result<usize, String> {
+    waking_profile(&state, profile, Store::retry_failed)
 }
 
 /// The language setting and the language the app started with.

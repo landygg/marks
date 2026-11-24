@@ -26,6 +26,7 @@ const noopActions: CommandActions = {
   notifications: noop,
   clearNotifications: noop,
   extractView: noop,
+  retryFailed: noop,
   setLanguage: noop,
 };
 const empty: CommandContext = {
@@ -37,6 +38,7 @@ const empty: CommandContext = {
   extractionModel: false,
   hasNotifications: false,
   importedInView: 0,
+  failed: 0,
   language: 'es',
 };
 const ids = (context: CommandContext): string[] => commands(noopActions, context).map((c) => c.id);
@@ -224,6 +226,16 @@ describe('commands', () => {
     expect(command?.label).toBe(t.cmdExtractView(3));
     command?.run();
     expect(ran).toEqual(['view']);
+  });
+
+  it('retry_failed_only_with_failed_bookmarks', () => {
+    expect(ids(empty)).not.toContain('retry-failed');
+    const ran: string[] = [];
+    const actions = { ...noopActions, retryFailed: () => ran.push('retry') };
+    const command = commands(actions, { ...empty, failed: 3 }).find((c) => c.id === 'retry-failed');
+    expect(command?.label).toBe(t.cmdRetryFailed(3));
+    command?.run();
+    expect(ran).toEqual(['retry']);
   });
 
   it('an imported bookmark offers Extraer and no re-extraction', () => {

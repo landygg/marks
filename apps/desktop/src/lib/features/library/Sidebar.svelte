@@ -17,6 +17,7 @@
   } from './libraryState.svelte';
   import {
     ALL,
+    FAILED,
     sameSelection,
     sidebarGroups,
     type Selection,
@@ -229,6 +230,10 @@
       {#if inSettings}<SettingsNav />{/if}
       <nav hidden={inSettings}>
         {@render item(ALL, t.allBookmarks, false)}
+        <!-- Kept while selected, so the emptied filter after "Retry all" shows its message. -->
+        {#if (lib.stats?.failed ?? 0) > 0 || lib.selection.kind === 'failed'}
+          {@render item(FAILED, t.failedBookmarks, false)}
+        {/if}
 
         {#if lib.categories.length > 0}
           <SidebarGroup

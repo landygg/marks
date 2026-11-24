@@ -14,6 +14,8 @@ export const OPEN_ADD_DIALOG = 'open-add-dialog';
 export const EXTRACTING_CHANGED = 'extracting-changed';
 /** Emitted by the backend (no payload) when the notification log changes; same value as `NOTIFICATIONS_CHANGED` in src-tauri/src/notifications.rs. */
 export const NOTIFICATIONS_CHANGED = 'notifications-changed';
+/** Emitted by the backend (no payload) when the AI or local API status changes; same value as `APP_STATUS_CHANGED` in src-tauri/src/status.rs. */
+export const APP_STATUS_CHANGED = 'app-status-changed';
 
 const EXTERNAL_URL = /^https?:\/\//i;
 
@@ -143,6 +145,18 @@ export interface ApiInfo {
   listening: boolean;
 }
 
+/** The summary model: off, ready, or failed (`model: null` when it could not be built). `error` comes translated. */
+export type AiStatus =
+  | { kind: 'off' }
+  | { kind: 'ready'; model: string }
+  | { kind: 'failed'; model: string | null; error: string };
+export type ApiStatus = 'starting' | 'listening' | 'busy' | 'stopped';
+export interface AppStatus {
+  ai: AiStatus;
+  api: ApiStatus;
+  api_port: number;
+}
+
 // One function per command, camelCased; `delete` is a reserved word, so it is `remove`.
 export const list = () => invoke<Bookmark[]>('list');
 export const search = (query: string) => invoke<SearchHit[]>('search', { query });
@@ -161,6 +175,8 @@ export const retry = (profile: number, id: number) => invoke<void>('retry', { pr
 /** Queues the `imported` bookmarks among `ids`; resolves to how many it queued. */
 export const extractImported = (profile: number, ids: number[]) =>
   invoke<number>('extract_imported', { profile, ids });
+/** Queues every failed bookmark of `profile`; resolves to how many it queued. */
+export const retryFailed = (profile: number) => invoke<number>('retry_failed', { profile });
 export const getSettings = () => invoke<SettingsView>('get_settings');
 /** `apiKey`: `null` keeps the stored key, `""` deletes it. */
 export const saveSettings = (settings: AiSettings, apiKey: string | null) =>
@@ -239,6 +255,7 @@ export const dismissNotification = (id: number) => invoke<void>('dismiss_notific
 export const clearNotifications = (profile: number) =>
   invoke<void>('clear_notifications', { profile });
 export const apiInfo = (profile: number) => invoke<ApiInfo>('api_info', { profile });
+export const appStatus = () => invoke<AppStatus>('app_status');
 export const regenerateApiToken = (profile: number) =>
   invoke<string>('regenerate_api_token', { profile });
 export const tagGroups = () => invoke<TagGroup[]>('tag_groups');

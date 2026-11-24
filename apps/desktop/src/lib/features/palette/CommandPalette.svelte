@@ -7,6 +7,7 @@
     askDeleteGroup,
     askExtractView,
     askReextract,
+    askRetryFailed,
     choose,
     lib,
     openSettings,
@@ -32,7 +33,7 @@
   } from './searchText';
   import { modal } from '../../modal';
   import { ENTER_KEY, paletteModeShortcut } from '../../shortcuts';
-  import { ALL } from '../library/sidebar';
+  import { ALL, FAILED } from '../library/sidebar';
   import { isBlocked } from '../library/detailMeta';
   import { isExtracting } from '../library/extracting';
   import { t } from '../../strings';
@@ -111,6 +112,10 @@
         notifications: openNotifications,
         clearNotifications: () => void clearNotices(lib.profileId),
         extractView: () => void askExtractView(),
+        retryFailed: () => {
+          choose(FAILED);
+          void askRetryFailed();
+        },
         setLanguage: askLanguage,
       },
       {
@@ -130,6 +135,7 @@
         hasNotifications: notices.list.length > 0,
         language: language.setting,
         importedInView: lib.visible.filter((b) => b.status === 'imported').length,
+        failed: lib.stats?.failed ?? 0,
       },
     ),
   );

@@ -27,6 +27,7 @@ export const en = {
   profileSaved: 'Profile saved.',
   create: 'Create',
   allBookmarks: 'All',
+  failedBookmarks: 'Failed',
   noGroup: 'No group',
   bookmarkCount: (n) => plural(n, { one: '1 bookmark', other: `${num(n)} bookmarks` }),
   selectBookmark: 'Select a bookmark',
@@ -79,6 +80,11 @@ export const en = {
     plural(n, {
       one: 'Extract the unextracted bookmark in this view',
       other: `Extract the ${num(n)} unextracted bookmarks in this view`,
+    }),
+  cmdRetryFailed: (n) =>
+    plural(n, {
+      one: 'Retry the failed bookmark',
+      other: `Retry the ${num(n)} failed bookmarks`,
     }),
   cmdDelete: 'Delete the bookmark',
   cmdRenameGroup: (group) => `Rename the group “${group}”`,
@@ -162,6 +168,11 @@ export const en = {
         one: '1 bookmark queued for extraction.',
         other: `${num(n)} bookmarks queued for extraction.`,
       }),
+    retryQueued: (n) =>
+      plural(n, {
+        one: '1 bookmark queued to retry.',
+        other: `${num(n)} bookmarks queued to retry.`,
+      }),
     importDone: (n) =>
       plural(n, {
         one: '1 bookmark imported, not extracted.',
@@ -174,12 +185,26 @@ export const en = {
     extracting: (title) => `Extracting “${title}”`,
     pending: (n) => `${num(n)} pending`,
     failed: (n) => `${num(n)} failed`,
+    ai: {
+      off: 'AI off',
+      ready: (model) => `AI · ${model}`,
+      failed: 'AI error',
+      failedTitle: (error) => `The last call to the model failed: ${error}`,
+      unavailableTitle: (error) => `Couldn't set up the model: ${error}`,
+    },
+    api: {
+      listening: 'Local API',
+      listeningTitle: (port) => `Listening on 127.0.0.1:${port}`,
+      busy: (port) => `Port ${port} in use`,
+      stopped: 'Local API stopped',
+    },
   },
   settingsButton: 'Settings (⌘,)',
   categoriesLabel: 'Categories',
   tagsLabel: 'Tags',
   bookmarksLabel: 'Bookmarks',
   emptyLibrary: 'No bookmarks yet. Click Add or press ⌘N.',
+  noFailed: 'No bookmark has failed.',
   separator: ' · ',
   addDialogTitle: 'Add bookmark',
   urlLabel: 'URL',
@@ -203,6 +228,10 @@ export const en = {
       other: `With AI turned on, their ${num(n)} pages will be sent to your provider to be summarized.`,
     }),
   extractYes: 'Extract',
+  retryAll: 'Retry all',
+  confirmRetryFailed: (n) =>
+    plural(n, { one: 'Retry 1 bookmark?', other: `Retry ${num(n)} bookmarks?` }),
+  retryYes: 'Retry',
   reextract: 'Extract again',
   extractWithAi: 'Extract with AI',
   extractWithAiUnavailable:

@@ -30,6 +30,7 @@ export const es = {
   profileSaved: 'Perfil guardado.',
   create: 'Crear',
   allBookmarks: 'Todos',
+  failedBookmarks: 'Fallidos',
   noGroup: 'Sin grupo',
   bookmarkCount: (n: number) => plural(n, { one: '1 bookmark', other: `${num(n)} bookmarks` }),
   selectBookmark: 'Selecciona un bookmark',
@@ -83,6 +84,11 @@ export const es = {
     plural(n, {
       one: 'Extraer el bookmark sin extraer de esta vista',
       other: `Extraer los ${num(n)} sin extraer de esta vista`,
+    }),
+  cmdRetryFailed: (n: number) =>
+    plural(n, {
+      one: 'Reintentar el bookmark fallido',
+      other: `Reintentar los ${num(n)} fallidos`,
     }),
   cmdDelete: 'Eliminar el bookmark',
   cmdRenameGroup: (group: string) => `Renombrar el grupo «${group}»`,
@@ -165,6 +171,11 @@ export const es = {
         one: '1 bookmark en cola para extraer.',
         other: `${num(n)} bookmarks en cola para extraer.`,
       }),
+    retryQueued: (n: number) =>
+      plural(n, {
+        one: '1 bookmark en cola para reintentar.',
+        other: `${num(n)} bookmarks en cola para reintentar.`,
+      }),
     importDone: (n: number) =>
       plural(n, {
         one: '1 bookmark importado, sin extraer.',
@@ -177,12 +188,26 @@ export const es = {
     extracting: (title: string) => `Extrayendo «${title}»`,
     pending: (n: number) => plural(n, { one: '1 pendiente', other: `${num(n)} pendientes` }),
     failed: (n: number) => plural(n, { one: '1 fallido', other: `${num(n)} fallidos` }),
+    ai: {
+      off: 'IA desactivada',
+      ready: (model: string) => `IA · ${model}`,
+      failed: 'IA con error',
+      failedTitle: (error: string) => `La última llamada al modelo falló: ${error}`,
+      unavailableTitle: (error: string) => `No se pudo preparar el modelo: ${error}`,
+    },
+    api: {
+      listening: 'API local',
+      listeningTitle: (port: number) => `Escuchando en 127.0.0.1:${port}`,
+      busy: (port: number) => `Puerto ${port} ocupado`,
+      stopped: 'API local detenida',
+    },
   },
   settingsButton: 'Ajustes (⌘,)',
   categoriesLabel: 'Categorías',
   tagsLabel: 'Etiquetas',
   bookmarksLabel: 'Bookmarks',
   emptyLibrary: 'Aún no hay bookmarks. Pulsa Añadir o usa ⌘N.',
+  noFailed: 'Ningún bookmark ha fallado.',
   separator: ' · ',
   addDialogTitle: 'Añadir bookmark',
   urlLabel: 'URL',
@@ -206,6 +231,10 @@ export const es = {
       other: `Con la IA activada, sus ${num(n)} páginas se enviarán a tu proveedor para resumirlas.`,
     }),
   extractYes: 'Extraer',
+  retryAll: 'Reintentar todos',
+  confirmRetryFailed: (n: number) =>
+    plural(n, { one: '¿Reintentar 1 bookmark?', other: `¿Reintentar ${num(n)} bookmarks?` }),
+  retryYes: 'Reintentar',
   reextract: 'Volver a extraer',
   extractWithAi: 'Extraer con IA',
   extractWithAiUnavailable:
