@@ -120,6 +120,7 @@ spacing:
   tag-field-width: 208px
   notification-panel-width: 360px
   notification-panel-max-height: 400px
+  status-item-max-width: 240px
 components:
   profile-rail:
     backgroundColor: "{colors.neutral}"
@@ -1289,7 +1290,9 @@ donde el cursor mueve la selección.
   campana. "Ajustes" no está en la barra: vive al
   pie del carril.
 - **`status-item`**: un elemento de la barra, en una línea con elipsis, con un
-  `status-dot-*`, un icono o un atajo (`kbd`). Si lleva acción es un botón y,
+  `status-dot-*`, un icono o un atajo (`kbd`). El de la IA mide como mucho
+  `status-item-max-width` y recorta el nombre del modelo con elipsis (entero en
+  el `title`), para que un nombre largo no estreche el centro. Si lleva acción es un botón y,
   bajo el cursor (`status-item-hover`), toma fondo `outline` y texto
   `on-surface`; si no, es solo texto. Lo que pide atención (los fallidos) va en
   `on-surface`.

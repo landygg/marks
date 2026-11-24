@@ -118,6 +118,7 @@ const SIZES: Record<string, string | null> = {
   'tag-field-width': '--tag-field',
   'notification-panel-width': '--notification-panel',
   'notification-panel-max-height': '--notification-panel-max',
+  'status-item-max-width': '--status-item-max',
   // tauri.conf.json (`minWidth`).
   'window-min-width': null,
 };

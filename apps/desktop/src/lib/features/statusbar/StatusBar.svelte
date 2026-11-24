@@ -63,6 +63,7 @@
         title={view.title}
         dot={view.dot}
         strong={view.strong}
+        capped={item.kind === 'ai'}
         onclick={() => openSettings(view.section)}
       />
     {/each}
