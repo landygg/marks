@@ -8,6 +8,7 @@ mod menu;
 mod notifications;
 mod parser_window;
 mod state;
+mod status;
 mod tray;
 mod updater;
 mod webview_fetcher;
@@ -49,6 +50,10 @@ pub fn run() -> anyhow::Result<()> {
             if let Some(main) = app.get_webview_window(tray::MAIN_WINDOW) {
                 main.set_title(&AppText::WindowTitle.localize())?;
             }
+            let handle = app.handle().clone();
+            app.state::<AppState>()
+                .ai_health
+                .on_change(move || status::emit_changed(&handle));
             app.state::<AppState>().init_model(app.handle());
             worker::spawn(app.handle().clone());
             api::spawn(app.handle().clone());
@@ -103,6 +108,7 @@ pub fn run() -> anyhow::Result<()> {
             commands::export_bookmarks,
             commands::extract_imported,
             commands::retry_failed,
+            commands::app_status,
             commands::locale_info,
             commands::set_locale,
             commands::update_info,

@@ -142,15 +142,16 @@ pub fn msg(m: &Msg) -> String {
 
 /// Each error layer translated (`Msg`) or verbatim (`Raw`), joined with `error-chain`.
 pub fn error(e: &anyhow::Error) -> String {
-    join(&parts(e))
+    parts_text(&parts(e))
 }
 
 /// Same, for the error stored on a bookmark.
 pub fn bookmark_error(e: &BookmarkError) -> String {
-    join(&e.0)
+    parts_text(&e.0)
 }
 
-fn join(parts: &[ErrorPart]) -> String {
+/// Same, for an error already split into parts.
+pub fn parts_text(parts: &[ErrorPart]) -> String {
     parts
         .iter()
         .map(|p| match p {

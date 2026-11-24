@@ -50,6 +50,7 @@
     "allow-export-bookmarks",
     "allow-extract-imported",
     "allow-retry-failed",
+    "allow-app-status",
     "allow-locale-info",
     "allow-set-locale",
     "allow-update-info",
