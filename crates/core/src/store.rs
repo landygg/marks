@@ -867,6 +867,18 @@ impl Store {
         Ok(n as usize)
     }
 
+    /// Requeues every `failed` bookmark, blocked ones included, clearing its error. Returns how many
+    /// moved.
+    pub fn retry_failed(&self) -> Result<usize> {
+        Ok(self.conn.execute(
+            &format!(
+                "UPDATE bookmarks SET status = ?1, error_msg = NULL, error_kind = NULL, {TOUCH}
+                 WHERE status = ?2"
+            ),
+            [STATUS_PENDING, STATUS_FAILED],
+        )?)
+    }
+
     fn transition(&self, filter: &str, from: Status, to: Status) -> Result<usize> {
         Ok(self.conn.execute(
             &format!("UPDATE bookmarks SET status = ?2, {TOUCH} WHERE status = ?1 AND {filter}"),
@@ -2719,6 +2731,65 @@ mod tests {
         set_updated(&s, a.id, "2026-01-01T00:00:00Z");
         set_updated(&s, d.id, "2026-01-01T00:00:00Z");
         assert_eq!(s.next_without_content().unwrap().unwrap().id, d.id);
+    }
+
+    #[test]
+    fn retry_failed_requeues_every_failed_and_clears_its_error() {
+        let s = Store::open_in_memory().unwrap();
+        let failed = untitled(&s, "https://a.com", &[]);
+        let blocked = untitled(&s, "https://b.com", &[]);
+        let ready = untitled(&s, "https://c.com", &[]);
+        let pending = untitled(&s, "https://d.com", &[]);
+        let imported = s
+            .insert_imported(&new_bookmark("https://e.com", "E", None), None)
+            .unwrap();
+        s.set_failed(failed.id, &BookmarkError(vec![raw("x")]))
+            .unwrap();
+        s.set_blocked(blocked.id).unwrap();
+        s.set_status(ready.id, Status::Ready, None).unwrap();
+        assert_eq!(s.retry_failed().unwrap(), 2);
+        for id in [failed.id, blocked.id] {
+            let b = s.get(id).unwrap().unwrap();
+            assert_eq!(
+                (b.status, b.error, b.error_kind),
+                (Status::Pending, None, None)
+            );
+        }
+        let status = |id| s.get(id).unwrap().unwrap().status;
+        assert_eq!(status(ready.id), Status::Ready);
+        assert_eq!(status(pending.id), Status::Pending);
+        assert_eq!(status(imported), Status::Imported);
+    }
+
+    #[test]
+    fn retry_failed_keeps_the_content() {
+        let s = store_with("https://a.com", "A", "kept");
+        s.set_failed(1, &BookmarkError(vec![raw("x")])).unwrap();
+        s.retry_failed().unwrap();
+        let b = s.get(1).unwrap().unwrap();
+        assert_eq!(
+            (b.status, b.content.as_deref()),
+            (Status::Pending, Some("kept"))
+        );
+    }
+
+    #[test]
+    fn retry_failed_touches_updated_at() {
+        let s = Store::open_in_memory().unwrap();
+        let old = untitled(&s, "https://a.com", &[]);
+        let failed = untitled(&s, "https://b.com", &[]);
+        s.set_failed(failed.id, &BookmarkError(vec![raw("x")]))
+            .unwrap();
+        set_updated(&s, old.id, "2026-01-02T00:00:00Z");
+        set_updated(&s, failed.id, "2026-01-01T00:00:00Z");
+        s.retry_failed().unwrap();
+        assert_eq!(s.next_pending().unwrap().unwrap().id, failed.id);
+    }
+
+    #[test]
+    fn retry_failed_with_none_is_zero() {
+        let s = store_with("https://a.com", "A", "x");
+        assert_eq!(s.retry_failed().unwrap(), 0);
     }
 
     #[test]
