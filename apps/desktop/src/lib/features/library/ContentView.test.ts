@@ -6,6 +6,9 @@ import { t } from '../../strings';
 import ContentView from './ContentView.svelte';
 import { openLink } from './libraryState.svelte';
 
+// The library's default `maxNestingDepth` (since 2.2.1): deeper content renders as text.
+const MAX_NESTING = 16;
+
 vi.mock('./libraryState.svelte', () => ({ openLink: vi.fn() }));
 
 let target: HTMLElement;
@@ -206,11 +209,12 @@ describe('ContentView renders', () => {
 });
 
 describe('ContentView survives', () => {
-  it('nesting too deep to render, showing the source as plain text', () => {
+  it('nesting too deep to render, showing what is past the cap as plain text', () => {
     const source = `${'> '.repeat(300)}hondo <b>x</b>`;
-    expect(() => render(source)).not.toThrow();
-    expect(target.textContent).toContain(t.contentUnrenderable);
-    expect(target.querySelector('article')?.textContent).toBe(source);
-    expect(target.querySelector('blockquote, b')).toBeNull();
+    const article = render(source);
+    expect(target.textContent).not.toContain(t.contentUnrenderable);
+    expect(article.querySelectorAll('blockquote').length).toBeLessThanOrEqual(MAX_NESTING);
+    expect(article.textContent).toContain('hondo <b>x</b>');
+    expect(article.querySelector('b')).toBeNull();
   });
 });

@@ -218,7 +218,8 @@
   {#if content}
     <!-- Keyed so that a failure belongs to one content, not to the next bookmark shown. -->
     {#key content}
-      <!-- `content-raw`: hostile nesting overflows the renderer's stack; the source stays readable. -->
+      <!-- `content-raw`: the library caps nesting itself (`maxNestingDepth`); this boundary is the
+           backstop for any other render error, so the source stays readable. -->
       <svelte:boundary>
         <article class="content"><SvelteMarkdown source={content} {...reader} /></article>
         {#snippet failed()}
