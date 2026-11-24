@@ -49,6 +49,8 @@ export interface CommandActions {
   clearNotifications: () => void;
   /** Asks to queue the imported bookmarks of the current view. */
   extractView: () => void;
+  /** Shows the Failed filter and asks to retry them all. */
+  retryFailed: () => void;
   /** Asks to relaunch marks in this language setting. */
   setLanguage: (setting: LocaleInfo['setting']) => void;
 }
@@ -72,6 +74,8 @@ export interface CommandContext {
   hasNotifications: boolean;
   /** How many bookmarks of the current view are `imported`. */
   importedInView: number;
+  /** How many bookmarks of the active profile are `failed`. */
+  failed: number;
   /** The saved language setting, left out of the language commands. */
   language: LocaleInfo['setting'];
 }
@@ -92,6 +96,7 @@ export function commands(actions: CommandActions, context: CommandContext): Comm
     extractionModel,
     hasNotifications,
     importedInView,
+    failed,
     language,
   } = context;
   return [
@@ -111,6 +116,16 @@ export function commands(actions: CommandActions, context: CommandContext): Comm
             label: t.cmdExtractView(importedInView),
             icon: 'reextract',
             run: actions.extractView,
+          } as const,
+        ]
+      : []),
+    ...(failed > 0
+      ? [
+          {
+            id: 'retry-failed',
+            label: t.cmdRetryFailed(failed),
+            icon: 'retry',
+            run: actions.retryFailed,
           } as const,
         ]
       : []),

@@ -6,7 +6,14 @@
   import Panel from '../../ui/Panel.svelte';
   import Resizer from '../../ui/Resizer.svelte';
   import Topbar from '../../ui/Topbar.svelte';
-  import { lib, openAddDialog, runExtractView, select } from './libraryState.svelte';
+  import {
+    askRetryFailed,
+    lib,
+    openAddDialog,
+    runExtractView,
+    runRetryFailed,
+    select,
+  } from './libraryState.svelte';
   import { openPalette } from '../palette/paletteState.svelte';
   import { t } from '../../strings';
   import { LIST, LIST_ID } from '../layout/layout';
@@ -37,6 +44,9 @@
   <Topbar lights={layout.collapsed}>
     {#snippet title()}<b>{name}</b>{t.separator}{t.bookmarkCount(rows.length)}{/snippet}
     {#snippet end()}
+      {#if lib.selection.kind === 'failed' && rows.length > 0}
+        <IconButton icon="retry" label={t.retryAll} onclick={() => void askRetryFailed()} />
+      {/if}
       <IconButton icon="search" label={t.search} onclick={() => openPalette('bookmarks')} />
       <IconButton icon="plus" label={t.addWithShortcut} onclick={openAddDialog} />
     {/snippet}
@@ -62,8 +72,28 @@
         </div>
       {/if}
 
+      {#if lib.confirmRetryFailed}
+        {@const n = lib.confirmRetryFailed.count}
+        {@const question = lib.confirmRetryFailed.remote
+          ? `${t.confirmRetryFailed(n)} ${t.confirmExtractRemote(n)}`
+          : t.confirmRetryFailed(n)}
+        <div class="confirm">
+          <InlineConfirm
+            tone="neutral"
+            {question}
+            label={question}
+            yes={t.retryYes}
+            cancel={t.cancel}
+            onyes={runRetryFailed}
+            oncancel={() => (lib.confirmRetryFailed = null)}
+          />
+        </div>
+      {/if}
+
       {#if lib.bookmarks.length === 0}
         <EmptyState>{t.emptyLibrary}</EmptyState>
+      {:else if rows.length === 0 && lib.selection.kind === 'failed'}
+        <EmptyState>{t.noFailed}</EmptyState>
       {:else}
         <ul>
           {#each rows as bookmark (bookmark.id)}

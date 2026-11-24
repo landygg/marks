@@ -6,7 +6,7 @@
   import StatusBar from '../../ui/StatusBar.svelte';
   import StatusItem from '../../ui/StatusItem.svelte';
   import { choose, lib, select } from '../library/libraryState.svelte';
-  import { ALL } from '../library/sidebar';
+  import { ALL, FAILED } from '../library/sidebar';
   import {
     notices,
     toggleNotifications,
@@ -49,11 +49,7 @@
     {:else if item.kind === 'pending'}
       <StatusItem text={t.statusBar.pending(item.count)} />
     {:else}
-      <StatusItem
-        text={t.statusBar.failed(item.count)}
-        strong
-        onclick={() => openPalette('bookmarks')}
-      />
+      <StatusItem text={t.statusBar.failed(item.count)} strong onclick={() => choose(FAILED)} />
     {/if}
   {/each}
   {#snippet end()}

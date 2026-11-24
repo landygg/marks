@@ -81,6 +81,11 @@ export const en = {
       one: 'Extract the unextracted bookmark in this view',
       other: `Extract the ${num(n)} unextracted bookmarks in this view`,
     }),
+  cmdRetryFailed: (n) =>
+    plural(n, {
+      one: 'Retry the failed bookmark',
+      other: `Retry the ${num(n)} failed bookmarks`,
+    }),
   cmdDelete: 'Delete the bookmark',
   cmdRenameGroup: (group) => `Rename the group “${group}”`,
   cmdDeleteGroup: (group) => `Delete the group “${group}”`,
@@ -163,6 +168,11 @@ export const en = {
         one: '1 bookmark queued for extraction.',
         other: `${num(n)} bookmarks queued for extraction.`,
       }),
+    retryQueued: (n) =>
+      plural(n, {
+        one: '1 bookmark queued to retry.',
+        other: `${num(n)} bookmarks queued to retry.`,
+      }),
     importDone: (n) =>
       plural(n, {
         one: '1 bookmark imported, not extracted.',
@@ -181,6 +191,7 @@ export const en = {
   tagsLabel: 'Tags',
   bookmarksLabel: 'Bookmarks',
   emptyLibrary: 'No bookmarks yet. Click Add or press ⌘N.',
+  noFailed: 'No bookmark has failed.',
   separator: ' · ',
   addDialogTitle: 'Add bookmark',
   urlLabel: 'URL',
@@ -204,6 +215,10 @@ export const en = {
       other: `With AI turned on, their ${num(n)} pages will be sent to your provider to be summarized.`,
     }),
   extractYes: 'Extract',
+  retryAll: 'Retry all',
+  confirmRetryFailed: (n) =>
+    plural(n, { one: 'Retry 1 bookmark?', other: `Retry ${num(n)} bookmarks?` }),
+  retryYes: 'Retry',
   reextract: 'Extract again',
   extractWithAi: 'Extract with AI',
   extractWithAiUnavailable:

@@ -85,6 +85,11 @@ export const es = {
       one: 'Extraer el bookmark sin extraer de esta vista',
       other: `Extraer los ${num(n)} sin extraer de esta vista`,
     }),
+  cmdRetryFailed: (n: number) =>
+    plural(n, {
+      one: 'Reintentar el bookmark fallido',
+      other: `Reintentar los ${num(n)} fallidos`,
+    }),
   cmdDelete: 'Eliminar el bookmark',
   cmdRenameGroup: (group: string) => `Renombrar el grupo «${group}»`,
   cmdDeleteGroup: (group: string) => `Eliminar el grupo «${group}»`,
@@ -166,6 +171,11 @@ export const es = {
         one: '1 bookmark en cola para extraer.',
         other: `${num(n)} bookmarks en cola para extraer.`,
       }),
+    retryQueued: (n: number) =>
+      plural(n, {
+        one: '1 bookmark en cola para reintentar.',
+        other: `${num(n)} bookmarks en cola para reintentar.`,
+      }),
     importDone: (n: number) =>
       plural(n, {
         one: '1 bookmark importado, sin extraer.',
@@ -184,6 +194,7 @@ export const es = {
   tagsLabel: 'Etiquetas',
   bookmarksLabel: 'Bookmarks',
   emptyLibrary: 'Aún no hay bookmarks. Pulsa Añadir o usa ⌘N.',
+  noFailed: 'Ningún bookmark ha fallado.',
   separator: ' · ',
   addDialogTitle: 'Añadir bookmark',
   urlLabel: 'URL',
@@ -207,6 +218,10 @@ export const es = {
       other: `Con la IA activada, sus ${num(n)} páginas se enviarán a tu proveedor para resumirlas.`,
     }),
   extractYes: 'Extraer',
+  retryAll: 'Reintentar todos',
+  confirmRetryFailed: (n: number) =>
+    plural(n, { one: '¿Reintentar 1 bookmark?', other: `¿Reintentar ${num(n)} bookmarks?` }),
+  retryYes: 'Reintentar',
   reextract: 'Volver a extraer',
   extractWithAi: 'Extraer con IA',
   extractWithAiUnavailable:

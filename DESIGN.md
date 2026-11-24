@@ -691,7 +691,10 @@ pasa por la paleta de comandos.
      el nombre del perfil activo, precedido de la barra `primary`, y al final
      de la misma línea, pegado al borde derecho, el botón de icono "Nuevo
      grupo";
-   - el elemento "Todos";
+   - el elemento "Todos" y, justo debajo y al mismo nivel, "Fallidos" (solo los
+     bookmarks `failed` del perfil activo). "Fallidos" sale solo si el perfil
+     tiene alguno o si es la selección actual, y no lleva contador: el número va
+     en la cabecera de la lista y en la barra inferior;
    - los grupos, plegables. Primero "Categorías" (automático: las asigna la
      IA), después los grupos de etiquetas creados por el usuario y al final
      "Sin grupo", con las etiquetas que no están en ninguno. Cada grupo tiene
@@ -702,7 +705,13 @@ pasa por la paleta de comandos.
    340px; panel `surface`). Franja superior (38px): a la
    izquierda, en `label-md` y color `secondary`, el nombre de la selección
    actual y el número de bookmarks; a la derecha los botones de icono "Buscar"
-   (abre la paleta en modo Bookmarks) y "Añadir" (`+`, ⌘N). Debajo, las filas. Cada fila: punto de estado, título (una línea,
+   (abre la paleta en modo Bookmarks) y "Añadir" (`+`, ⌘N). Con "Fallidos"
+   elegido y algún bookmark en la lista, delante de ellos va "Reintentar todos"
+   (icono `retry`), que pregunta antes con un `inline-confirm-neutral` bajo la
+   franja ("¿Reintentar N bookmarks?" y, con la IA activada y un proveedor
+   remoto, el aviso de que sus páginas irán a él), como "Extraer los N de esta
+   vista". Un filtro sin bookmarks muestra su `empty-state` ("Ningún bookmark ha
+   fallado." en "Fallidos"). Debajo, las filas. Cada fila: punto de estado, título (una línea,
    con elipsis), primera línea del resumen (una línea, con elipsis; se omite si
    aún no hay resumen) y, en monoespaciada, dominio y fecha.
 4. **Detalle** (el resto, mínimo 420px, panel `surface`). Franja superior
@@ -727,8 +736,8 @@ pasa por la paleta de comandos.
    el trabajo de fondo del perfil activo: "Extrayendo «título»" con el punto
    `status-dot-extracting` (clic: vuelve a "Todos" y lo selecciona), "N
    pendientes" (solo texto: los que aún esperan a extraerse; sin IA, los ya
-   extraídos se quedan en `pending` esperando un modelo y no cuentan) y "N fallidos" en `on-surface` (clic: la paleta en
-   modo Bookmarks). Sin nada en curso, el centro queda vacío. Lo de en medio se
+   extraídos se quedan en `pending` esperando un modelo y no cuentan) y "N fallidos" en `on-surface` (clic: el filtro
+   "Fallidos" de la barra lateral). Sin nada en curso, el centro queda vacío. Lo de en medio se
    recorta con elipsis y nunca empuja a la derecha, donde va la campana de
    notificaciones, marcada cuando hay alguna sin leer. La barra se ve también
    en Ajustes.

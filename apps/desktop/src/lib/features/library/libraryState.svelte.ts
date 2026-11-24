@@ -20,6 +20,7 @@ import {
   remove,
   renameTagGroup,
   retry,
+  retryFailed,
   setTagGroup,
   stats,
   tagGroups,
@@ -78,6 +79,11 @@ class Library {
    * `profile` and `ids`: those it was asked for. `remote`: their pages will reach a remote AI provider.
    */
   confirmExtractView = $state<{ profile: number; ids: number[]; remote: boolean } | null>(null);
+  /**
+   * "Retry all" in the Failed filter is waiting for its confirmation above the list. `profile`: the
+   * one it was asked in. `count`: how many it was asked for. `remote`: as in `confirmExtractView`.
+   */
+  confirmRetryFailed = $state<{ profile: number; count: number; remote: boolean } | null>(null);
   /** Whether "Extract with AI" can run: the extraction model was built. */
   extractionModel = $state(false);
   /** Bumped on every `select`, so the list scrolls to the row even when it was already selected. */
@@ -163,6 +169,7 @@ export const refresh = coalesce(async () => {
     if (previous !== view.active) {
       lib.groupEdit = null;
       lib.confirmExtractView = null;
+      lib.confirmRetryFailed = null;
       lib.expanded = false;
     }
     // Otherwise the list would stay empty with nothing in the sidebar to click back from.
@@ -210,6 +217,7 @@ export function choose(selection: Selection): void {
   lib.expanded = false;
   // The question holds the ids of the view it was asked in.
   lib.confirmExtractView = null;
+  lib.confirmRetryFailed = null;
 }
 
 export function toggleExpanded(): void {
@@ -354,6 +362,47 @@ export async function runExtractView(): Promise<void> {
         profile,
         severity: 'info',
         message: t.notices.extractQueued(queued),
+        detail: null,
+        target: null,
+      },
+      { toast: true },
+    );
+    if (lib.profileId === profile) await refresh();
+  } catch (err) {
+    report(err, { profile });
+  }
+}
+
+/** Asks to confirm retrying every failed bookmark of the active profile (the list shows the question). */
+export async function askRetryFailed(): Promise<void> {
+  const profile = lib.profileId;
+  const count = lib.bookmarks.filter((b) => b.status === 'failed').length;
+  if (count === 0) return;
+  lib.view = 'library';
+  try {
+    const { settings } = await getSettings();
+    if (lib.profileId !== profile) return;
+    const remote = settings.enabled && isRemoteEndpoint(settings.provider, settings.endpoint);
+    lib.confirmRetryFailed = { profile, count, remote };
+  } catch (err) {
+    report(err, { profile: null });
+  }
+}
+
+/** Requeues the failed bookmarks of the profile the confirmation was asked in. */
+export async function runRetryFailed(): Promise<void> {
+  const asked = lib.confirmRetryFailed;
+  if (!asked) return;
+  lib.confirmRetryFailed = null;
+  const { profile } = asked;
+  try {
+    // Core's count: some may have failed or been retried since the question.
+    const queued = await retryFailed(profile);
+    void notify(
+      {
+        profile,
+        severity: 'info',
+        message: t.notices.retryQueued(queued),
         detail: null,
         target: null,
       },
