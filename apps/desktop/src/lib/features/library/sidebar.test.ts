@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { ALL, FAILED, matches, sameSelection, sidebarGroups, validSelection } from './sidebar';
+import {
+  ALL,
+  FAILED,
+  matches,
+  selectionOnSwitch,
+  sameSelection,
+  sidebarGroups,
+  validSelection,
+} from './sidebar';
 
 const groups = [
   { id: 1, name: 'Datos', tags: ['fts5', 'sqlite', 'huérfana'] },
@@ -66,6 +74,12 @@ describe('failed', () => {
 
   it('failed_selection_is_always_valid', () => {
     expect(validSelection(FAILED, [], [])).toBe(FAILED);
+  });
+
+  it('failed_survives_a_profile_switch', () => {
+    expect(selectionOnSwitch(FAILED)).toBe(FAILED);
+    expect(selectionOnSwitch({ kind: 'tag', value: 'a' })).toBe(ALL);
+    expect(selectionOnSwitch({ kind: 'category', value: 'a' })).toBe(ALL);
   });
 
   it('same_selection_compares_kinds_without_value', () => {

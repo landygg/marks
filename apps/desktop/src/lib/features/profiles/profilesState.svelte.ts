@@ -9,7 +9,7 @@ import {
 } from '../../api';
 import { lib, openSettings, refresh, refreshGuard, report } from '../library/libraryState.svelte';
 import { isOnScreen, suggestInitials } from './profiles';
-import { ALL } from '../library/sidebar';
+import { selectionOnSwitch } from '../library/sidebar';
 
 /**
  * Marks a bookmark row's drag (data: `bookmarkDragData`). Anything else dragged over the rail carries
@@ -72,7 +72,7 @@ function leaveTextField(): void {
 
 // What the library shows on entering a profile; pending questions belonged to the one left.
 function resetView(): void {
-  lib.selection = ALL;
+  lib.selection = selectionOnSwitch(lib.selection);
   lib.collapsed = {};
   lib.expanded = false;
   lib.confirmDelete = false;

@@ -47,6 +47,11 @@ export function validSelection(
   return pool.includes(selection.value) ? selection : ALL;
 }
 
+/** The selection on entering another profile: `failed` means the same there; a category or tag does not. */
+export function selectionOnSwitch(selection: Selection): Selection {
+  return selection.kind === 'failed' ? selection : ALL;
+}
+
 export function matches(
   selection: Selection,
   bookmark: Pick<Bookmark, 'category' | 'tags' | 'status'>,
