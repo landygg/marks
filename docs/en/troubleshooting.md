@@ -67,6 +67,10 @@ Semantic search needs AI on, an embedding model and bookmarks in the “Ready”
 - **“this provider requires an API key”:** type it and click “Save”.
 - “Test connection” tests what is **saved**: save before testing.
 
+### “AI error” in the status bar
+
+The summary model couldn't be set up or its last call failed. Hover over “AI error” to see the error, and click it to open Settings → “Artificial intelligence”. Check that the provider is running (with Ollama, that the app is open and the model downloaded) and click “Test connection”: if it works, the error clears. It also clears with the next search or bookmark that works, or when you save the settings.
+
 ### “AI is on, but the model could not be prepared”
 
 The saved settings don't allow the model to be created (a missing key, endpoint or model name). Review Settings → “Artificial intelligence”.
@@ -91,7 +95,7 @@ marks is closed, or couldn't open its port. Open marks and look at Settings → 
 
 ### “Port 47821 is in use”
 
-Another program, or another copy of marks, is using that port. Close the other copy and restart marks. The port can't be changed.
+Another program, or another copy of marks, is using that port; the status bar says so with “Port 47821 in use”. Close the other copy and restart marks. The port can't be changed. To see which program uses it: `lsof -nP -iTCP:47821 -sTCP:LISTEN` in Terminal.
 
 ### “The token is not valid.”
 

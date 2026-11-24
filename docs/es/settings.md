@@ -120,6 +120,16 @@ La franja inferior de la ventana muestra, del perfil activo:
 
 - «Extrayendo «título»», mientras marks extrae un bookmark.
 - «N pendientes»: los que aún esperan extracción.
-- «N fallidos».
+- «N fallidos». Un clic lleva al filtro «Fallidos» de la barra lateral.
 
-A la derecha, el botón «Comandos» (⌘K) y la campana.
+Bajo la barra lateral, el botón «Comandos» (⌘K). A la derecha, lo que vale para toda la app, y la campana:
+
+| Elemento | Qué significa | Clic |
+|---|---|---|
+| «IA desactivada» | La IA está apagada | Ajustes → «Inteligencia artificial» |
+| «IA · modelo» | La IA está activada con ese modelo y su última llamada salió bien | Ajustes → «Inteligencia artificial» |
+| «IA con error» | El modelo no se pudo preparar o su última llamada falló; el error sale al pasar el puntero | Ajustes → «Inteligencia artificial» |
+| «API local» | La extensión puede conectarse; al pasar el puntero, la dirección | Ajustes → «Extensión del navegador» |
+| «Puerto 47821 ocupado» o «API local detenida» | La extensión no puede conectarse | Ajustes → «Extensión del navegador» |
+
+«IA con error» se borra con la siguiente llamada que salga bien (una búsqueda, «Probar conexión» o el siguiente bookmark) o al guardar los ajustes de IA. Ver [Problemas frecuentes](troubleshooting.md#ia-con-error-en-la-barra-de-estado).

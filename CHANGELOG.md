@@ -4,6 +4,16 @@ All notable changes to marks are listed here. The format follows [Keep a Changel
 
 ## [Unreleased]
 
+### Added
+
+- A “Failed” filter in the sidebar shows every bookmark that failed in the active profile, and clicking “N failed” in the status bar opens it.
+- “Retry all” in that filter puts every failed bookmark back in the queue at once, after asking. It is also in the command palette.
+- The status bar shows whether AI is off, on (with its model) or failing, and whether the local API for the extension is listening or its port is in use. Each one opens its section of Settings.
+
+### Changed
+
+- Fixes from the SQLite bindings, the Markdown reader and the app framework, which marks builds on.
+
 ## [1.0.1] - 2026-11-17
 
 ### Fixed

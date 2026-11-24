@@ -120,6 +120,16 @@ The strip at the bottom of the window shows, for the active profile:
 
 - “Extracting “title””, while marks extracts a bookmark.
 - “N pending”: the ones still waiting to be extracted.
-- “N failed”.
+- “N failed”. Clicking it opens the “Failed” filter in the sidebar.
 
-On the right, the “Commands” button (⌘K) and the bell.
+Under the sidebar, the “Commands” button (⌘K). On the right, what applies to the whole app, and the bell:
+
+| Item | What it means | Click |
+|---|---|---|
+| “AI off” | AI is turned off | Settings → “Artificial intelligence” |
+| “AI · model” | AI is on with that model and its last call worked | Settings → “Artificial intelligence” |
+| “AI error” | The model couldn't be set up or its last call failed; hover to see the error | Settings → “Artificial intelligence” |
+| “Local API” | The extension can connect; hover to see the address | Settings → “Browser extension” |
+| “Port 47821 in use” or “Local API stopped” | The extension can't connect | Settings → “Browser extension” |
+
+“AI error” clears with the next call that works (a search, “Test connection” or the next bookmark) or when you save the AI settings. See [Troubleshooting](troubleshooting.md#ai-error-in-the-status-bar).

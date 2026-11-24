@@ -34,7 +34,7 @@ The window has four areas, left to right, and a status bar at the bottom:
 3. **List.** The bookmarks of whatever is selected in the sidebar.
 4. **Detail.** The selected bookmark: title, summary, tags, notes and content. See [Saving and reading bookmarks](bookmarks.md).
 
-The **status bar** shows what marks is extracting, how many bookmarks are pending or have failed, the way into the command palette, and the notifications bell.
+The **status bar** shows what marks is extracting, how many bookmarks are pending or have failed, the state of AI and of the local API, the way into the command palette, and the notifications bell.
 
 There are no search fields in the areas. You search, and run everything else, from the **command palette** (⌘K). See [Search and the command palette](search.md).
 
