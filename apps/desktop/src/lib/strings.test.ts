@@ -2,6 +2,9 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { setLocale } from './i18n';
 import { t } from './strings';
 
+/** Any port: the real one comes from Rust (`app_status`), and these only check the wording. */
+const TEST_PORT = 1234;
+
 describe('confirmDeleteProfile', () => {
   it('names one bookmark in the singular and more in the plural', () => {
     expect(t.confirmDeleteProfile(1)).toBe('¿Eliminar el perfil y su bookmark?');
@@ -22,7 +25,7 @@ describe('singular texts for one bookmark', () => {
       'Con la IA activada, sus 3 páginas se enviarán a tu proveedor para resumirlas.',
     );
     expect(t.statusBar.ai.ready('qwen3:8b')).toBe('IA · qwen3:8b');
-    expect(t.statusBar.api.busy(47821)).toBe('Puerto 47821 ocupado');
+    expect(t.statusBar.api.busy(TEST_PORT)).toBe('Puerto 1234 ocupado');
     expect(t.cmdRetryFailed(1)).toBe('Reintentar el bookmark fallido');
     expect(t.cmdRetryFailed(3)).toBe('Reintentar los 3 fallidos');
     expect(t.confirmRetryFailed(1)).toBe('¿Reintentar 1 bookmark?');
@@ -69,7 +72,7 @@ describe('the same texts in English', () => {
       'With AI turned on, their 3 pages will be sent to your provider to be summarized.',
     );
     expect(t.statusBar.ai.ready('qwen3:8b')).toBe('AI · qwen3:8b');
-    expect(t.statusBar.api.busy(47821)).toBe('Port 47821 in use');
+    expect(t.statusBar.api.busy(TEST_PORT)).toBe('Port 1234 in use');
     expect(t.cmdRetryFailed(1)).toBe('Retry the failed bookmark');
     expect(t.cmdRetryFailed(3)).toBe('Retry the 3 failed bookmarks');
     expect(t.confirmRetryFailed(1)).toBe('Retry 1 bookmark?');

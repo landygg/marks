@@ -3,6 +3,9 @@ import type { AiStatus, ApiStatus, Bookmark, Stats } from '../../api';
 import { t } from '../../strings';
 import { statusItems, systemItems, systemView } from './status';
 
+/** Any port: the real one comes from Rust (`app_status`), and these only check how it is passed on. */
+const PORT = 1234;
+
 const bookmark = (id: number, title: string, url = `https://e.com/${id}`) =>
   ({ id, title, url }) as Bookmark;
 // `pending` counts every pending bookmark; `unextracted`, those still waiting to be extracted.
@@ -108,7 +111,6 @@ describe('statusItems', () => {
 });
 
 describe('systemItems', () => {
-  const PORT = 47821;
   const status = (ai: AiStatus, api: ApiStatus = 'listening') => ({ ai, api, api_port: PORT });
 
   it('nothing_before_the_first_status', () => {
@@ -169,9 +171,9 @@ describe('systemView', () => {
     });
     const unbuilt = systemView({ kind: 'ai', state: 'failed', model: null, error: 'no key' });
     expect(unbuilt.title).toBe(t.statusBar.ai.unavailableTitle('no key'));
-    const busy = systemView({ kind: 'api', state: 'busy', port: 47821 });
+    const busy = systemView({ kind: 'api', state: 'busy', port: PORT });
     expect(busy).toMatchObject({
-      text: t.statusBar.api.busy(47821),
+      text: t.statusBar.api.busy(PORT),
       strong: true,
       section: 'extension',
     });
@@ -179,10 +181,10 @@ describe('systemView', () => {
 
   it('off_has_no_dot_and_listening_names_the_address', () => {
     expect(systemView({ kind: 'ai', state: 'off', model: null, error: null }).dot).toBeUndefined();
-    const api = systemView({ kind: 'api', state: 'listening', port: 47821 });
+    const api = systemView({ kind: 'api', state: 'listening', port: PORT });
     expect(api).toMatchObject({
       text: t.statusBar.api.listening,
-      title: t.statusBar.api.listeningTitle(47821),
+      title: t.statusBar.api.listeningTitle(PORT),
       dot: 'ready',
       strong: false,
     });
