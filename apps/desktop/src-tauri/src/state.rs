@@ -33,6 +33,9 @@ pub struct AppState {
     pub ai_health: Arc<AiHealth>,
     /// The local API's state (`set_api_status`).
     pub api_status: Mutex<ApiStatus>,
+    /// Held for a whole `rebuild_model`, from reading the settings to storing the models: two saves
+    /// at once would otherwise let the older one store its model last, with a stale generation.
+    rebuilding: Mutex<()>,
     /// A single lock for both hidden windows, `extractor` and `parser`: held only while one is alive,
     /// so there are never two at once, even when the worker and a command both use them
     /// (`webview_fetcher::in_hidden_window`).
@@ -109,6 +112,7 @@ impl AppState {
             wake: Arc::new(Notify::new()),
             ai_health: Arc::new(AiHealth::default()),
             api_status: Mutex::new(ApiStatus::Starting),
+            rebuilding: Mutex::new(()),
             hidden_window: tokio::sync::Mutex::new(()),
             extracting: Mutex::new(Vec::new()),
             notifications: Mutex::new(Notifications::new(AppText::EmptyNotification.localize())),
@@ -156,6 +160,8 @@ impl AppState {
 
     /// `rebuild_model` with `api_key` as the key reader: tests do not touch the keychain.
     pub(crate) fn rebuild_model_with(&self, api_key: ApiKey<'_>) -> Rebuilt {
+        // Guards no data: a poisoned lock only means another rebuild panicked.
+        let _rebuilding = self.rebuilding.lock().unwrap_or_else(|e| e.into_inner());
         let (summary, extraction) = match self.load_ai() {
             Ok((ai, own)) => {
                 let summary = build_summary(&ai, api_key);
