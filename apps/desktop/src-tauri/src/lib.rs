@@ -102,6 +102,7 @@ pub fn run() -> anyhow::Result<()> {
             commands::import_cancel,
             commands::export_bookmarks,
             commands::extract_imported,
+            commands::retry_failed,
             commands::locale_info,
             commands::set_locale,
             commands::update_info,

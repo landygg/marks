@@ -45,6 +45,7 @@ const COMMANDS: &[&str] = &[
     "import_cancel",
     "export_bookmarks",
     "extract_imported",
+    "retry_failed",
     "locale_info",
     "set_locale",
     "update_info",

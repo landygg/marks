@@ -667,6 +667,12 @@ pub fn extract_imported(
     waking_profile(&state, profile, |s| s.queue_imported(&ids))
 }
 
+/// "Retry all" in the Failed filter: requeues the profile's failed bookmarks.
+#[tauri::command(async)]
+pub fn retry_failed(profile: i64, state: State<'_, AppState>) -> Result<usize, String> {
+    waking_profile(&state, profile, Store::retry_failed)
+}
+
 /// The language setting and the language the app started with.
 #[tauri::command(async)]
 pub fn locale_info() -> locale::LocaleInfo {

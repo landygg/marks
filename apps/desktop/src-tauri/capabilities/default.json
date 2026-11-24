@@ -49,6 +49,7 @@
     "allow-import-cancel",
     "allow-export-bookmarks",
     "allow-extract-imported",
+    "allow-retry-failed",
     "allow-locale-info",
     "allow-set-locale",
     "allow-update-info",
