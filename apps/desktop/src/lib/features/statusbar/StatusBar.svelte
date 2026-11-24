@@ -1,11 +1,11 @@
 <!-- The bottom bar: Commands under the sidebar, the background work in the
-     middle and the notifications bell at the right. -->
+     middle, and the AI, the local API and the notifications bell at the right. -->
 <script lang="ts">
   import { t } from '../../strings';
   import IconButton from '../../ui/IconButton.svelte';
   import StatusBar from '../../ui/StatusBar.svelte';
   import StatusItem from '../../ui/StatusItem.svelte';
-  import { choose, lib, select } from '../library/libraryState.svelte';
+  import { choose, lib, openSettings, select } from '../library/libraryState.svelte';
   import { ALL, FAILED } from '../library/sidebar';
   import {
     notices,
@@ -14,7 +14,8 @@
   } from '../notifications/notificationsState.svelte';
   import { PANEL_ID } from '../notifications/notifications';
   import { openPalette } from '../palette/paletteState.svelte';
-  import { statusItems } from './status';
+  import { statusItems, systemItems, systemView } from './status';
+  import { app } from './statusState.svelte';
   import { fold, layout } from '../layout/layoutState.svelte';
 
   const items = $derived(
@@ -25,6 +26,8 @@
       stats: lib.stats,
     }),
   );
+
+  const system = $derived(systemItems(app.status));
 
   /** Shows the bookmark being extracted, from Settings or any selection, as "Open" does. */
   function reveal(id: number): void {
@@ -53,6 +56,16 @@
     {/if}
   {/each}
   {#snippet end()}
+    {#each system as item (item.kind)}
+      {@const view = systemView(item)}
+      <StatusItem
+        text={view.text}
+        title={view.title}
+        dot={view.dot}
+        strong={view.strong}
+        onclick={() => openSettings(view.section)}
+      />
+    {/each}
     <IconButton
       icon="bell"
       label={t.notices.bell(unreadCount())}

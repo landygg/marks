@@ -1,6 +1,7 @@
 // Shared frontend state: the bookmark list, the tag groups, what is selected and which view is shown.
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 import {
+  APP_STATUS_CHANGED,
   EXTRACTING_CHANGED,
   LIBRARY_CHANGED,
   NOTIFICATIONS_CHANGED,
@@ -34,6 +35,7 @@ import {
   type Target,
 } from '../../api';
 import { notify, refreshNotifications } from '../notifications/notificationsState.svelte';
+import { refreshAppStatus } from '../statusbar/statusState.svelte';
 import { t } from '../../strings';
 import { coalesce, createRefreshGuard, keepUnchanged, kept } from './refreshGuard';
 import { isRemoteEndpoint, type SettingsSection } from '../settings/settingsLogic';
@@ -539,7 +541,9 @@ export async function startListening(): Promise<UnlistenFn> {
     subscribe(OPEN_ADD_DIALOG, openAddDialog),
     subscribe(EXTRACTING_CHANGED, () => void refreshExtracting()),
     subscribe(NOTIFICATIONS_CHANGED, () => void refreshNotifications()),
+    subscribe(APP_STATUS_CHANGED, () => void refreshAppStatus()),
   ]);
   void refreshExtracting();
+  void refreshAppStatus();
   return () => stops.forEach((stop) => stop());
 }

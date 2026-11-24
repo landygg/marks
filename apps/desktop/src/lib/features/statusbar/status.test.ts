@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { Bookmark, Stats } from '../../api';
-import { statusItems } from './status';
+import type { AiStatus, ApiStatus, Bookmark, Stats } from '../../api';
+import { t } from '../../strings';
+import { statusItems, systemItems, systemView } from './status';
 
 const bookmark = (id: number, title: string, url = `https://e.com/${id}`) =>
   ({ id, title, url }) as Bookmark;
@@ -103,5 +104,87 @@ describe('statusItems', () => {
       stats: null,
     });
     expect(items).toEqual([{ kind: 'extracting', id: 4, title: 'Cuatro' }]);
+  });
+});
+
+describe('systemItems', () => {
+  const PORT = 47821;
+  const status = (ai: AiStatus, api: ApiStatus = 'listening') => ({ ai, api, api_port: PORT });
+
+  it('nothing_before_the_first_status', () => {
+    expect(systemItems(null)).toEqual([]);
+  });
+
+  it('ai_off_ready_and_failed', () => {
+    const ai = (s: AiStatus) => systemItems(status(s, 'starting'))[0];
+    expect(ai({ kind: 'off' })).toEqual({ kind: 'ai', state: 'off', model: null, error: null });
+    expect(ai({ kind: 'ready', model: 'qwen3:8b' })).toEqual({
+      kind: 'ai',
+      state: 'ready',
+      model: 'qwen3:8b',
+      error: null,
+    });
+    expect(ai({ kind: 'failed', model: 'qwen3:8b', error: 'down' })).toEqual({
+      kind: 'ai',
+      state: 'failed',
+      model: 'qwen3:8b',
+      error: 'down',
+    });
+    expect(ai({ kind: 'failed', model: null, error: 'no key' })).toEqual({
+      kind: 'ai',
+      state: 'failed',
+      model: null,
+      error: 'no key',
+    });
+  });
+
+  it('api_starting_shows_nothing', () => {
+    expect(systemItems(status({ kind: 'off' }, 'starting')).map((i) => i.kind)).toEqual(['ai']);
+  });
+
+  it('api_listening_and_busy_carry_the_port', () => {
+    for (const api of ['listening', 'busy', 'stopped'] as const) {
+      expect(systemItems(status({ kind: 'off' }, api))[1]).toEqual({
+        kind: 'api',
+        state: api,
+        port: PORT,
+      });
+    }
+  });
+
+  it('ai_comes_before_api', () => {
+    expect(systemItems(status({ kind: 'off' })).map((i) => i.kind)).toEqual(['ai', 'api']);
+  });
+});
+
+describe('systemView', () => {
+  it('failing_entries_are_strong_and_name_their_error', () => {
+    const ai = systemView({ kind: 'ai', state: 'failed', model: 'm', error: 'down' });
+    expect(ai).toEqual({
+      text: t.statusBar.ai.failed,
+      title: t.statusBar.ai.failedTitle('down'),
+      dot: 'failed',
+      strong: true,
+      section: 'ai',
+    });
+    const unbuilt = systemView({ kind: 'ai', state: 'failed', model: null, error: 'no key' });
+    expect(unbuilt.title).toBe(t.statusBar.ai.unavailableTitle('no key'));
+    const busy = systemView({ kind: 'api', state: 'busy', port: 47821 });
+    expect(busy).toMatchObject({
+      text: t.statusBar.api.busy(47821),
+      strong: true,
+      section: 'extension',
+    });
+  });
+
+  it('off_has_no_dot_and_listening_names_the_address', () => {
+    expect(systemView({ kind: 'ai', state: 'off', model: null, error: null }).dot).toBeUndefined();
+    const api = systemView({ kind: 'api', state: 'listening', port: 47821 });
+    expect(api).toMatchObject({
+      text: t.statusBar.api.listening,
+      title: t.statusBar.api.listeningTitle(47821),
+      dot: 'ready',
+      strong: false,
+    });
   });
 });

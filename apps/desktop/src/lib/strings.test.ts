@@ -21,6 +21,8 @@ describe('singular texts for one bookmark', () => {
     expect(t.confirmExtractRemote(3)).toBe(
       'Con la IA activada, sus 3 páginas se enviarán a tu proveedor para resumirlas.',
     );
+    expect(t.statusBar.ai.ready('qwen3:8b')).toBe('IA · qwen3:8b');
+    expect(t.statusBar.api.busy(47821)).toBe('Puerto 47821 ocupado');
     expect(t.cmdRetryFailed(1)).toBe('Reintentar el bookmark fallido');
     expect(t.cmdRetryFailed(3)).toBe('Reintentar los 3 fallidos');
     expect(t.confirmRetryFailed(1)).toBe('¿Reintentar 1 bookmark?');
@@ -66,6 +68,8 @@ describe('the same texts in English', () => {
     expect(t.confirmExtractRemote(3)).toBe(
       'With AI turned on, their 3 pages will be sent to your provider to be summarized.',
     );
+    expect(t.statusBar.ai.ready('qwen3:8b')).toBe('AI · qwen3:8b');
+    expect(t.statusBar.api.busy(47821)).toBe('Port 47821 in use');
     expect(t.cmdRetryFailed(1)).toBe('Retry the failed bookmark');
     expect(t.cmdRetryFailed(3)).toBe('Retry the 3 failed bookmarks');
     expect(t.confirmRetryFailed(1)).toBe('Retry 1 bookmark?');

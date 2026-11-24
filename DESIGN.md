@@ -738,9 +738,15 @@ pasa por la paleta de comandos.
    pendientes" (solo texto: los que aún esperan a extraerse; sin IA, los ya
    extraídos se quedan en `pending` esperando un modelo y no cuentan) y "N fallidos" en `on-surface` (clic: el filtro
    "Fallidos" de la barra lateral). Sin nada en curso, el centro queda vacío. Lo de en medio se
-   recorta con elipsis y nunca empuja a la derecha, donde va la campana de
-   notificaciones, marcada cuando hay alguna sin leer. La barra se ve también
-   en Ajustes.
+   recorta con elipsis y nunca empuja a la derecha. A la derecha, que no se
+   recorta, van el estado de la IA ("IA desactivada", sin punto; "IA · modelo",
+   con `status-dot-ready`; o "IA con error", con `status-dot-failed`, en
+   `on-surface` y con el error en el `title`; clic: Ajustes → Inteligencia
+   artificial), el de la API local ("API local", con `status-dot-ready` y la
+   dirección en el `title`; o "Puerto N ocupado" o "API local detenida", con
+   `status-dot-failed` y en `on-surface`; mientras arranca, nada; clic: Ajustes →
+   Extensión del navegador) y la campana de notificaciones, marcada cuando hay
+   alguna sin leer. La barra se ve también en Ajustes.
 
 **Plegar la barra lateral.** Un botón de icono (`sidebar-toggle`: un rectángulo
 con una columna a la izquierda) va al final de la franja del detalle, junto a
@@ -1277,7 +1283,10 @@ donde el cursor mueve la selección.
   derecha. Tres tramos: la columna de la barra lateral (del ancho actual de la
   barra lateral; con ella oculta se ajusta a "Comandos", con la misma
   transición), el centro, que se recorta con elipsis y nunca empuja a la
-  derecha, y la derecha (la campana). "Ajustes" no está en la barra: vive al
+  derecha, y la derecha, que no se recorta: el estado de la IA y el de la API
+  local como `status-item` con `status-dot-ready` o `status-dot-failed`
+  (decorativo: el estado va escrito) y en `on-surface` si fallan, y la
+  campana. "Ajustes" no está en la barra: vive al
   pie del carril.
 - **`status-item`**: un elemento de la barra, en una línea con elipsis, con un
   `status-dot-*`, un icono o un atajo (`kbd`). Si lleva acción es un botón y,
