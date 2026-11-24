@@ -27,6 +27,7 @@ export const en = {
   profileSaved: 'Profile saved.',
   create: 'Create',
   allBookmarks: 'All',
+  failedBookmarks: 'Failed',
   noGroup: 'No group',
   bookmarkCount: (n) => plural(n, { one: '1 bookmark', other: `${num(n)} bookmarks` }),
   selectBookmark: 'Select a bookmark',

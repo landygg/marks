@@ -24,7 +24,13 @@
   let { width, max, onresizing }: Props = $props();
 
   const rows = $derived(lib.visible);
-  const name = $derived(lib.selection.kind === 'all' ? t.allBookmarks : lib.selection.value);
+  const name = $derived(
+    lib.selection.kind === 'all'
+      ? t.allBookmarks
+      : lib.selection.kind === 'failed'
+        ? t.failedBookmarks
+        : lib.selection.value,
+  );
 </script>
 
 <section id={LIST_ID} aria-label={t.bookmarksLabel} data-tauri-drag-region>

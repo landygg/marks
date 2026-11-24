@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ALL, matches, sameSelection, sidebarGroups, validSelection } from './sidebar';
+import { ALL, FAILED, matches, sameSelection, sidebarGroups, validSelection } from './sidebar';
 
 const groups = [
   { id: 1, name: 'Datos', tags: ['fts5', 'sqlite', 'huérfana'] },
@@ -30,7 +30,7 @@ describe('validSelection', () => {
 });
 
 describe('matches', () => {
-  const bookmark = { category: 'Rust', tags: ['sqlite'] };
+  const bookmark = { category: 'Rust', tags: ['sqlite'], status: 'ready' as const };
 
   it('matches by selection', () => {
     expect(matches(ALL, bookmark)).toBe(true);
@@ -48,5 +48,29 @@ describe('sameSelection', () => {
     expect(sameSelection({ kind: 'tag', value: 'a' }, { kind: 'category', value: 'a' })).toBe(
       false,
     );
+  });
+});
+
+describe('failed', () => {
+  it('failed_matches_only_failed_bookmarks', () => {
+    const with_ = (status: 'failed' | 'ready' | 'pending' | 'imported') => ({
+      category: null,
+      tags: [],
+      status,
+    });
+    expect(matches(FAILED, with_('failed'))).toBe(true);
+    for (const status of ['ready', 'pending', 'imported'] as const) {
+      expect(matches(FAILED, with_(status))).toBe(false);
+    }
+  });
+
+  it('failed_selection_is_always_valid', () => {
+    expect(validSelection(FAILED, [], [])).toBe(FAILED);
+  });
+
+  it('same_selection_compares_kinds_without_value', () => {
+    expect(sameSelection(FAILED, FAILED)).toBe(true);
+    expect(sameSelection(FAILED, ALL)).toBe(false);
+    expect(sameSelection(ALL, ALL)).toBe(true);
   });
 });

@@ -30,6 +30,7 @@ export const es = {
   profileSaved: 'Perfil guardado.',
   create: 'Crear',
   allBookmarks: 'Todos',
+  failedBookmarks: 'Fallidos',
   noGroup: 'Sin grupo',
   bookmarkCount: (n: number) => plural(n, { one: '1 bookmark', other: `${num(n)} bookmarks` }),
   selectBookmark: 'Selecciona un bookmark',

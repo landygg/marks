@@ -1,11 +1,15 @@
 // Pure logic behind the sidebar: what is selected and how tags fall into groups.
 import type { Bookmark, TagGroup } from '../../api';
 
-/** What the list shows: everything, one category or one tag. */
+/** What the list shows: everything, the failed ones, one category or one tag. */
 export type Selection =
-  { kind: 'all' } | { kind: 'category'; value: string } | { kind: 'tag'; value: string };
+  | { kind: 'all' }
+  | { kind: 'failed' }
+  | { kind: 'category'; value: string }
+  | { kind: 'tag'; value: string };
 
 export const ALL: Selection = { kind: 'all' };
+export const FAILED: Selection = { kind: 'failed' };
 
 /** A group as the sidebar draws it; `id: null` is the trailing group of ungrouped tags. */
 export interface SidebarGroup {
@@ -32,27 +36,28 @@ export function sidebarGroups(
   ];
 }
 
-/** `selection` if it still names an existing category or tag, else `ALL`. */
+/** `selection` if it still names an existing category or tag, else `ALL`. `all` and `failed` are fixed filters, always valid. */
 export function validSelection(
   selection: Selection,
   categories: string[],
   tags: string[],
 ): Selection {
-  if (selection.kind === 'all') return selection;
+  if (selection.kind === 'all' || selection.kind === 'failed') return selection;
   const pool = selection.kind === 'category' ? categories : tags;
   return pool.includes(selection.value) ? selection : ALL;
 }
 
 export function matches(
   selection: Selection,
-  bookmark: Pick<Bookmark, 'category' | 'tags'>,
+  bookmark: Pick<Bookmark, 'category' | 'tags' | 'status'>,
 ): boolean {
   if (selection.kind === 'all') return true;
+  if (selection.kind === 'failed') return bookmark.status === 'failed';
   if (selection.kind === 'category') return bookmark.category === selection.value;
   return bookmark.tags.includes(selection.value);
 }
 
 export function sameSelection(a: Selection, b: Selection): boolean {
-  if (a.kind === 'all' || b.kind === 'all') return a.kind === b.kind;
-  return a.kind === b.kind && a.value === b.value;
+  if (a.kind !== b.kind) return false;
+  return !('value' in a) || !('value' in b) || a.value === b.value;
 }
