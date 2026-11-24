@@ -4,15 +4,21 @@ All notable changes to marks are listed here. The format follows [Keep a Changel
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-24
+
 ### Added
 
 - A “Failed” filter in the sidebar shows every bookmark that failed in the active profile, and clicking “N failed” in the status bar opens it.
 - “Retry all” in that filter puts every failed bookmark back in the queue at once, after asking. It is also in the command palette.
 - The status bar shows whether AI is off, on (with its model) or failing, and whether the local API for the extension is listening or its port is in use. Each one opens its section of Settings.
 
+### Fixed
+
+- A page nested too deeply for the reader now shows as plain text instead of failing to display.
+
 ### Changed
 
-- Fixes from the SQLite bindings, the Markdown reader and the app framework, which marks builds on.
+- Dependencies are up to date, including memory-safety fixes in the SQLite bindings and fixes in the app framework.
 
 ## [1.0.1] - 2026-11-17
 
@@ -59,7 +65,8 @@ Second release candidate of 1.0.0, published as a prerelease so that 1.0.0-rc.1 
 
 Release candidate of 1.0.0, published as a prerelease to test automatic updates. It has everything listed under 1.0.0.
 
-[Unreleased]: https://github.com/landygg/marks/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/landygg/marks/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/landygg/marks/releases/tag/v1.1.0
 [1.0.1]: https://github.com/landygg/marks/releases/tag/v1.0.1
 [1.0.0]: https://github.com/landygg/marks/releases/tag/v1.0.0
 [1.0.0-rc.1]: https://github.com/landygg/marks/releases/tag/v1.0.0-rc.1
