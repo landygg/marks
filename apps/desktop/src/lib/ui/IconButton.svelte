@@ -15,6 +15,9 @@
     pressed?: boolean;
     /** Something new behind it (unread notifications); `label` must say what, the mark is only visual. */
     marked?: boolean;
+    /** Why it does nothing now: unlike `disabled`, the button stays focusable and the reason is read
+        out with it (and is its tooltip). */
+    reason?: string;
   }
 
   let {
@@ -24,8 +27,12 @@
     success = false,
     pressed,
     marked = false,
+    reason,
+    onclick,
     ...rest
   }: Props = $props();
+
+  const reasonId = $props.id();
 </script>
 
 <button
@@ -33,12 +40,16 @@
   class={{ danger, success, marked }}
   aria-label={label}
   aria-pressed={pressed}
-  title={label}
+  aria-disabled={reason ? 'true' : undefined}
+  aria-describedby={reason ? reasonId : undefined}
+  title={reason ?? label}
   {...rest}
+  onclick={reason ? undefined : onclick}
 >
   <Icon name={icon} />
-  {#if marked}<span aria-hidden="true"></span>{/if}
+  {#if marked}<span class="mark" aria-hidden="true"></span>{/if}
 </button>
+{#if reason}<span class="announce" id={reasonId}>{reason}</span>{/if}
 
 <style>
   button {
@@ -51,7 +62,7 @@
     color: var(--muted);
   }
 
-  button:hover:not(:disabled),
+  button:hover:not(:disabled, [aria-disabled='true']),
   button[aria-pressed='true'],
   button[aria-expanded='true'] {
     background: var(--border);
@@ -59,12 +70,12 @@
   }
 
   .danger,
-  .danger:hover:not(:disabled) {
+  .danger:hover:not(:disabled, [aria-disabled='true']) {
     color: var(--danger);
   }
 
   .success,
-  .success:hover:not(:disabled) {
+  .success:hover:not(:disabled, [aria-disabled='true']) {
     color: var(--ok);
   }
 
@@ -74,7 +85,7 @@
     color: var(--fg);
   }
 
-  span {
+  .mark {
     position: absolute;
     top: var(--space-xs);
     right: var(--space-xs);
@@ -92,7 +103,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    span {
+    .mark {
       animation: none;
     }
   }

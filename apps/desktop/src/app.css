@@ -111,10 +111,21 @@ textarea {
 
 /* Disabled, the same for every control: dimmed (and no hover look, which each component guards). */
 button:disabled,
+button[aria-disabled='true'],
 input:disabled,
 select:disabled,
 textarea:disabled {
   opacity: 0.5;
+}
+
+/* Read out, not shown: a status message or a disabled button's reason. */
+.announce {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* `[data-cancel]`: the safe answer of a delete question takes the focus from code, and after a click
