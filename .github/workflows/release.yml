@@ -121,7 +121,7 @@ jobs:
             --url "https://github.com/landygg/marks/releases/download/$GITHUB_REF_NAME/$archive" \
             --notes CHANGELOG.md --out "$OUT"
           EXT_VERSION=$(node -p "require('./apps/extension/manifest.json').version")
-          (cd apps/extension/dist && zip -qr "$OUT/marks-chromium-$EXT_VERSION.zip" .)
+          (cd apps/extension/dist/chromium && zip -qr "$OUT/marks-chromium-$EXT_VERSION.zip" .)
       # Lets anyone check a download with: gh attestation verify <file> -R landygg/marks
       - name: Attest the build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2

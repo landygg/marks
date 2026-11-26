@@ -94,7 +94,7 @@ Registra en Safari una sola copia de `marks.app`. Si conviven la de `target/` y 
 pnpm --dir apps/extension build
 ```
 
-Después, en `chrome://extensions`, activa el modo de desarrollador, pulsa "Cargar descomprimida" y elige `apps/extension/dist`. La app tiene que estar en marcha (vale `tauri dev`). El emparejamiento con el token está en [Extensión del navegador](../browser-extension.md).
+Después, en `chrome://extensions`, activa el modo de desarrollador, pulsa "Cargar descomprimida" y elige `apps/extension/dist/chromium`. La app tiene que estar en marcha (vale `tauri dev`). El emparejamiento con el token está en [Extensión del navegador](../browser-extension.md).
 
 `pnpm --dir apps/extension watch` reconstruye al guardar.
 

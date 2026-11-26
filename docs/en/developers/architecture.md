@@ -94,7 +94,7 @@ Two halves with a narrow boundary between them.
 
 ## `apps/extension`
 
-An MV3 extension in plain JavaScript, with the same code for Safari and Chromium. `build.mjs` bundles it with esbuild into `apps/extension/dist/`, which is what the browser loads.
+An MV3 extension in plain JavaScript, with the same code for Safari and Chromium. `build.mjs` bundles it with esbuild into `apps/extension/dist/chromium/`, which Chromium loads, and copies it to `apps/extension/dist/safari/`, which goes into the appex. Only the manifest differs, written for each browser from `manifest.json`: Chromium's drops `nativeMessaging` (only the Safari appex talks to the app natively) and declares `minimum_chrome_version` 123, the engine floor.
 
 - `popup.js` sends a message to the service worker and shows the result.
 - `background.js` injects `page-extract.js` into the tab, extracts from a clone of the document and sends the capture to the app.

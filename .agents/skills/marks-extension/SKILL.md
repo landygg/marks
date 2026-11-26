@@ -5,9 +5,9 @@ description: Arquitectura, organización de ficheros, patrones y reglas de segur
 
 # Extensión de marks
 
-MV3 en JS plano, empaquetado con esbuild (`build.mjs`) en `apps/extension/dist/`, que es lo que se carga en el navegador. Un único código para Safari y Chromium. La extensión no decide nada sobre el bookmark: extrae con Defuddle y envía `{url, title, page?, text?}` a la app; `crates/core::capture` decide qué se guarda.
+MV3 en JS plano, empaquetado con esbuild (`build.mjs`) en `apps/extension/dist/chromium/` (lo que se carga en Chromium) y `apps/extension/dist/safari/` (lo que copia el appex). Un único código para Safari y Chromium; solo cambia el manifiesto, que `build.mjs` escribe para cada uno desde `manifest.json` (`manifestFor`): Chromium sin `nativeMessaging` y con `minimum_chrome_version` (`CHROME_MIN`, 123), Safari con `nativeMessaging`. La extensión no decide nada sobre el bookmark: extrae con Defuddle y envía `{url, title, page?, text?}` a la app; `crates/core::capture` decide qué se guarda.
 
-`build.mjs` empaqueta `popup.js`, `options.js` y `background.js` (ESM, con `client.js` e `i18n.js` dentro) y `page-extract.ts` (IIFE con Defuddle, que define `globalThis.marksExtract`), y copia los ficheros estáticos. `build.test.js` comprueba la lista exacta de `dist/`: no añadir ficheros de entrada sin actualizarlo.
+`build.mjs` empaqueta `popup.js`, `options.js` y `background.js` (ESM, con `client.js` e `i18n.js` dentro) y `page-extract.ts` (IIFE con Defuddle, que define `globalThis.marksExtract`), y copia los ficheros estáticos. `build.test.js` comprueba la lista exacta de `dist/chromium/` y que `dist/safari/` solo difiere en el manifiesto: no añadir ficheros de entrada sin actualizarlo.
 
 ## Mapa
 
@@ -36,7 +36,7 @@ El popup solo manda el mensaje; el service worker inyecta, extrae y guarda (red)
 6. **Ruta nueva de la API**: añadirla a `ROUTES` en `client.js` **y** a `allowedRoutes` en el manejador Swift (la lista blanca es la frontera de confianza del lado nativo), con su test.
 7. **Contrato `api`/`MIN_API`**: `/v1/ping` devuelve `api` (`API_LEVEL` en `api.rs`) y `client.js` exporta `MIN_API`. `ping` da `appTooOld` si `api` falta o es menor que `MIN_API`; `outcomeKey` da `extensionTooOld` con un `404`, antes que la rama `error_`. `MIN_API` solo sube cuando la extensión usa algo de un nivel nuevo; `extension_files_agree_with_the_app` exige `1 <= MIN_API <= API_LEVEL`. La versión de la extensión (la de `manifest.json`, propia) se ve al pie de las opciones.
 8. **Puerto `47821`**: vive en `manifest.json` (`host_permissions`), `client.js` (`API_PORT`), el `.swift` (`apiBase`) y `apps/desktop/src-tauri/src/api.rs` (`API_PORT`). Cambiarlos juntos; lo comprueba `extension_files_agree_with_the_app`.
-9. **Permisos mínimos**: hoy `activeTab`, `scripting`, `storage`, `nativeMessaging` y solo `http://127.0.0.1:47821/*`. No añadir `<all_urls>`, `tabs` ni host permissions amplios; si algo nuevo los parece necesitar, plantearlo antes.
+9. **Permisos mínimos**: hoy `activeTab`, `scripting`, `storage`, `nativeMessaging` (solo en Safari: `build.mjs` lo quita del manifiesto de Chromium) y solo `http://127.0.0.1:47821/*`. No añadir `<all_urls>`, `tabs` ni host permissions amplios; si algo nuevo los parece necesitar, plantearlo antes.
 10. **El token** solo vive en `storage.local` y en la cabecera `Authorization`; nunca se pasa a la función inyectada en la página, ni se registra en logs.
 11. **Se lee sobre un clon, nunca sobre la página viva.** `marksExtract` pasa `document.cloneNode(true)` a Defuddle, así la página del usuario no cambia a la vista. Lo extraído es no confiable y lo trata la app: core lo acota y `ContentView` lo lee con sus listas blancas (ADR 0011).
 12. **Cuerpo grande**: la app limita a 8 MB (`BODY_LIMIT` en `api.rs`); ante 413, `saveTab` reintenta una vez sin `text`. El Swift serializa con `.withoutEscapingSlashes` para que el tamaño coincida con Chromium.
@@ -51,7 +51,7 @@ El popup solo manda el mensaje; el service worker inyecta, extrae y guarda (red)
 - `node --test "apps/extension/*.test.js"`
 - `xcrun swiftc -typecheck -parse-as-library -application-extension apps/extension/safari/SafariWebExtensionHandler.swift`
 - Antes de commit: `scripts/check.sh` (incluye ambos).
-- A mano: Chromium cargando `apps/extension/dist` (tras `node build.mjs`) con `pnpm --dir apps/desktop tauri dev`; Safari solo con `scripts/build-app.sh` (que llama a `scripts/build-appex.sh`; `scripts/verify-bundle.sh` comprueba el resultado). En la v1.0 Safari es experimental: sin Developer ID, solo carga la extensión con «Permitir extensiones no firmadas» (Ajustes → Desarrollador), que se apaga al cerrar Safari. Chromium es la recomendada y se publica como `marks-chromium-<versión>.zip` en cada release.
+- A mano: Chromium cargando `apps/extension/dist/chromium` (tras `node build.mjs`) con `pnpm --dir apps/desktop tauri dev`; Safari solo con `scripts/build-app.sh` (que llama a `scripts/build-appex.sh`; `scripts/verify-bundle.sh` comprueba el resultado). En la v1.0 Safari es experimental: sin Developer ID, solo carga la extensión con «Permitir extensiones no firmadas» (Ajustes → Desarrollador), que se apaga al cerrar Safari. Chromium es la recomendada y se publica como `marks-chromium-<versión>.zip` en cada release.
 - Versión: subir `version` en `manifest.json` en cada release que cambie `apps/extension` o `packages/extract` (el appex y el zip de Chromium llevan `page-extract.js`, construido desde `packages/extract`).
 - Bucle de Safari en desarrollo: subir `version` en `manifest.json` (el appex toma su versión de ahí), volver a registrar el appex con `lsregister -f` sobre `marks.app` y `pluginkit -a` sobre el appex, y reiniciar Safari; si no, Safari sigue con la extensión antigua.
 

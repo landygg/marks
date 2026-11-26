@@ -31,7 +31,7 @@ Es la extensión recomendada para el día a día.
 
 La v1.0 no está en la Chrome Web Store: se carga sin empaquetar.
 
-1. Descarga `marks-chromium-<versión>.zip` de la [página de versiones](https://github.com/landygg/marks/releases/latest) y descomprímelo en una carpeta que no vayas a borrar: el navegador la carga desde ahí. Desde el código, también vale `apps/extension/dist`, tras `pnpm --dir apps/extension build` (ver [Compilar](developers/building.md)).
+1. Descarga `marks-chromium-<versión>.zip` de la [página de versiones](https://github.com/landygg/marks/releases/latest) y descomprímelo en una carpeta que no vayas a borrar: el navegador la carga desde ahí. Desde el código, también vale `apps/extension/dist/chromium`, tras `pnpm --dir apps/extension build` (ver [Compilar](developers/building.md)).
 2. Abre `chrome://extensions` y activa el «Modo de desarrollador».
 3. Pulsa «Cargar descomprimida» y elige la carpeta descomprimida.
 4. Abre las opciones de la extensión, pega el token y pulsa «Guardar token».
@@ -97,7 +97,7 @@ El token se guarda en el almacenamiento de la extensión, que es propio de cada 
 | `activeTab` | Leer la pestaña actual, solo cuando pulsas el botón o el atajo |
 | `scripting` | Ejecutar en esa pestaña el extractor de contenido |
 | `storage` | Guardar el token |
-| `nativeMessaging` | En Safari, hablar con marks.app |
+| `nativeMessaging` | Solo en Safari: hablar con marks.app (Chromium no lo pide) |
 | `http://127.0.0.1:47821/*` | En Chromium, hablar con la API local de marks |
 
 No pide acceso a todos los sitios, ni al historial, ni a las demás pestañas. No lee nada hasta que tú lo pides.

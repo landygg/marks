@@ -31,7 +31,7 @@ This is the recommended extension for daily use.
 
 v1.0 isn't on the Chrome Web Store: you load it unpacked.
 
-1. Download `marks-chromium-<version>.zip` from the [releases page](https://github.com/landygg/marks/releases/latest) and unzip it into a folder you won't delete: the browser loads it from there. From source, `apps/extension/dist` works too, after `pnpm --dir apps/extension build` (see [Building](developers/building.md)).
+1. Download `marks-chromium-<version>.zip` from the [releases page](https://github.com/landygg/marks/releases/latest) and unzip it into a folder you won't delete: the browser loads it from there. From source, `apps/extension/dist/chromium` works too, after `pnpm --dir apps/extension build` (see [Building](developers/building.md)).
 2. Open `chrome://extensions` and turn on “Developer mode”.
 3. Click “Load unpacked” and choose the unzipped folder.
 4. Open the extension's options, paste the token and click “Save token”.
@@ -97,7 +97,7 @@ The token is kept in the extension's storage, which is separate for each browser
 | `activeTab` | Read the current tab, only when you click the button or press the shortcut |
 | `scripting` | Run the content extractor in that tab |
 | `storage` | Store the token |
-| `nativeMessaging` | On Safari, talk to marks.app |
+| `nativeMessaging` | Safari only: talk to marks.app (Chromium doesn't ask for it) |
 | `http://127.0.0.1:47821/*` | On Chromium, talk to marks' local API |
 
 It doesn't ask for access to every site, your history or your other tabs. It reads nothing until you ask.

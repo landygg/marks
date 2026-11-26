@@ -94,7 +94,7 @@ Register a single copy of `marks.app` with Safari. If the one in `target/` and a
 pnpm --dir apps/extension build
 ```
 
-Then open `chrome://extensions`, turn on developer mode, click "Load unpacked" and choose `apps/extension/dist`. The app has to be running (`tauri dev` is fine). Pairing with the token is covered in [Browser extension](../browser-extension.md).
+Then open `chrome://extensions`, turn on developer mode, click "Load unpacked" and choose `apps/extension/dist/chromium`. The app has to be running (`tauri dev` is fine). Pairing with the token is covered in [Browser extension](../browser-extension.md).
 
 `pnpm --dir apps/extension watch` rebuilds on save.
 

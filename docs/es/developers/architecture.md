@@ -94,7 +94,7 @@ Dos mitades con una frontera estrecha.
 
 ## `apps/extension`
 
-Extensión MV3 en JavaScript plano, con el mismo código para Safari y Chromium. `build.mjs` la empaqueta con esbuild en `apps/extension/dist/`, que es lo que carga el navegador.
+Extensión MV3 en JavaScript plano, con el mismo código para Safari y Chromium. `build.mjs` la empaqueta con esbuild en `apps/extension/dist/chromium/`, que es lo que carga Chromium, y la copia a `apps/extension/dist/safari/`, que va en el appex. Solo cambia el manifiesto, escrito para cada navegador desde `manifest.json`: el de Chromium quita `nativeMessaging` (solo el appex de Safari habla con la app de forma nativa) y declara `minimum_chrome_version` 123, el suelo de motores.
 
 - `popup.js` envía un mensaje al service worker y muestra el resultado.
 - `background.js` inyecta `page-extract.js` en la pestaña, extrae sobre un clon del documento y envía la captura a la app.

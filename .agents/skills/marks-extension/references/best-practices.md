@@ -25,7 +25,7 @@ Pendiente de comprobar a mano en Safari: que acepta `"type": "module"` en `backg
 
 ## Organización de ficheros
 
-Las guías coinciden en separar por contexto de ejecución (popup, opciones, background, content scripts) y aislar la lógica pura para probarla fuera del navegador. marks lo hace sin carpetas: un fichero por contexto (popup, opciones, background) y `client.js` como núcleo probado. Con el tamaño actual (~640 líneas) no hace falta `src/` ni TypeScript. El bundler llegó en v0.6: esbuild, con salida en `dist/` (el navegador carga `dist`, no la carpeta de fuentes), porque el script que se inyecta para extraer con Defuddle tiene dependencias de npm (ver `docs/superpowers/specs/2026-11-12-v0.6-defuddle-extraction-design.md`).
+Las guías coinciden en separar por contexto de ejecución (popup, opciones, background, content scripts) y aislar la lógica pura para probarla fuera del navegador. marks lo hace sin carpetas: un fichero por contexto (popup, opciones, background) y `client.js` como núcleo probado. Con el tamaño actual (~640 líneas) no hace falta `src/` ni TypeScript. El bundler llegó en v0.6: esbuild, con salida en `dist/chromium/` y `dist/safari/` desde la 1.2.0 (el navegador carga esas carpetas, no la de fuentes; solo cambia el manifiesto), porque el script que se inyecta para extraer con Defuddle tiene dependencias de npm (ver `docs/superpowers/specs/2026-11-12-v0.6-defuddle-extraction-design.md`).
 
 ## Fuentes
 

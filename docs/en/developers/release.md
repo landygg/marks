@@ -94,10 +94,10 @@ Later, if the Apple Developer Program is paid for (the Mac App Store requires it
 
 ## 7. Chromium extension
 
-Each release attaches `marks-chromium-<version>.zip`, with the contents of `apps/extension/dist` and the version from `apps/extension/manifest.json`. It is loaded unpacked. `release.yml` builds it with:
+Each release attaches `marks-chromium-<version>.zip`, with the contents of `apps/extension/dist/chromium` and the version from `apps/extension/manifest.json`. It is loaded unpacked. `release.yml` builds it with:
 
 ```sh
-cd apps/extension/dist && zip -qr "$OUT/marks-chromium-$EXT_VERSION.zip" .
+cd apps/extension/dist/chromium && zip -qr "$OUT/marks-chromium-$EXT_VERSION.zip" .
 ```
 
 ## 8. Migrations and data

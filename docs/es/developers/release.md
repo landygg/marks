@@ -94,10 +94,10 @@ Más adelante, si se paga el Apple Developer Program, que lo exige, una app prop
 
 ## 7. Extensión de Chromium
 
-Cada release adjunta `marks-chromium-<versión>.zip`, con el contenido de `apps/extension/dist` y la versión de `apps/extension/manifest.json`. Se carga sin empaquetar. `release.yml` lo crea con:
+Cada release adjunta `marks-chromium-<versión>.zip`, con el contenido de `apps/extension/dist/chromium` y la versión de `apps/extension/manifest.json`. Se carga sin empaquetar. `release.yml` lo crea con:
 
 ```sh
-cd apps/extension/dist && zip -qr "$OUT/marks-chromium-$EXT_VERSION.zip" .
+cd apps/extension/dist/chromium && zip -qr "$OUT/marks-chromium-$EXT_VERSION.zip" .
 ```
 
 ## 8. Migraciones y datos
