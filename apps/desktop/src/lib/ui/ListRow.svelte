@@ -46,7 +46,7 @@
   }
 
   button[aria-current='true'] {
-    border-left-color: var(--accent);
+    border-left-color: var(--indicator-color);
   }
 
   /* Inside the row: the list clips anything drawn outside it. */

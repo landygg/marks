@@ -81,6 +81,19 @@ const variables = Object.fromEntries(
     .map((d) => [d.property, d.value]),
 );
 
+/** WCAG 2 contrast ratio of two `#rrggbb` colours. */
+function contrast(a: string, b: string): number {
+  const luminance = (hex: string) => {
+    const [r, g, b] = [1, 3, 5].map((i) => {
+      const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
 /** Spacing tokens whose variable is not `--space-<name>`. `null`: the value lives outside the CSS. */
 const SIZES: Record<string, string | null> = {
   'rail-width': '--rail',
@@ -88,6 +101,7 @@ const SIZES: Record<string, string | null> = {
   'list-width': '--list',
   'detail-min-width': '--detail-min',
   'content-max-width': '--content',
+  'content-measure': '--measure',
   'control-height': '--control',
   'topbar-height': '--topbar',
   'palette-width': '--palette',
@@ -129,6 +143,8 @@ const COLOURS: Record<string, string> = {
   'on-surface': '--fg',
   secondary: '--muted',
   outline: '--border',
+  'field-outline': '--field-border',
+  indicator: '--indicator-color',
   error: '--danger',
   success: '--ok',
   warning: '--warn',
@@ -156,6 +172,28 @@ describe('the tokens of app.css are those of DESIGN.md', () => {
     expect(variables['--focus']).toBe(
       `light-dark(${colours['on-surface-light']}, ${colours.primary})`,
     );
+  });
+
+  it('the thin indicator is the accent on dark and ink on light, like the focus ring', () => {
+    expect(variables['--indicator-color']).toBe(
+      `light-dark(${colours['on-surface-light']}, ${colours.primary})`,
+    );
+  });
+
+  it('field borders reach 3:1 and the light warning 4.5:1 on the backgrounds they sit on', () => {
+    for (const theme of ['', '-light']) {
+      for (const ground of ['neutral', 'surface']) {
+        const pair = `field-outline${theme} on ${ground}${theme}`;
+        expect(
+          contrast(colours[`field-outline${theme}`], colours[`${ground}${theme}`]),
+          pair,
+        ).toBeGreaterThanOrEqual(3);
+      }
+    }
+    for (const ground of ['neutral-light', 'surface-light'])
+      expect(contrast(colours['warning-light'], colours[ground]), ground).toBeGreaterThanOrEqual(
+        4.5,
+      );
   });
 
   it('typography, with its tracking', () => {
@@ -198,6 +236,24 @@ describe('the tokens of app.css are those of DESIGN.md', () => {
 });
 
 describe('components', () => {
+  it('thin 2px indicators take the indicator colour, ink on the light theme, not the yellow', () => {
+    // A hover hint on the resize handle, not a marker of state: it stays yellow.
+    const HOVER_HINTS = ['./ui/Resizer.svelte'];
+    const off: string[] = [];
+    for (const path of uiFiles.filter((p) => !HOVER_HINTS.includes(p))) {
+      const rules = new Map<string, Declaration[]>();
+      const style = sources[path].match(/<style[^>]*>([\s\S]*)<\/style>/)?.[1] ?? '';
+      for (const d of declarations(style))
+        rules.set(d.selector, [...(rules.get(d.selector) ?? []), d]);
+      for (const [selector, declared] of rules) {
+        const thin = declared.some((d) => d.value.includes('var(--indicator)'));
+        const yellow = declared.some((d) => d.value.includes('var(--accent)'));
+        if (thin && yellow) off.push(`${path}: ${selector}`);
+      }
+    }
+    expect(off).toEqual([]);
+  });
+
   it('only lib/ui draws controls: no screen has a raw button or field', () => {
     expect(screens).toContain('../App.svelte');
     for (const path of screens)

@@ -138,9 +138,14 @@
   {@render mediaTag('frame', attributes, attributes?.title)}
 {/snippet}
 
-<!-- The language as text: the default renderer puts it in a `class`. -->
+<!-- The language as text: the default renderer puts it in a `class`. A focusable region, so the
+     keyboard can scroll a wide block (our attributes, not the content's; a scroll region needs the
+     focus, which Svelte's tabindex rule does not know). -->
 {#snippet code({ lang, text: source }: CodeSnippetProps)}
-  <pre>{#if lang}<span class="code-lang">{lang}</span>{/if}<code>{source}</code></pre>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <pre tabindex="0" role="region" aria-label={t.codeBlock}>{#if lang}<span class="code-lang"
+        >{lang}</span
+      >{/if}<code>{source}</code></pre>
 {/snippet}
 
 <!-- `text`, not `raw`: the default loses the backticks inside (library issue #417). -->
@@ -157,13 +162,20 @@
   </li>
 {/snippet}
 
-<!-- `content-table`: its own horizontal scroll, for Markdown and HTML tables alike. -->
+<!-- `content-table`: its own horizontal scroll, for Markdown and HTML tables alike, reachable by
+     keyboard. -->
 {#snippet table({ children }: TableSnippetProps)}
-  <div class="table"><table>{@render children?.()}</table></div>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <div class="table" tabindex="0" role="region" aria-label={t.tableRegion}>
+    <table>{@render children?.()}</table>
+  </div>
 {/snippet}
 
 {#snippet html_table({ attributes, children }: HtmlSnippetProps)}
-  <div class="table"><table {...attributes}>{@render children?.()}</table></div>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <div class="table" tabindex="0" role="region" aria-label={t.tableRegion}>
+    <table {...attributes}>{@render children?.()}</table>
+  </div>
 {/snippet}
 
 <!-- The label as written, with no link: the library's reference adds an `id` and a `class`. -->
@@ -235,6 +247,7 @@
 
 <style>
   .content {
+    max-width: var(--measure);
     font: var(--type-body-lg);
     overflow-wrap: anywhere;
   }
@@ -268,7 +281,7 @@
   }
 
   .task {
-    margin-right: var(--space-xs);
+    margin-inline-end: var(--space-xs);
   }
 
   .table {
@@ -305,7 +318,7 @@
   .callout {
     margin: var(--space-md) 0;
     padding: var(--space-md);
-    border-left: 1px solid var(--border);
+    border-inline-start: 1px solid var(--border);
     color: var(--fg);
     font: var(--type-body-lg);
   }

@@ -4,11 +4,15 @@
 
 ## Requisitos
 
-- macOS 14.5 o posterior.
+- macOS 15 o posterior.
 - Mac con Apple Silicon (la única plataforma probada). La versión para Intel se publica sin probar.
 - Opcional, para la IA local: [Ollama](https://ollama.com). Ver [Inteligencia artificial](ai.md).
 
 Windows y Linux llegarán más adelante.
+
+### ¿Sigues en macOS 14?
+
+marks 1.2.0 y posteriores necesitan macOS 15: en macOS 14 ya no abren. Quédate en [marks 1.1.0](https://github.com/landygg/marks/releases/tag/v1.1.0), la última versión para macOS 14, y no instales la actualización que ofrece. Si ya lo hiciste, descarga `marks_1.1.0_aarch64.dmg` de esa página, ábrelo y arrastra **marks** a **Aplicaciones**, sustituyendo la que hay. Tus bookmarks no se tocan: la 1.2.0 no cambia la base de datos, así que la 1.1.0 la abre tal como estaba.
 
 ## Instalar en macOS
 
@@ -24,7 +28,7 @@ marks va firmada, pero no está notarizada por Apple, así que la primera vez ma
 2. Abre Ajustes del Sistema → Privacidad y seguridad. Al final, junto a «Se ha bloqueado marks para proteger tu Mac.», pulsa «Abrir igualmente». Aparece justo después del intento de abrirla.
 3. Confirma con tu contraseña o Touch ID. marks se abre.
 
-En macOS 15 y posteriores, Ctrl+clic → Abrir ya no sirve para esto: hay que pasar por Privacidad y seguridad.
+Ctrl+clic → Abrir ya no sirve para esto: hay que pasar por Privacidad y seguridad.
 
 Si lo prefieres, en Terminal (quita la marca de descarga que hace saltar el aviso):
 

@@ -71,7 +71,7 @@ Dos guardas de `scripts/check.sh` fallan si encuentran un literal de usuario fue
 - Las ventanas ocultas `extractor` y `parser` no tienen permisos de Tauri y no deben tenerlos.
 - Un comando nuevo necesita su permiso `allow-<comando>` en `capabilities/default.json`, y solo para la ventana `main`.
 - La política CSP no admite orígenes remotos. Las imágenes son solo `self` y `data:`.
-- La extensión pide los permisos mínimos: `activeTab`, `scripting`, `storage`, `nativeMessaging` y `http://127.0.0.1:47821/*`. No añadas `<all_urls>`, `tabs` ni permisos de host amplios.
+- La extensión pide los permisos mínimos: `activeTab`, `scripting`, `storage`, `nativeMessaging` (solo en Safari: `build.mjs` lo quita del manifiesto de Chromium) y `http://127.0.0.1:47821/*`. No añadas `<all_urls>`, `tabs` ni permisos de host amplios.
 - El token de la extensión solo vive en `storage.local` y en la cabecera `Authorization`. No se registra en logs ni se pasa a la página.
 
 ## Git

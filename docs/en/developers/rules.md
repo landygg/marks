@@ -71,7 +71,7 @@ Two guards in `scripts/check.sh` fail when they find a user-facing literal outsi
 - The hidden `extractor` and `parser` windows have no Tauri permissions and must never get any.
 - A new command needs its `allow-<command>` permission in `capabilities/default.json`, for the `main` window only.
 - The CSP allows no remote origins. Images are `self` and `data:` only.
-- The extension asks for the minimum permissions: `activeTab`, `scripting`, `storage`, `nativeMessaging` and `http://127.0.0.1:47821/*`. Do not add `<all_urls>`, `tabs` or broad host permissions.
+- The extension asks for the minimum permissions: `activeTab`, `scripting`, `storage`, `nativeMessaging` (Safari only: `build.mjs` drops it from Chromium's manifest) and `http://127.0.0.1:47821/*`. Do not add `<all_urls>`, `tabs` or broad host permissions.
 - The extension token lives only in `storage.local` and in the `Authorization` header. It is never logged and never passed to the page.
 
 ## Git

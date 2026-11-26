@@ -123,8 +123,8 @@
           <IconButton
             icon="sparkles"
             label={t.extractWithAi}
-            title={lib.extractionModel ? t.extractWithAi : t.extractWithAiUnavailable}
-            disabled={busy || !lib.extractionModel}
+            reason={lib.extractionModel ? undefined : t.extractWithAiUnavailable}
+            disabled={busy}
             onclick={() => askReextract('ai')}
           />
         {/if}
@@ -187,6 +187,7 @@
                 text={bookmark.original_url}
                 label={t.copyLink}
                 copiedLabel={t.linkCopied}
+                failedLabel={t.copyFailed}
               />
             </div>
             {#if meta.length || faviconSrc}
@@ -215,6 +216,7 @@
                   text={bookmark.error}
                   label={t.copyMessage}
                   copiedLabel={t.messageCopied}
+                  failedLabel={t.copyFailed}
                 />
               </div>
             {/if}

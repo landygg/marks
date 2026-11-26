@@ -123,6 +123,7 @@ app-empty-notification = error sin mensaje
 app-update-available = Hay una versión nueva de marks: { $version }.
 app-update-check-failed = No se pudo comprobar si hay versión nueva. Revisa la conexión.
 app-update-install-failed = No se pudo instalar la versión nueva.
+app-update-needs-macos = marks { $version } necesita macOS { $minimum } o posterior, y este Mac tiene macOS { $current }. marks sigue en esta versión.
 menu-about = Acerca de marks
 menu-services = Servicios
 menu-hide = Ocultar marks

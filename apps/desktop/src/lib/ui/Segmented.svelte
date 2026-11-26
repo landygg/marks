@@ -27,7 +27,7 @@
   div {
     display: inline-flex;
     flex: none;
-    border: 1px solid var(--border);
+    border: 1px solid var(--field-border);
     border-radius: var(--radius-sm);
     background: var(--surface);
   }

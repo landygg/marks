@@ -74,7 +74,7 @@
     bottom: 0;
     left: 0;
     width: var(--indicator);
-    background: var(--accent);
+    background: var(--indicator-color);
     content: '';
   }
 

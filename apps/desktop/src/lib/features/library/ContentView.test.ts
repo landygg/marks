@@ -4,6 +4,7 @@ import { flushSync, mount, unmount } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { t } from '../../strings';
 import ContentView from './ContentView.svelte';
+import contentViewSource from './ContentView.svelte?raw';
 import { openLink } from './libraryState.svelte';
 
 // The library's default `maxNestingDepth` (since 2.2.1): deeper content renders as text.
@@ -64,6 +65,16 @@ describe('ContentView never lets through', () => {
       for (const { name } of el.attributes) expect(name, el.tagName).not.toMatch(/^on|^style$/);
     expect(article.querySelector('p')?.textContent).toBe('a');
     expect(article.querySelector('[class="app"],[id]')).toBeNull();
+  });
+
+  it('focus or role attributes on a pre or a table', () => {
+    const article = render(
+      '<pre tabindex="5" role="button">x</pre>\n\n<table tabindex="5" role="button"><tr><td>c</td></tr></table>',
+    );
+    for (const el of article.querySelectorAll('pre, table')) {
+      expect(el.getAttribute('tabindex'), el.tagName).not.toBe('5');
+      expect(el.getAttribute('role'), el.tagName).not.toBe('button');
+    }
   });
 
   it.each([
@@ -216,5 +227,33 @@ describe('ContentView survives', () => {
     expect(article.querySelectorAll('blockquote').length).toBeLessThanOrEqual(MAX_NESTING);
     expect(article.textContent).toContain('hondo <b>x</b>');
     expect(article.querySelector('b')).toBeNull();
+  });
+});
+
+describe('ContentView scroll regions', () => {
+  it('lets the keyboard reach code blocks and tables, Markdown and HTML', () => {
+    const article = render(
+      '```js\nconst x = 1;\n```\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n<table><tr><td>c</td></tr></table>',
+    );
+    const pre = article.querySelector('pre');
+    const tables = article.querySelectorAll('div.table');
+    expect(tables).toHaveLength(2);
+    for (const [el, label] of [
+      [pre, t.codeBlock],
+      ...[...tables].map((table) => [table, t.tableRegion] as const),
+    ] as const) {
+      expect(el?.getAttribute('tabindex')).toBe('0');
+      expect(el?.getAttribute('role')).toBe('region');
+      expect(el?.getAttribute('aria-label')).toBe(label);
+    }
+  });
+});
+
+// Content may be right-to-left (`dir` is allowed): the reader's spacing follows the text direction.
+describe('ContentView styles', () => {
+  it('use logical properties, not physical left and right', () => {
+    const style = contentViewSource.match(/<style[^>]*>([\s\S]*)<\/style>/)?.[1] ?? '';
+    expect(style.length).toBeGreaterThan(0);
+    expect(style.match(/\b(margin|padding|border)-(left|right)\b/g) ?? []).toEqual([]);
   });
 });

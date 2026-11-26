@@ -7,6 +7,8 @@ const SIDEBAR_KEY = 's';
 /** `KeyboardEvent.key` values: identifiers, not text. */
 export const ENTER_KEY = 'Enter'; // i18n-allow: identifier
 export const ESCAPE_KEY = 'Escape'; // i18n-allow: identifier
+/** `keyCode` of a key an input method takes for itself (`VK_PROCESSKEY`). */
+const IME_KEY_CODE = 229;
 const MODE_KEYS: Record<string, PaletteMode> = { '1': 'commands', '2': 'bookmarks', '3': 'tags' };
 
 // Physical keys of ⌥⌘1…⌥⌘9, in order.
@@ -35,6 +37,10 @@ type Keys = {
 };
 
 // Every shortcut takes ⌘ only (⌃⌘S aside, which is not a text-editing key): Ctrl+N, Ctrl+K and friends are text-editing keys in macOS fields.
+
+/** A key that belongs to an input method composition: Safari reports `isComposing` late (WebKit bug 165004), so `keyCode` 229 is the reliable sign. Return early on it, without `preventDefault`, which would break the composition. */
+export const isComposing = (e: KeyboardEvent): boolean =>
+  e.isComposing || e.keyCode === IME_KEY_CODE;
 
 /** ⌘N: opens the add dialog. */
 export function isNewShortcut(e: Keys): boolean {

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { changelogSection, manifest } from './updater-manifest.mjs';
+import { changelogSection, manifest, minimumSystemVersion } from './updater-manifest.mjs';
 
 const NOW = new Date('2026-12-01T10:00:00Z');
 const URL = 'https://github.com/landygg/marks/releases/download/v1.0.0/marks_1.0.0_aarch64.app.tar.gz';
@@ -26,8 +26,8 @@ const CHANGELOG = `# Changelog
 `;
 
 test('manifest has the tauri v2 static shape', () => {
-  const m = manifest({ version: '1.0.0', signature: 'sig', url: URL, notes: 'n', now: NOW });
-  assert.deepEqual(Object.keys(m), ['version', 'notes', 'pub_date', 'platforms']);
+  const m = manifest({ version: '1.0.0', signature: 'sig', url: URL, notes: 'n', now: NOW, minimum: '15.0' });
+  assert.deepEqual(Object.keys(m), ['version', 'notes', 'pub_date', 'minimum_system_version', 'platforms']);
   assert.deepEqual(m.platforms, { 'darwin-aarch64': { signature: 'sig', url: URL } });
   assert.equal(m.version, '1.0.0');
   assert.equal(m.notes, 'n');
@@ -51,4 +51,16 @@ test('changelogSection takes only that version', () => {
 test('missing changelog section throws', () => {
   assert.throws(() => changelogSection(CHANGELOG, '2.0.0'), /2\.0\.0/);
   assert.throws(() => changelogSection('## [3.0.0] - 2027-05-01\n\n', '3.0.0'), /empty/);
+});
+
+test('manifest declares the minimum macOS it receives', () => {
+  const m = manifest({ version: '1.2.0', signature: 's', url: URL, notes: 'n', now: NOW, minimum: '16.0' });
+  assert.equal(m.minimum_system_version, '16.0');
+});
+
+test('minimumSystemVersion reads bundle.macOS.minimumSystemVersion of tauri.conf.json', () => {
+  assert.equal(minimumSystemVersion(), '15.0');
+  assert.equal(minimumSystemVersion({ bundle: { macOS: { minimumSystemVersion: '16.1' } } }), '16.1');
+  assert.throws(() => minimumSystemVersion({ bundle: {} }), /minimumSystemVersion/);
+  assert.throws(() => minimumSystemVersion({ bundle: { macOS: { minimumSystemVersion: '' } } }), /minimumSystemVersion/);
 });

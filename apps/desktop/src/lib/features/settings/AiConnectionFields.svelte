@@ -48,6 +48,7 @@
 >
   <TextField
     id="{uid}-endpoint"
+    identifier
     aria-describedby="{uid}-endpoint-help"
     type="url"
     mono

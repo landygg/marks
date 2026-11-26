@@ -8,24 +8,27 @@
     label: string;
     /** The button's name for a moment after a copy, also announced to screen readers. */
     copiedLabel: string;
+    /** Announced for the same moment when the clipboard refuses; the icon does not change. */
+    failedLabel: string;
   }
 
-  let { text, label, copiedLabel }: Props = $props();
+  let { text, label, copiedLabel, failedLabel }: Props = $props();
 
-  /** How long the button shows that the copy worked. */
+  /** How long the button shows that the copy worked, or the failure is announced. */
   const COPIED_MS = 1500;
-  let copied = $state(false);
+  let result = $state<'copied' | 'failed' | null>(null);
+  const copied = $derived(result === 'copied');
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   async function copy(): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
+      result = 'copied';
     } catch {
-      return; // The text stays selectable to copy by hand.
+      result = 'failed'; // The text stays selectable to copy by hand.
     }
-    copied = true;
     clearTimeout(timer);
-    timer = setTimeout(() => (copied = false), COPIED_MS);
+    timer = setTimeout(() => (result = null), COPIED_MS);
   }
 </script>
 
@@ -36,22 +39,14 @@
     success={copied}
     onclick={copy}
   />
-  <span class="announce" role="status">{copied ? copiedLabel : ''}</span>
+  <span class="announce" role="status"
+    >{result === 'copied' ? copiedLabel : result === 'failed' ? failedLabel : ''}</span
+  >
 </span>
 
 <style>
   .copy {
     display: flex;
     flex: none;
-  }
-
-  /* Read out, not shown. */
-  .announce {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
   }
 </style>

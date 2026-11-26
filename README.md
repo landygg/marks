@@ -15,7 +15,9 @@ Local-first bookmarks for macOS. Save a URL and marks downloads the page, turns 
 
 ## Status
 
-Version 1.0 is for macOS 14.5 or later. Apple Silicon is the only tested platform; the Intel build is published untested. Windows and Linux will come later.
+marks is for macOS 15 or later. Apple Silicon is the only tested platform; the Intel build is published untested. Windows and Linux will come later.
+
+Still on macOS 14? Stay on [marks 1.1.0](https://github.com/landygg/marks/releases/tag/v1.1.0), the last version for it: from 1.2.0 on, marks no longer opens on macOS 14. If you already updated, download the 1.1.0 DMG, open it and drag `marks.app` to Applications, replacing the one there. Your bookmarks are untouched: 1.2.0 doesn't change the database.
 
 ## Install
 

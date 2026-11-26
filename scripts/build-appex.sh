@@ -30,7 +30,7 @@ cp "$SAFARI_SRC/Info.plist" "$APPEX/Contents/Info.plist"
 "$PLIST_BUDDY" -c "Add :LSMinimumSystemVersion string $min_macos" "$APPEX/Contents/Info.plist"
 
 pnpm --dir apps/extension build
-cp -R apps/extension/dist/ "$APPEX/Contents/Resources/"
+cp -R apps/extension/dist/safari/ "$APPEX/Contents/Resources/"
 cp -R "$SAFARI_SRC"/*.lproj "$APPEX/Contents/Resources/"
 
 slices=()

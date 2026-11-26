@@ -32,7 +32,8 @@
     type Point,
   } from './searchText';
   import { modal } from '../../modal';
-  import { ENTER_KEY, paletteModeShortcut } from '../../shortcuts';
+  import { lightDismiss } from '../../outside';
+  import { ENTER_KEY, isComposing, paletteModeShortcut } from '../../shortcuts';
   import { ALL, FAILED } from '../library/sidebar';
   import { isBlocked } from '../library/detailMeta';
   import { isExtracting } from '../library/extracting';
@@ -209,6 +210,7 @@
   }
 
   function onKeydown(event: KeyboardEvent): void {
+    if (isComposing(event)) return; // the input method's Enter and arrows pick its candidate
     chosen = null; // any key (arrows, typing, ⌘1…) hands the selection back to the keyboard
     const mode = paletteModeShortcut(event);
     if (mode) {
@@ -233,6 +235,7 @@
 <dialog
   bind:this={dialog}
   {@attach modal(palette.open, resetPointer)}
+  {@attach lightDismiss(closePalette)}
   aria-label={t.paletteLabel}
   onclose={onDialogClose}
   onkeydown={onKeydown}
@@ -305,13 +308,12 @@
           </CommandItem>
         {/each}
       {/if}
-      {#if palette.error}
-        <p class="error-text" role="alert">{palette.error}</p>
-      {:else if count === 0 && !palette.searching && (palette.mode !== 'bookmarks' || query !== '')}
-        <p>{t.paletteEmpty}</p>
-      {/if}
     </div>
   </div>
+  <!-- Always in the DOM, so a screen reader hears what appears in it; empty when there is nothing to say. -->
+  <p role="status" class={{ 'error-text': palette.error }}>
+    {#if palette.error}{palette.error}{:else if count === 0 && !palette.searching && (palette.mode !== 'bookmarks' || query !== '')}{t.paletteEmpty}{/if}
+  </p>
 
   <footer>
     {#each MODES as mode (mode)}
@@ -353,6 +355,10 @@
   p {
     margin: 0;
     padding: var(--space-sm) var(--space-md);
+  }
+
+  p:empty {
+    padding: 0;
   }
 
   p:not(.error-text) {

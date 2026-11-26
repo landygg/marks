@@ -16,6 +16,7 @@ Investigado el 2026-11-10. Las fuentes oficiales (Chrome, Apple, agentskills.io)
 | El estado no vive en memoria (los service workers mueren); usar `storage` | Chrome, guías MV3 | Cumple: `background.js` (service worker) no guarda nada en memoria; el token está en `storage.local` y llega con cada mensaje |
 | Mismo código para varios navegadores con un shim de namespace | Ejemplos open source (Save In) | Cumple: `ext = browser ?? chrome` solo en `i18n.js`; transporte según protocolo |
 | `externally_connectable` y `web_accessible_resources` mínimos | Chrome | Cumple: no declara ninguno |
+| HTML, CSS y JS según la guía, filtrados por el suelo de motores (`AGENTS.md`, «Navegadores») | `modern-web-guidance` (skill `2026_11_16-268fb9ea`) | Auditada el 2026-11-25 (auditoría del 2026-11-25, notas del proyecto). Arreglado en la 1.2.0: la región de estado de las opciones anuncia cada resultado, el token se guarda con Enter (`<form>`), las dos páginas tienen `<title>`, el borde de campo y la barra de 2px con contraste en claro, y un manifiesto por navegador (`dist/chromium` sin `nativeMessaging` y con `minimum_chrome_version`, `dist/safari`). Pendiente: la captura desde el navegador (E3, E7, E8, E10–E16 y E18) |
 
 ## Riesgo resuelto: el guardado vivía en el popup
 
@@ -25,7 +26,7 @@ Pendiente de comprobar a mano en Safari: que acepta `"type": "module"` en `backg
 
 ## Organización de ficheros
 
-Las guías coinciden en separar por contexto de ejecución (popup, opciones, background, content scripts) y aislar la lógica pura para probarla fuera del navegador. marks lo hace sin carpetas: un fichero por contexto (popup, opciones, background) y `client.js` como núcleo probado. Con el tamaño actual (~640 líneas) no hace falta `src/` ni TypeScript. El bundler llegó en v0.6: esbuild, con salida en `dist/` (el navegador carga `dist`, no la carpeta de fuentes), porque el script que se inyecta para extraer con Defuddle tiene dependencias de npm (ver `docs/superpowers/specs/2026-11-12-v0.6-defuddle-extraction-design.md`).
+Las guías coinciden en separar por contexto de ejecución (popup, opciones, background, content scripts) y aislar la lógica pura para probarla fuera del navegador. marks lo hace sin carpetas: un fichero por contexto (popup, opciones, background) y `client.js` como núcleo probado. Con el tamaño actual (~640 líneas) no hace falta `src/` ni TypeScript. El bundler llegó en v0.6: esbuild, con salida en `dist/chromium/` y `dist/safari/` desde la 1.2.0 (el navegador carga esas carpetas, no la de fuentes; solo cambia el manifiesto), porque el script que se inyecta para extraer con Defuddle tiene dependencias de npm (ver `docs/superpowers/specs/2026-11-12-v0.6-defuddle-extraction-design.md`).
 
 ## Fuentes
 

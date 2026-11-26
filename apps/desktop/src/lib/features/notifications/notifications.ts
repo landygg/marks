@@ -109,3 +109,10 @@ export function createToastTimer(
     },
   };
 }
+
+/** The toast that takes the focus when the focused one closes: the next, else the previous, else none (the bell). */
+export function focusAfterClose(ids: number[], closedId: number): number | null {
+  const at = ids.indexOf(closedId);
+  if (at < 0) return null;
+  return ids[at + 1] ?? ids[at - 1] ?? null;
+}

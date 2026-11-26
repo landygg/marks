@@ -25,7 +25,7 @@
   } from './sidebar';
   import { SIDEBAR, SIDEBAR_ID } from '../layout/layout';
   import { layout, setWidth } from '../layout/layoutState.svelte';
-  import { ENTER_KEY, ESCAPE_KEY } from '../../shortcuts';
+  import { ENTER_KEY, ESCAPE_KEY, isComposing } from '../../shortcuts';
   import { t } from '../../strings';
   import { showGroupMenu, showTagMenu } from './tagMenu';
   import IconButton from '../../ui/IconButton.svelte';
@@ -163,6 +163,7 @@
   }
 
   function onNameKey(event: KeyboardEvent): void {
+    if (isComposing(event)) return;
     if (event.key === ENTER_KEY) void submitName();
     if (event.key === ESCAPE_KEY) {
       // Handled here: the window's Esc (closing the notification panel) leaves it alone.
@@ -195,6 +196,7 @@
   <TextField
     bare
     mono
+    identifier
     aria-label={t.groupNameLabel}
     placeholder={t.groupNameLabel}
     bind:ref={nameInput}

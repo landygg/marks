@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  isComposing,
   isNewShortcut,
   isPaletteShortcut,
   isSettingsShortcut,
@@ -104,5 +105,49 @@ describe('isSidebarShortcut', () => {
 
   it('ignores key repeat, so holding the keys does not flap the sidebar', () => {
     expect(isSidebarShortcut(key('s', { metaKey: true, ctrlKey: true, repeat: true }))).toBe(false);
+  });
+});
+
+describe('isComposing', () => {
+  const press = (init: KeyboardEventInit & { keyCode?: number }) =>
+    init as unknown as KeyboardEvent;
+
+  it('is true while the browser says it composes', () => {
+    expect(isComposing(press({ key: 'Enter', isComposing: true }))).toBe(true);
+  });
+
+  it('is true for keyCode 229, which Safari sends after isComposing is already false', () => {
+    expect(isComposing(press({ key: 'Enter', isComposing: false, keyCode: 229 }))).toBe(true);
+  });
+
+  it('is false for a plain Enter', () => {
+    expect(isComposing(press({ key: 'Enter', isComposing: false, keyCode: 13 }))).toBe(false);
+  });
+});
+
+// Every handler that reads Enter, Esc or an arrow in a text field steps aside while an input method composes.
+describe('key handlers in .svelte files', () => {
+  const sources = import.meta.glob<string>(['./**/*.svelte', '../App.svelte'], {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  });
+  // Files whose key handlers never sit on a text field, with the reason.
+  const NO_TEXT_FIELD: Record<string, string> = {
+    './ui/InlineConfirm.svelte': 'buttons only: Esc cancels the question',
+  };
+  const READS_KEYS = /ENTER_KEY|ESCAPE_KEY|'Arrow/;
+
+  it('use isComposing', () => {
+    const missing = Object.entries(sources)
+      .filter(([path, source]) => READS_KEYS.test(source) && !(path in NO_TEXT_FIELD))
+      .filter(([, source]) => !source.includes('isComposing('))
+      .map(([path]) => path);
+    expect(missing).toEqual([]);
+  });
+
+  it('list only exemptions that still read keys', () => {
+    for (const path of Object.keys(NO_TEXT_FIELD))
+      expect(READS_KEYS.test(sources[path])).toBe(true);
   });
 });

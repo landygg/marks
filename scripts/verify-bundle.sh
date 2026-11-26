@@ -21,6 +21,14 @@ for target in "$app" "$appex"; do
   details=$(codesign -dv "$target" 2>&1)
   [[ "$details" =~ $RUNTIME_FLAGS ]] || fail "no hardened runtime: $target"
 done
+# The bundle and the appex declare the minimum macOS of tauri.conf.json (written by Tauri and build-appex.sh).
+conf="$(dirname "$0")/../apps/desktop/src-tauri/tauri.conf.json"
+min_macos=$(sed -n 's/.*"minimumSystemVersion": *"\([0-9.]*\)".*/\1/p' "$conf")
+[[ -n "$min_macos" ]] || fail "minimumSystemVersion not found in $conf"
+for plist in "$app/Contents/Info.plist" "$appex/Contents/Info.plist"; do
+  declared=$(plutil -extract LSMinimumSystemVersion raw "$plist" 2>/dev/null || true)
+  [[ "$declared" == "$min_macos" ]] || fail "LSMinimumSystemVersion is '$declared', want '$min_macos': $plist"
+done
 archs=$(lipo -archs "$appex_bin")
 [[ "$archs" == "$ARCHS" ]] || fail "appex archs are '$archs', want '$ARCHS'"
 codesign --verify --strict --deep "$app" || fail "codesign --verify --strict --deep failed"

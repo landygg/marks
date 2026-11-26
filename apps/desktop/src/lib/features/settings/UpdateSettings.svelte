@@ -4,11 +4,13 @@
   import SettingRow from '../../ui/SettingRow.svelte';
   import SettingRows from '../../ui/SettingRows.svelte';
   import { onMount } from 'svelte';
+  import { listen } from '@tauri-apps/api/event';
   import {
     checkUpdate,
     installUpdate,
     openExternal,
     setUpdateAuto,
+    UPDATE_CHANGED,
     updateInfo,
     type Target,
     type UpdateInfo,
@@ -30,12 +32,22 @@
   let result = $state<string | null>(null);
   let failed = $state(false);
 
-  onMount(async () => {
+  async function load(): Promise<void> {
     try {
       info = await updateInfo();
     } catch (err) {
       report(err, { ...UPDATES_GLOBAL, toast: false });
     }
+  }
+
+  // Every check reloads the screen: one in the background may withdraw the update shown here.
+  onMount(() => {
+    void load();
+    const stop = listen(UPDATE_CHANGED, () => void load()).catch((err: unknown) => {
+      report(err, { ...UPDATES_GLOBAL, toast: false });
+      return () => {};
+    });
+    return () => void stop.then((unlisten) => unlisten());
   });
 
   /** Runs a check or an install, showing its failure in line. */
@@ -56,9 +68,11 @@
 
   const check = () =>
     run(async () => {
-      const version = await checkUpdate();
-      if (info) info.available = version;
-      if (!version) result = t.updateNone;
+      const found = await checkUpdate();
+      if (info) info.available = found.kind === 'available' ? found.version : null;
+      // A version this Mac cannot run is news, not a failure: plain status text, no notification.
+      if (found.kind === 'up_to_date') result = t.updateNone;
+      else if (found.kind === 'needs_macos') result = found.message;
     });
 
   const install = () => run(installUpdate);

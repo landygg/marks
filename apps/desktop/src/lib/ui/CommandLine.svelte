@@ -7,14 +7,16 @@
     copyLabel: string;
     /** The button's name for a moment after a copy. */
     copiedLabel: string;
+    /** Announced when the clipboard refuses. */
+    failedLabel: string;
   }
 
-  let { command, copyLabel, copiedLabel }: Props = $props();
+  let { command, copyLabel, copiedLabel, failedLabel }: Props = $props();
 </script>
 
 <span class="line">
   <code>{command}</code>
-  <CopyButton text={command} label={copyLabel} {copiedLabel} />
+  <CopyButton text={command} label={copyLabel} {copiedLabel} {failedLabel} />
 </span>
 
 <style>

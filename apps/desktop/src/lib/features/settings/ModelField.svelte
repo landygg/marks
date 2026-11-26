@@ -44,7 +44,12 @@
 <SettingRow {label} for="{uid}-model" {help} helpId="{uid}-help">
   {#snippet note()}
     {#if command}
-      <CommandLine {command} copyLabel={t.copyCommand} copiedLabel={t.commandCopied} />
+      <CommandLine
+        {command}
+        copyLabel={t.copyCommand}
+        copiedLabel={t.commandCopied}
+        failedLabel={t.copyFailed}
+      />
     {/if}
   {/snippet}
   {#if rec && value.trim() !== rec.model}
@@ -59,9 +64,7 @@
     mono
     field
     {required}
-    autocorrect="off"
-    autocapitalize="off"
-    spellcheck={false}
+    identifier
     bind:value
   />
 </SettingRow>

@@ -34,7 +34,14 @@
   }: Props = $props();
 </script>
 
-<button type="button" role="option" aria-selected={selected} class={{ hit: detail }} {...rest}>
+<button
+  type="button"
+  role="option"
+  tabindex="-1"
+  aria-selected={selected}
+  class={{ hit: detail }}
+  {...rest}
+>
   {#if icon}<span class="icon"><Icon name={icon} /></span>{/if}
   {#if lead}<span class="lead">{@render lead()}</span>{/if}
   <span class={['label', { mono }]}>
@@ -75,7 +82,7 @@
   /* No hover look of its own: the palette selects the row under the pointer, so the row
      that looks active is always the one Enter runs. */
   button[aria-selected='true'] {
-    border-left-color: var(--accent);
+    border-left-color: var(--indicator-color);
     background: var(--border);
   }
 

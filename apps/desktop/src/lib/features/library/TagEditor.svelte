@@ -1,7 +1,7 @@
 <script lang="ts">
   import { parseTags } from '../../format';
   import { saveBookmark } from './libraryState.svelte';
-  import { ENTER_KEY } from '../../shortcuts';
+  import { ENTER_KEY, isComposing } from '../../shortcuts';
   import { t } from '../../strings';
   import Tag from '../../ui/Tag.svelte';
   import TagField from '../../ui/TagField.svelte';
@@ -19,7 +19,7 @@
   const inputId = $props.id();
 
   async function addTags(event: KeyboardEvent): Promise<void> {
-    if (event.key !== ENTER_KEY) return;
+    if (isComposing(event) || event.key !== ENTER_KEY) return;
     const parsed = parseTags(input);
     if (parsed.length === 0) return;
     // Duplicates are dropped by the backend's `normalize_tags`.
@@ -38,6 +38,7 @@
     {/each}
     <li>
       <TagField
+        identifier
         aria-label={t.addTagsLabel}
         placeholder={t.addTagsPlaceholder}
         bind:value={input}

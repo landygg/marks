@@ -1,6 +1,6 @@
 <script lang="ts">
   import { saveBookmark } from './libraryState.svelte';
-  import { ENTER_KEY } from '../../shortcuts';
+  import { ENTER_KEY, isComposing } from '../../shortcuts';
   import { t } from '../../strings';
   import TitleField from '../../ui/TitleField.svelte';
 
@@ -30,6 +30,7 @@
   }
 
   function blurOnEnter(event: KeyboardEvent & { currentTarget: HTMLInputElement }): void {
+    if (isComposing(event)) return;
     if (event.key === ENTER_KEY) event.currentTarget.blur();
   }
 </script>

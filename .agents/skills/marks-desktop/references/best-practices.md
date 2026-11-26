@@ -33,6 +33,12 @@ Investigado el 2026-11-11 sobre la documentación oficial (v2.tauri.app, svelte.
 | Contexto (`createContext`) en vez de módulos compartidos, por SSR | Svelte, Best practices | No aplica: app de una sola ventana sin SSR; los módulos son la opción más simple |
 | Pasar getters, no valores, a funciones que deben ver cambios | Svelte, `$state` | Ten en cuenta al extraer lógica de componentes |
 
+## Plataforma web (WebKit del sistema)
+
+| Práctica | Fuente | Estado en `src` |
+|---|---|---|
+| HTML, CSS y JS de cliente según la guía, filtrados por el suelo de motores (`AGENTS.md`, «Navegadores») | `modern-web-guidance` (skill `2026_11_16-268fb9ea`) | Auditada el 2026-11-25 (auditoría del 2026-11-25, notas del proyecto). Arreglado en la 1.2.0: Enter, Esc y flechas con un método de entrada (`isComposing`), la ventana `main` limitada a la app (`navigation.rs`), campos sin autocorrector (`identifier`), código y tablas desplazables con el teclado, opciones de la paleta fuera del Tab y su estado en `role="status"`, la paleta se cierra con un clic fuera (`lightDismiss`), el motivo de un botón deshabilitado (`reason`), el foco al cerrar un toast, el error de URL en el campo, los títulos de diálogo en `h1`, el fallo al copiar, el indicador y el borde de campo con contraste en claro, `--warn` claro a 4,5:1, el lector a 70 `ch`, el tema antes del primer fotograma, `overflow: clip` y propiedades lógicas. Pendiente: el zoom (A16/C9), C4 y C16 (tras perfilar), C15, A13, C13, C14, A8, A9, A11, A12 y A17 |
+
 ## Organización de ficheros
 
 Las guías oficiales no imponen carpetas: Tauri propone `src-tauri/src/{lib.rs,main.rs}` y módulos al crecer; Svelte, componentes y módulos `.svelte.ts`. Desde el 2026-11-11, marks agrupa por **zona** (colocation): `lib/features/{library,palette,profiles,settings}/` con pantalla, estado, lógica y tests juntos. En la raíz de `lib` queda solo lo compartido: `api.ts` (frontera IPC y sus tipos), `i18n/` (catálogos `es` y `en`, con `strings.ts` como reexportación de `t`), `shortcuts.ts`, `format.ts` y `ui/` (sistema de diseño). Se descartaron las carpetas por tipo técnico (`types/`, `utils/`, `services/`): separan lo que cambia junto y `utils/` acaba de cajón de sastre. En `src-tauri/src` se mantienen módulos planos (8 ficheros); `commands.rs` se partiría en `commands/<zona>.rs` si pasa de ~500 líneas, y una carpeta `services/` invitaría a meter lógica que pertenece a `crates/core`.

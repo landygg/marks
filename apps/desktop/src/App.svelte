@@ -30,6 +30,7 @@
   import { applyTheme } from './lib/features/settings/themeState.svelte';
   import {
     ESCAPE_KEY,
+    isComposing,
     isNewShortcut,
     isPaletteShortcut,
     isSettingsShortcut,
@@ -65,6 +66,7 @@
     // only takes an Esc nothing else handled.
     if (
       e.key === ESCAPE_KEY &&
+      !isComposing(e) &&
       !e.defaultPrevented &&
       notices.open &&
       !profileDialog.open &&
@@ -208,9 +210,10 @@
     min-height: 0;
   }
 
+  /* `clip`, not `hidden`: no scroll container that code or a focus could scroll. */
   .collapsed .sidebar,
   .folding .sidebar {
-    overflow: hidden;
+    overflow: clip;
   }
 
   .settings {
