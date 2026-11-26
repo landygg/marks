@@ -1,6 +1,7 @@
 <!-- `input` and `input-inset` (DESIGN.md, Components). -->
 <script lang="ts">
   import type { HTMLInputAttributes } from 'svelte/elements';
+  import { IDENTIFIER_ATTRIBUTES } from './identifier';
 
   interface Props extends HTMLInputAttributes {
     value?: string | null;
@@ -12,6 +13,8 @@
     field?: boolean;
     /** No border or fill: the container draws them (palette search, tag field, inline names). */
     bare?: boolean;
+    /** A tag, URL, name or initials: no autocorrect, automatic capitals or spelling marks. */
+    identifier?: boolean;
   }
 
   let {
@@ -21,11 +24,18 @@
     mono = false,
     field = false,
     bare = false,
+    identifier = false,
     ...rest
   }: Props = $props();
 </script>
 
-<input {...rest} class={['input', { inset, mono, field, bare }]} bind:value bind:this={ref} />
+<input
+  {...identifier ? IDENTIFIER_ATTRIBUTES : {}}
+  {...rest}
+  class={['input', { inset, mono, field, bare }]}
+  bind:value
+  bind:this={ref}
+/>
 
 <style>
   /* Wins over the shared `.input` look, focus included. */

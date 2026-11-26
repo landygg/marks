@@ -53,6 +53,7 @@
       <TextField
         id="{uid}-url"
         type="url"
+        identifier
         placeholder={t.urlPlaceholder}
         required
         autofocus
@@ -66,7 +67,13 @@
     </Field>
 
     <Field label={t.tagsLabel} for="{uid}-tags">
-      <TextField id="{uid}-tags" placeholder={t.tagsInputPlaceholder} inset bind:value={tags} />
+      <TextField
+        id="{uid}-tags"
+        identifier
+        placeholder={t.tagsInputPlaceholder}
+        inset
+        bind:value={tags}
+      />
     </Field>
 
     {#if message}<p class="error-text" role="alert">{message}</p>{/if}

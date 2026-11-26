@@ -51,6 +51,7 @@
     <Field label={t.profileInitialsLabel} for="{uid}-initials">
       <TextField
         id="{uid}-initials"
+        identifier
         inset
         mono
         field

@@ -38,6 +38,7 @@
     {/each}
     <li>
       <TagField
+        identifier
         aria-label={t.addTagsLabel}
         placeholder={t.addTagsPlaceholder}
         bind:value={input}

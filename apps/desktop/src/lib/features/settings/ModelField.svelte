@@ -59,9 +59,7 @@
     mono
     field
     {required}
-    autocorrect="off"
-    autocapitalize="off"
-    spellcheck={false}
+    identifier
     bind:value
   />
 </SettingRow>

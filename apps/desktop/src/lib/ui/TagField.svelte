@@ -1,15 +1,18 @@
 <!-- `tag-field` (DESIGN.md, Components): the field that adds tags, drawn as an empty (dashed) `tag`. -->
 <script lang="ts">
   import type { HTMLInputAttributes } from 'svelte/elements';
+  import { IDENTIFIER_ATTRIBUTES } from './identifier';
 
   interface Props extends HTMLInputAttributes {
     value?: string;
+    /** No autocorrect, automatic capitals or spelling marks (tags are identifiers). */
+    identifier?: boolean;
   }
 
-  let { value = $bindable(), ...rest }: Props = $props();
+  let { value = $bindable(), identifier = false, ...rest }: Props = $props();
 </script>
 
-<input bind:value {...rest} />
+<input bind:value {...identifier ? IDENTIFIER_ATTRIBUTES : {}} {...rest} />
 
 <style>
   input {

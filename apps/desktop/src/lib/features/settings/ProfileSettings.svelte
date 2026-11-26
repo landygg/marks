@@ -64,7 +64,7 @@
       <TextField id="{uid}-name" field bind:value={name} />
     </SettingRow>
     <SettingRow label={t.profileInitialsLabel} for="{uid}-initials">
-      <TextField id="{uid}-initials" mono field bind:value={initials} />
+      <TextField id="{uid}-initials" identifier mono field bind:value={initials} />
     </SettingRow>
     <SettingRow
       help={message ?? (saved ? t.profileSaved : null)}

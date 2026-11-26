@@ -196,6 +196,7 @@
   <TextField
     bare
     mono
+    identifier
     aria-label={t.groupNameLabel}
     placeholder={t.groupNameLabel}
     bind:ref={nameInput}
