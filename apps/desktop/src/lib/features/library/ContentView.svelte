@@ -247,6 +247,7 @@
 
 <style>
   .content {
+    max-width: var(--measure);
     font: var(--type-body-lg);
     overflow-wrap: anywhere;
   }

@@ -100,6 +100,7 @@ spacing:
   list-min-width: 280px
   list-max-width: 520px
   content-max-width: 720px
+  content-measure: 70ch
   control-height: 28px
   topbar-height: 38px
   window-min-width: 1032px
@@ -837,8 +838,9 @@ calcular los embeddings. Si el destino ya tiene esa URL, el error llega como
 notificación.
 
 **Detalle expandido.** "Expandir" oculta la lista y el detalle ocupa también su
-espacio; la barra lateral sigue visible y la columna de contenido se centra. El
-icono pasa a ser "Contraer", que devuelve la lista. Elegir otro elemento en la
+espacio; la barra lateral sigue visible y la columna de contenido se centra; el texto del
+contenido, a 70 caracteres como máximo (`content-measure`), para que la línea
+se lea de un vistazo. El icono pasa a ser "Contraer", que devuelve la lista. Elegir otro elemento en la
 barra lateral también contrae.
 
 **Paleta de comandos.** Superposición de 640px centrada horizontalmente, a 96px

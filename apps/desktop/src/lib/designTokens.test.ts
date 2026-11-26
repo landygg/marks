@@ -101,6 +101,7 @@ const SIZES: Record<string, string | null> = {
   'list-width': '--list',
   'detail-min-width': '--detail-min',
   'content-max-width': '--content',
+  'content-measure': '--measure',
   'control-height': '--control',
   'topbar-height': '--topbar',
   'palette-width': '--palette',

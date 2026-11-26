@@ -51,6 +51,8 @@
   --list: 340px;
   --detail-min: 420px;
   --content: 720px;
+  /* The reader's line: `ch` resolves where it is used, in the reader's own font. */
+  --measure: 70ch;
   --control: 28px;
   --topbar: 38px;
   --palette: 640px;
