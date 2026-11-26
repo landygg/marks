@@ -80,6 +80,9 @@ The app updates with `tauri-plugin-updater` from GitHub Releases:
 - **Format:** Tauri v2's static manifest, which `scripts/updater-manifest.mjs` writes with the notes from the `CHANGELOG.md` section, and the `marks_<version>_aarch64.app.tar.gz` package with its `.sig` signature.
 - **Keys:** the public one is in `tauri.conf.json` (`plugins.updater.pubkey`). The owner keeps the private one and its password in a password manager and in GitHub's `release` environment; they never enter the repo.
 - `MARKS_UPDATE_ENDPOINT` replaces the endpoint, for testing only; the signature is still required.
+- **Minimum macOS:** the manifest declares `minimum_system_version`, taken from `bundle.macOS.minimumSystemVersion` in `tauri.conf.json`. From 1.2.0 on, the app holds back an update that needs a newer macOS than the running one and says so; an unreadable value also holds it back. The plugin ignores the field, so versions before 1.2.0 install anything.
+- **Raising the minimum macOS:** only once the previous published version already has that check (1.2.0 or later), and after trying the notice with `MARKS_UPDATE_ENDPOINT` and a manifest with `"minimum_system_version": "99.0"`. Otherwise users on the older macOS install a version that no longer opens, as happened to macOS 14 with 1.2.0.
+- **The v1.1.0 release is never deleted** and keeps its DMG: it is the way back for macOS 14.
 
 ## 6. Safari extension
 

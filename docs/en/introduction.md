@@ -48,7 +48,7 @@ There are no search fields in the areas. You search, and run everything else, fr
 | macOS on Intel | Published untested |
 | Windows and Linux | Later |
 
-marks needs macOS 14.5 or later.
+marks needs macOS 15 or later.
 
 ## Next
 

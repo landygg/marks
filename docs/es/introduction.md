@@ -48,7 +48,7 @@ La barra lateral se oculta con ⌃⌘S, y la barra lateral y la lista se ensanch
 | macOS en Intel | Se publica sin probar |
 | Windows y Linux | Más adelante |
 
-marks necesita macOS 14.5 o posterior.
+marks necesita macOS 15 o posterior.
 
 ## Siguiente paso
 

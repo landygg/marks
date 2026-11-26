@@ -4,7 +4,7 @@
 
 ## Requirements
 
-- macOS 14.5 or later. That is the minimum the bundle declares (`minimumSystemVersion` in `tauri.conf.json`).
+- macOS 15 or later. That is the minimum the bundle declares (`minimumSystemVersion` in `tauri.conf.json`).
 - The Xcode command line tools. `scripts/check.sh` and `scripts/build-app.sh` use `xcrun swiftc`, `codesign` and `PlistBuddy`.
 - Rust (2024 edition), with `rustfmt` and `clippy`.
 - Node.js and pnpm.
