@@ -10,7 +10,7 @@ use marks_core::store::lock;
 use marks_i18n::{AppText, Localize};
 use std::sync::{Mutex, MutexGuard};
 use std::time::Duration;
-use tauri::{AppHandle, Manager, Url};
+use tauri::{AppHandle, Emitter, Manager, Url};
 use tauri_plugin_updater::{Update, Updater, UpdaterExt};
 
 const STARTUP_DELAY: Duration = Duration::from_secs(30);
@@ -23,6 +23,11 @@ const LOG_CHECK_FAILED: &str = "updater: automatic check failed"; // i18n-allow:
 const LOG_NOTHING_PENDING: &str = "no update pending: check first"; // i18n-allow: log
 /// Log only: the manifest's minimum is not a version; the update is held back.
 const LOG_BAD_MINIMUM: &str = "updater: unreadable minimum macOS"; // i18n-allow: log
+/// Payload-less event: the pending update changed (found, or withdrawn by a later check). Same
+/// value as `UPDATE_CHANGED` in `src/lib/api.ts`.
+pub const UPDATE_CHANGED: &str = "update-changed";
+/// Log only.
+const LOG_EMIT_FAILED: &str = "updater: could not emit"; // i18n-allow: log
 /// Manifest field with the oldest macOS the update runs on (`scripts/updater-manifest.mjs`).
 const MIN_SYSTEM_FIELD: &str = "minimum_system_version";
 /// Most parts a macOS version has (major, minor, patch).
@@ -198,6 +203,10 @@ pub async fn check(app: &AppHandle) -> Result<Found> {
         Found::Available(_) => update,
         _ => None,
     };
+    // An open Settings → Updates reloads, so it never offers an update that is no longer pending.
+    if let Err(e) = app.emit(UPDATE_CHANGED, ()) {
+        log::warn!("{LOG_EMIT_FAILED} {UPDATE_CHANGED}: {e}");
+    }
     Ok(found)
 }
 

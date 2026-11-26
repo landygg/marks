@@ -16,6 +16,8 @@ export const EXTRACTING_CHANGED = 'extracting-changed';
 export const NOTIFICATIONS_CHANGED = 'notifications-changed';
 /** Emitted by the backend (no payload) when the AI or local API status changes; same value as `APP_STATUS_CHANGED` in src-tauri/src/status.rs. */
 export const APP_STATUS_CHANGED = 'app-status-changed';
+/** Emitted by the backend (no payload) after every update check, so an open Updates screen reloads; same value as `UPDATE_CHANGED` in src-tauri/src/updater.rs. */
+export const UPDATE_CHANGED = 'update-changed';
 
 const EXTERNAL_URL = /^https?:\/\//i;
 

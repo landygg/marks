@@ -12,8 +12,17 @@ vi.mock('../../api', () => ({
   openExternal: vi.fn(),
   setUpdateAuto: vi.fn(),
   updateInfo: vi.fn(),
+  UPDATE_CHANGED: 'update-changed',
 }));
 vi.mock('../library/libraryState.svelte', () => ({ report: vi.fn() }));
+// The backend's events: each `listen` keeps its handler here, to be fired by the test.
+const handlers = new Map<string, () => void>();
+vi.mock('@tauri-apps/api/event', () => ({
+  listen: vi.fn(async (event: string, handler: () => void) => {
+    handlers.set(event, handler);
+    return () => handlers.delete(event);
+  }),
+}));
 
 const INFO: UpdateInfo = { current: '1.2.0', available: null, supported: true, auto: true };
 let view: ReturnType<typeof mount> | null = null;
@@ -59,5 +68,25 @@ describe('UpdateSettings, a version that needs a newer macOS', () => {
     await open();
     buttonNamed(t.updateCheck)?.click();
     await vi.waitFor(() => expect(buttonNamed(t.updateInstall('1.3.0'))).toBeDefined());
+  });
+});
+
+describe('UpdateSettings, a later check that withdraws the update', () => {
+  it('drops the Install button', async () => {
+    await open({ ...INFO, available: '1.3.0' });
+    expect(buttonNamed(t.updateInstall('1.3.0'))).toBeDefined();
+    vi.mocked(updateInfo).mockResolvedValue({ ...INFO, available: null });
+    await vi.waitFor(() => expect(handlers.has('update-changed')).toBe(true));
+    handlers.get('update-changed')?.();
+    await vi.waitFor(() => expect(buttonNamed(t.updateInstall('1.3.0'))).toBeUndefined());
+    expect(buttonNamed(t.updateCheck)).toBeDefined();
+  });
+
+  it('stops listening when it closes', async () => {
+    await open();
+    await vi.waitFor(() => expect(handlers.has('update-changed')).toBe(true));
+    if (view) unmount(view);
+    view = null;
+    await vi.waitFor(() => expect(handlers.has('update-changed')).toBe(false));
   });
 });
