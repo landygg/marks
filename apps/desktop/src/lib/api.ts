@@ -299,8 +299,13 @@ export interface UpdateInfo {
 }
 
 export const updateInfo = () => invoke<UpdateInfo>('update_info');
-/** The new version, or `null` when this one is the latest; rejects with a translated sentence. */
-export const checkUpdate = () => invoke<string | null>('check_update');
+/** What a manual check found (`CheckView` in updater.rs); rejects with a translated sentence when the check fails. */
+export type UpdateCheck =
+  | { kind: 'up_to_date' }
+  | { kind: 'available'; version: string }
+  /** Newer, but not for this Mac's macOS: `message` says so, translated. */
+  | { kind: 'needs_macos'; message: string };
+export const checkUpdate = () => invoke<UpdateCheck>('check_update');
 /** Downloads and installs the version `checkUpdate` found and restarts marks: it only returns (rejecting) when that failed. */
 export const installUpdate = () => invoke<void>('install_update');
 export const setUpdateAuto = (auto: boolean) => invoke<void>('set_update_auto', { auto });

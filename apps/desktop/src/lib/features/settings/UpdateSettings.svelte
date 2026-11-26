@@ -56,9 +56,11 @@
 
   const check = () =>
     run(async () => {
-      const version = await checkUpdate();
-      if (info) info.available = version;
-      if (!version) result = t.updateNone;
+      const found = await checkUpdate();
+      if (info) info.available = found.kind === 'available' ? found.version : null;
+      // A version this Mac cannot run is news, not a failure: plain status text, no notification.
+      if (found.kind === 'up_to_date') result = t.updateNone;
+      else if (found.kind === 'needs_macos') result = found.message;
     });
 
   const install = () => run(installUpdate);

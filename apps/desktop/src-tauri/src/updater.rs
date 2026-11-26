@@ -43,6 +43,32 @@ pub enum Found {
     },
 }
 
+/// What a manual check tells Settings → Updates; a version this Mac cannot run is a result, not a
+/// failure, so it arrives as text to show and not as an error.
+#[derive(serde::Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum CheckView {
+    UpToDate,
+    Available { version: String },
+    NeedsMacos { message: String },
+}
+
+impl From<Found> for CheckView {
+    fn from(found: Found) -> Self {
+        match found {
+            Found::UpToDate => CheckView::UpToDate,
+            Found::Available(version) => CheckView::Available { version },
+            Found::NeedsMacos {
+                version,
+                minimum,
+                current,
+            } => CheckView::NeedsMacos {
+                message: needs_macos_text(version, minimum, current),
+            },
+        }
+    }
+}
+
 fn parse_version(text: &str) -> Option<MacosVersion> {
     let parts = text
         .split('.')
@@ -190,7 +216,7 @@ fn auto_enabled(state: &AppState) -> bool {
 }
 
 /// The text for a version that needs a newer macOS.
-pub fn needs_macos_text(version: String, minimum: String, current: String) -> String {
+fn needs_macos_text(version: String, minimum: String, current: String) -> String {
     AppText::UpdateNeedsNewerMacos {
         version,
         minimum,
@@ -322,6 +348,29 @@ mod tests {
     fn macos_versions_print_without_a_zero_patch() {
         assert_eq!(super::version_text((15, 0, 0)), "15.0");
         assert_eq!(super::version_text((14, 7, 2)), "14.7.2");
+    }
+
+    #[test]
+    fn a_check_reaches_the_screen_as_a_tagged_result() {
+        use super::{CheckView, Found};
+        use serde_json::json;
+        let view = |found| serde_json::to_value(CheckView::from(found)).expect("JSON");
+        assert_eq!(view(Found::UpToDate), json!({ "kind": "up_to_date" }));
+        assert_eq!(
+            view(Found::Available("1.3.0".into())),
+            json!({ "kind": "available", "version": "1.3.0" })
+        );
+        let needs = view(Found::NeedsMacos {
+            version: "1.3.0".into(),
+            minimum: "99.0".into(),
+            current: "15.4".into(),
+        });
+        assert_eq!(needs["kind"], "needs_macos");
+        let message = needs["message"].as_str().expect("message");
+        assert!(
+            message.contains("99.0") && message.contains("15.4"),
+            "{message}"
+        );
     }
 
     #[test]
