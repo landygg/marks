@@ -66,6 +66,16 @@ describe('ContentView never lets through', () => {
     expect(article.querySelector('[class="app"],[id]')).toBeNull();
   });
 
+  it('focus or role attributes on a pre or a table', () => {
+    const article = render(
+      '<pre tabindex="5" role="button">x</pre>\n\n<table tabindex="5" role="button"><tr><td>c</td></tr></table>',
+    );
+    for (const el of article.querySelectorAll('pre, table')) {
+      expect(el.getAttribute('tabindex'), el.tagName).not.toBe('5');
+      expect(el.getAttribute('role'), el.tagName).not.toBe('button');
+    }
+  });
+
   it.each([
     'javascript:alert(1)',
     'JaVaScRiPt:alert(1)',
@@ -216,5 +226,24 @@ describe('ContentView survives', () => {
     expect(article.querySelectorAll('blockquote').length).toBeLessThanOrEqual(MAX_NESTING);
     expect(article.textContent).toContain('hondo <b>x</b>');
     expect(article.querySelector('b')).toBeNull();
+  });
+});
+
+describe('ContentView scroll regions', () => {
+  it('lets the keyboard reach code blocks and tables, Markdown and HTML', () => {
+    const article = render(
+      '```js\nconst x = 1;\n```\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n<table><tr><td>c</td></tr></table>',
+    );
+    const pre = article.querySelector('pre');
+    const tables = article.querySelectorAll('div.table');
+    expect(tables).toHaveLength(2);
+    for (const [el, label] of [
+      [pre, t.codeBlock],
+      ...[...tables].map((table) => [table, t.tableRegion] as const),
+    ] as const) {
+      expect(el?.getAttribute('tabindex')).toBe('0');
+      expect(el?.getAttribute('role')).toBe('region');
+      expect(el?.getAttribute('aria-label')).toBe(label);
+    }
   });
 });

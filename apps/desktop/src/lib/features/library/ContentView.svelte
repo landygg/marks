@@ -138,9 +138,13 @@
   {@render mediaTag('frame', attributes, attributes?.title)}
 {/snippet}
 
-<!-- The language as text: the default renderer puts it in a `class`. -->
+<!-- The language as text: the default renderer puts it in a `class`. A focusable region, so the
+     keyboard can scroll a wide block (our attributes, not the content's). -->
 {#snippet code({ lang, text: source }: CodeSnippetProps)}
-  <pre>{#if lang}<span class="code-lang">{lang}</span>{/if}<code>{source}</code></pre>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -- a scrolling region must take the focus for the arrows to scroll it. -->
+  <pre tabindex="0" role="region" aria-label={t.codeBlock}>{#if lang}<span class="code-lang"
+        >{lang}</span
+      >{/if}<code>{source}</code></pre>
 {/snippet}
 
 <!-- `text`, not `raw`: the default loses the backticks inside (library issue #417). -->
@@ -157,13 +161,20 @@
   </li>
 {/snippet}
 
-<!-- `content-table`: its own horizontal scroll, for Markdown and HTML tables alike. -->
+<!-- `content-table`: its own horizontal scroll, for Markdown and HTML tables alike, reachable by
+     keyboard. -->
 {#snippet table({ children }: TableSnippetProps)}
-  <div class="table"><table>{@render children?.()}</table></div>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -- a scrolling region must take the focus for the arrows to scroll it. -->
+  <div class="table" tabindex="0" role="region" aria-label={t.tableRegion}>
+    <table>{@render children?.()}</table>
+  </div>
 {/snippet}
 
 {#snippet html_table({ attributes, children }: HtmlSnippetProps)}
-  <div class="table"><table {...attributes}>{@render children?.()}</table></div>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -- a scrolling region must take the focus for the arrows to scroll it. -->
+  <div class="table" tabindex="0" role="region" aria-label={t.tableRegion}>
+    <table {...attributes}>{@render children?.()}</table>
+  </div>
 {/snippet}
 
 <!-- The label as written, with no link: the library's reference adds an `id` and a `class`. -->

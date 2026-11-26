@@ -251,6 +251,8 @@ export const en = {
   mediaKinds: { image: 'Image', video: 'Video', audio: 'Audio', frame: 'Embedded content' },
   taskDone: 'Task done',
   taskOpen: 'Unfinished task',
+  codeBlock: 'Code block',
+  tableRegion: 'Table',
   delete: 'Delete',
   confirmDelete: 'Delete this bookmark? This can’t be undone.',
   confirmDeleteYes: 'Yes, delete',

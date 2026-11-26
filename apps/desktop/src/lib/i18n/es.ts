@@ -255,6 +255,8 @@ export const es = {
   mediaKinds: { image: 'Imagen', video: 'Vídeo', audio: 'Audio', frame: 'Contenido incrustado' },
   taskDone: 'Tarea hecha',
   taskOpen: 'Tarea pendiente',
+  codeBlock: 'Bloque de código',
+  tableRegion: 'Tabla',
   delete: 'Eliminar',
   confirmDelete: '¿Eliminar este bookmark? No se puede deshacer.',
   confirmDeleteYes: 'Sí, eliminar',
