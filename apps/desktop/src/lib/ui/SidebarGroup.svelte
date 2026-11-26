@@ -82,7 +82,7 @@
   /* Drop target and deletion: the `outline` fill and an indicator bar. */
   .drop,
   .deleting {
-    border-left-color: var(--accent);
+    border-left-color: var(--indicator-color);
     background: var(--border);
   }
 

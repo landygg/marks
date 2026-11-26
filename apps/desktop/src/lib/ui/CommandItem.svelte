@@ -82,7 +82,7 @@
   /* No hover look of its own: the palette selects the row under the pointer, so the row
      that looks active is always the one Enter runs. */
   button[aria-selected='true'] {
-    border-left-color: var(--accent);
+    border-left-color: var(--indicator-color);
     background: var(--border);
   }
 

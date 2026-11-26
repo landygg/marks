@@ -19,7 +19,7 @@
     width: var(--tag-field);
     height: var(--tag);
     padding: 0 calc(var(--space-sm) - 1px);
-    border: 1px dashed var(--border);
+    border: 1px dashed var(--field-border);
     color: var(--fg);
     font: var(--type-label-md);
   }

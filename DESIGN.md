@@ -15,6 +15,8 @@ colors:
   on-surface: "#e8e8ea"
   secondary: "#92959c"
   outline: "#2c2f34"
+  field-outline: "#686b73"
+  indicator: "#ffd60a"
   error: "#ff6b6b"
   success: "#4ade80"
   warning: "#ff9f43"
@@ -23,9 +25,11 @@ colors:
   on-surface-light: "#17181a"
   secondary-light: "#63666d"
   outline-light: "#dcdde0"
+  field-outline-light: "#868990"
+  indicator-light: "#17181a"
   error-light: "#c81e1e"
   success-light: "#1f7a3a"
-  warning-light: "#b45309"
+  warning-light: "#a34b08"
 typography:
   headline-lg:
     fontFamily: system-ui
@@ -575,8 +579,12 @@ acción principal, coincidencia de búsqueda o estado.
   Rellena el elemento seleccionado de la barra lateral, las coincidencias de
   búsqueda, el botón principal de diálogos y Ajustes, la marca de
   notificaciones sin leer y el punto de "extrayendo" de la barra inferior
-  (`status-dot-extracting`). Fuera de eso solo aparece como indicador fino de 2px
-  (fila seleccionada, subrayado de enlaces, barra del nombre del perfil). El texto sobre amarillo es siempre **on-primary (#17170f)**.
+  (`status-dot-extracting`). El texto sobre amarillo es siempre **on-primary (#17170f)**.
+- **Indicator (#ffd60a en oscuro, #17181a en claro):** el indicador fino de 2px
+  (fila seleccionada, subrayado de enlaces, barra del nombre del perfil, perfil
+  activo y destino de arrastre). En oscuro es el amarillo; en claro es tinta
+  (`on-surface-light`), porque el amarillo da 1,35:1 sobre `neutral-light`. Mismo
+  valor que el anillo de foco, pero otro papel: no se mueven juntos.
 - **Neutral (#131416):** el marco (carril, franjas superiores y huecos entre
   paneles), la fila bajo el cursor o seleccionada, los bloques de Ajustes, de
   código y de medios, los botones secundarios y los campos que van sobre un
@@ -588,7 +596,10 @@ acción principal, coincidencia de búsqueda o estado.
 - **Secondary (#92959c):** metadatos, snippets, etiquetas y elementos no
   seleccionados de la barra lateral.
 - **Outline (#2c2f34):** ya no separa zonas: queda para separar filas y como
-  borde de campos, botones y superposiciones.
+  borde de botones y superposiciones.
+- **Field-outline (#686b73 en oscuro, #868990 en claro):** el borde de los
+  campos (`input`, `tag-field`, `segmented-control`), de 3:1 o más sobre
+  `neutral` y `surface` en los dos temas, para que se vea dónde se escribe.
 - **Error, success, warning:** solo para el estado de un bookmark, para
   errores y para la gravedad de una notificación. `success` = `ready`,
   `warning` = `pending_embed`, `error` = `failed`, `secondary` = `pending`. En
@@ -604,7 +615,8 @@ que el linter compruebe también su contraste.
 En `apps/desktop/src/app.css` los tokens se exponen como variables CSS:
 `--accent` (`primary`), `--accent-hover` (`primary-hover`), `--on-accent`
 (`on-primary`), `--bg` (`neutral`), `--surface`, `--fg` (`on-surface`),
-`--muted` (`secondary`), `--border` (`outline`), `--danger` (`error`), `--ok`
+`--muted` (`secondary`), `--border` (`outline`), `--field-border`
+(`field-outline`), `--indicator-color` (`indicator`), `--danger` (`error`), `--ok`
 (`success`), `--warn` (`warning`) y `--focus` (el anillo de foco: `primary` en
 oscuro, `on-surface-light` en claro). Cada token de tipografía es
 `--type-<nombre>`, cada radio `--radius-<nombre>` y cada medida de `spacing`
@@ -689,7 +701,7 @@ pasa por la paleta de comandos.
    - franja superior (38px): a la izquierda, lo que los semáforos sobresalen
      del carril y, tras ellos, la marca `marks`;
    - la cabecera del panel (`sidebar-heading`, con `sm` encima y debajo):
-     el nombre del perfil activo, precedido de la barra `primary`, y al final
+     el nombre del perfil activo, precedido de la barra `indicator`, y al final
      de la misma línea, pegado al borde derecho, el botón de icono "Nuevo
      grupo";
    - el elemento "Todos" y, justo debajo y al mismo nivel, "Fallidos" (solo los
@@ -791,7 +803,7 @@ equivalentes:
   grupo o sobre cualquiera de sus etiquetas. Soltarla en "Sin grupo" la saca de
   su grupo. Durante el arrastre la etiqueta se queda en su sitio al 50% de
   opacidad, una copia sigue al cursor y el grupo de destino se marca con fondo
-  `outline` y una barra `primary` de 2px a la izquierda. "Categorías" no acepta
+  `outline` y una barra `indicator` de 2px a la izquierda. "Categorías" no acepta
   etiquetas.
 - *Menú contextual* (clic derecho), que es el menú nativo de macOS. Sobre una
   etiqueta: "Mover a" (submenú con los grupos y "Nuevo grupo…") y "Quitar del
@@ -1074,7 +1086,7 @@ donde el cursor mueve la selección.
 ### Campos
 
 - **`input`**: campo de texto, desplegable o área de texto. Fondo `surface`,
-  borde `outline`; con foco, el borde toma el color del foco de teclado. Los
+  borde `field-outline`; con foco, el borde toma el color del foco de teclado. Los
   tres comparten un único estilo (la clase `input` de `app.css`). Un campo
   dentro de un contenedor que ya dibuja el borde (el nombre de un grupo en
   la barra lateral) va sin borde ni fondo.
@@ -1087,12 +1099,12 @@ donde el cursor mueve la selección.
 - **`segmented-control`** y **`segment`**: para elegir una entre pocas
   opciones fijas (el tema, las esquinas). Fondo `surface`, porque va sobre un
   bloque de Ajustes. Segmentos de `row-height` en `label-md` dentro de
-  un borde `outline`, separados por una línea `outline`; bajo el cursor el
+  un borde `field-outline`, separados por una línea `outline`; bajo el cursor el
   texto pasa a `on-surface` y el elegido lleva relleno `primary` con texto
   `on-primary`.
 - **`tag`**: texto `secondary` en `label-md` con borde `outline`, 24px de
   alto; el botón de quitar es un aspa dentro de la propia etiqueta. El campo
-  para añadir lleva borde discontinuo.
+  para añadir (`tag-field`) lleva borde discontinuo `field-outline`.
 
 ### Navegación
 
@@ -1103,7 +1115,7 @@ donde el cursor mueve la selección.
 - **`wordmark`**: la marca `marks` en `headline-md`, sin adorno. Va en la
   franja superior de la barra lateral, tras los semáforos.
 - **`sidebar-heading`**: cabecera del panel de la barra lateral: una barra
-  `primary` de `indicator` de ancho y el nombre de lo que muestra (el perfil
+  de color `indicator` de `indicator` de ancho y el nombre de lo que muestra (el perfil
   activo) en `headline-md` y `on-surface`, en una línea con elipsis, con `sm`
   encima y debajo para que se lea como cabecera. Al final de la línea,
   pegados al borde derecho, sus botones de icono ("Nuevo grupo").
@@ -1125,7 +1137,7 @@ donde el cursor mueve la selección.
   en `label-md` y texto `secondary`, sin relleno propio (el fondo del
   carril); bajo el cursor, fondo `outline` y texto `on-surface`, como un
   `icon-button`. Seleccionado (el perfil activo), fondo `outline`, texto
-  `on-surface` y una barra `primary` de `indicator` en el borde izquierdo del
+  `on-surface` y una barra de color `indicator` en el borde izquierdo del
   carril, no de la caja. Como destino de arrastre (un bookmark encima), el
   mismo aspecto que seleccionado. `title` y `aria-label`: el nombre del perfil
   y su atajo.
@@ -1141,7 +1153,7 @@ donde el cursor mueve la selección.
 - **`sidebar-group`**: chevrón de 12px y nombre en `label-sm`, en mayúsculas
   y color `secondary`; `on-surface` bajo el cursor. Como **`drop-target`**
   (el grupo sobre el que se va a soltar una etiqueta) usa fondo `outline`,
-  texto `on-surface` y barra `primary` de `indicator`. Como
+  texto `on-surface` y barra de color `indicator`. Como
   **`sidebar-group-deleting`**, lo mismo con barra `error`, compartida con la
   pregunta que aparece debajo.
 - **Menú contextual:** el nativo de macOS. No se dibuja ni se le aplican
@@ -1151,7 +1163,7 @@ donde el cursor mueve la selección.
 
 - **`list-row`**: título en `label-lg`, resumen (`list-row-summary`) y
   dominio y fecha (`list-row-meta`). Bajo el cursor o seleccionada usa fondo
-  `neutral`; la seleccionada añade una barra `primary` de `indicator` en el
+  `neutral`; la seleccionada añade una barra de color `indicator` en el
   borde izquierdo.
 - **`status-dot-*`**: cuadrado de 8px con el color del estado y siempre con
   `title` y `aria-label`, porque el color solo no basta. Donde el estado va
@@ -1252,7 +1264,7 @@ donde el cursor mueve la selección.
   sin estado elegido: se pulsan igual que `↵` y `esc`.
 - **`command-item`**: fila de `command-item-height`; un resultado de búsqueda
   (`command-item-hit`) ocupa dos líneas. La seleccionada (`-selected`) usa
-  fondo `outline` y la barra `primary` de `indicator`. No hay aspecto propio
+  fondo `outline` y la barra de color `indicator`. No hay aspecto propio
   bajo el cursor: mover el cursor sobre una fila la selecciona, así la fila
   resaltada es siempre la que ejecuta `↵`. Al salir el cursor de la lista
   vuelve la fila elegida antes de que entrara, para que "Ejecutar" en el pie
@@ -1271,8 +1283,8 @@ donde el cursor mueve la selección.
   `secondary`.
 - **`error-text`**: todo mensaje que informa de un fallo (en un diálogo, en
   la paleta, en el detalle o bajo un ajuste) va en `error`.
-- **`link`**: texto `on-surface` con subrayado `primary` de `indicator`.
-  Nunca texto amarillo.
+- **`link`**: texto `on-surface` con subrayado de color `indicator` (amarillo en
+  oscuro, tinta en claro) de 2px. Nunca texto amarillo.
 - **`code-block`**, dentro del contenido: código en `label-md` sobre
   `neutral`.
 

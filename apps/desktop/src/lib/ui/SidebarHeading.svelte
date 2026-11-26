@@ -31,7 +31,7 @@
     flex: none;
     width: var(--indicator);
     height: var(--icon);
-    background: var(--accent);
+    background: var(--indicator-color);
     content: '';
   }
 
