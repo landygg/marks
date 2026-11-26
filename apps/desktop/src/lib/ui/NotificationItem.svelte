@@ -66,7 +66,7 @@
     position: absolute;
     inset: 0 auto 0 0;
     width: var(--indicator);
-    background: var(--accent);
+    background: var(--indicator-color);
     content: '';
   }
 

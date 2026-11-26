@@ -583,7 +583,7 @@ acción principal, coincidencia de búsqueda o estado.
   (`status-dot-extracting`). El texto sobre amarillo es siempre **on-primary (#17170f)**.
 - **Indicator (#ffd60a en oscuro, #17181a en claro):** el indicador fino de 2px
   (fila seleccionada, subrayado de enlaces, barra del nombre del perfil, perfil
-  activo y destino de arrastre). En oscuro es el amarillo; en claro es tinta
+  activo, destino de arrastre y notificación sin leer). En oscuro es el amarillo; en claro es tinta
   (`on-surface-light`), porque el amarillo da 1,35:1 sobre `neutral-light`. Mismo
   valor que el anillo de foco, pero otro papel: no se mueven juntos.
 - **Neutral (#131416):** el marco (carril, franjas superiores y huecos entre
@@ -1055,7 +1055,7 @@ donde el cursor mueve la selección.
 | `status-item` | `ui/StatusItem.svelte` | `-hover` si es un botón; con punto, icono o atajo |
 | `resize-handle` | `ui/Resizer.svelte` | `-hover` (tras 120ms), `-active` al arrastrar o con el foco; teclado y doble clic |
 | `notification-panel` | `ui/NotificationPanel.svelte` | vacío: el mensaje en `secondary` |
-| `notification-item`, `notification-item-meta` | `ui/NotificationItem.svelte` | `-unread`: barra `primary` de `indicator` |
+| `notification-item`, `notification-item-meta` | `ui/NotificationItem.svelte` | `-unread`: barra de color `indicator` |
 | `toast` | `ui/Toast.svelte` | barra del color de la gravedad |
 
 ### Botones
@@ -1320,7 +1320,7 @@ donde el cursor mueve la selección.
   hora y el detalle. La gravedad va en `label-sm`, en mayúsculas y en su
   color, con un cuadrado de `status-dot-size` del mismo color; el contador ×N
   es una caja como `kbd`. Las acciones son botones de icono. Filas separadas
-  por una línea `outline`. `-unread`: barra `primary` de `indicator` a la
+  por una línea `outline`. `-unread`: barra de color `indicator` a la
   izquierda.
 - **`toast`**: un `notification-item` en su caja (`surface`, borde `outline`,
   radio `md`, de `notification-panel-width`), con una barra de `indicator` a la

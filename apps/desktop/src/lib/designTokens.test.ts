@@ -236,6 +236,24 @@ describe('the tokens of app.css are those of DESIGN.md', () => {
 });
 
 describe('components', () => {
+  it('thin 2px indicators take the indicator colour, ink on the light theme, not the yellow', () => {
+    // A hover hint on the resize handle, not a marker of state: it stays yellow.
+    const HOVER_HINTS = ['./ui/Resizer.svelte'];
+    const off: string[] = [];
+    for (const path of uiFiles.filter((p) => !HOVER_HINTS.includes(p))) {
+      const rules = new Map<string, Declaration[]>();
+      const style = sources[path].match(/<style[^>]*>([\s\S]*)<\/style>/)?.[1] ?? '';
+      for (const d of declarations(style))
+        rules.set(d.selector, [...(rules.get(d.selector) ?? []), d]);
+      for (const [selector, declared] of rules) {
+        const thin = declared.some((d) => d.value.includes('var(--indicator)'));
+        const yellow = declared.some((d) => d.value.includes('var(--accent)'));
+        if (thin && yellow) off.push(`${path}: ${selector}`);
+      }
+    }
+    expect(off).toEqual([]);
+  });
+
   it('only lib/ui draws controls: no screen has a raw button or field', () => {
     expect(screens).toContain('../App.svelte');
     for (const path of screens)
