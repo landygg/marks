@@ -19,7 +19,7 @@ All notable changes to marks are listed here. The format follows [Keep a Changel
 - When adding a URL fails, the URL field is marked with the error and gets the focus.
 - Copying to the clipboard says so when it fails.
 - Tag, URL, group name, initials and endpoint fields are no longer autocorrected or capitalized.
-- On the light theme, the selected row, links, fields and “Warning” notices have enough contrast.
+- On the light theme, the selected row, links, fields, the unread notification bar and “Warning” notices have enough contrast.
 - A pinned theme no longer flashes the system one when marks starts.
 - On the extension's options page, every result is read out, also the same one twice, and Enter saves the token.
 
