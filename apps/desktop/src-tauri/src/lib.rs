@@ -5,6 +5,7 @@ mod locale;
 // Tauri only sets its default menu on macOS, and so do we.
 #[cfg(target_os = "macos")]
 mod menu;
+mod navigation;
 mod notifications;
 mod parser_window;
 mod state;
@@ -44,6 +45,7 @@ pub fn run() -> anyhow::Result<()> {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(navigation::plugin())
         .manage(state)
         // In `setup` the logger is already active and records the model and worker notices.
         .setup(|app| {
