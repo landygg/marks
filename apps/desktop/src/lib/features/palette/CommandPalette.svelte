@@ -32,6 +32,7 @@
     type Point,
   } from './searchText';
   import { modal } from '../../modal';
+  import { lightDismiss } from '../../outside';
   import { ENTER_KEY, isComposing, paletteModeShortcut } from '../../shortcuts';
   import { ALL, FAILED } from '../library/sidebar';
   import { isBlocked } from '../library/detailMeta';
@@ -234,6 +235,7 @@
 <dialog
   bind:this={dialog}
   {@attach modal(palette.open, resetPointer)}
+  {@attach lightDismiss(closePalette)}
   aria-label={t.paletteLabel}
   onclose={onDialogClose}
   onkeydown={onKeydown}
