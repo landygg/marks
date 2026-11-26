@@ -4,6 +4,7 @@ import { flushSync, mount, unmount } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { t } from '../../strings';
 import ContentView from './ContentView.svelte';
+import contentViewSource from './ContentView.svelte?raw';
 import { openLink } from './libraryState.svelte';
 
 // The library's default `maxNestingDepth` (since 2.2.1): deeper content renders as text.
@@ -245,5 +246,14 @@ describe('ContentView scroll regions', () => {
       expect(el?.getAttribute('role')).toBe('region');
       expect(el?.getAttribute('aria-label')).toBe(label);
     }
+  });
+});
+
+// Content may be right-to-left (`dir` is allowed): the reader's spacing follows the text direction.
+describe('ContentView styles', () => {
+  it('use logical properties, not physical left and right', () => {
+    const style = contentViewSource.match(/<style[^>]*>([\s\S]*)<\/style>/)?.[1] ?? '';
+    expect(style.length).toBeGreaterThan(0);
+    expect(style.match(/\b(margin|padding|border)-(left|right)\b/g) ?? []).toEqual([]);
   });
 });

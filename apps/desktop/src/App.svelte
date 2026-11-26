@@ -210,9 +210,10 @@
     min-height: 0;
   }
 
+  /* `clip`, not `hidden`: no scroll container that code or a focus could scroll. */
   .collapsed .sidebar,
   .folding .sidebar {
-    overflow: hidden;
+    overflow: clip;
   }
 
   .settings {

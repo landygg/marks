@@ -281,7 +281,7 @@
   }
 
   .task {
-    margin-right: var(--space-xs);
+    margin-inline-end: var(--space-xs);
   }
 
   .table {
@@ -318,7 +318,7 @@
   .callout {
     margin: var(--space-md) 0;
     padding: var(--space-md);
-    border-left: 1px solid var(--border);
+    border-inline-start: 1px solid var(--border);
     color: var(--fg);
     font: var(--type-body-lg);
   }
