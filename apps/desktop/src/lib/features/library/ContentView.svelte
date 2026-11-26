@@ -139,9 +139,10 @@
 {/snippet}
 
 <!-- The language as text: the default renderer puts it in a `class`. A focusable region, so the
-     keyboard can scroll a wide block (our attributes, not the content's). -->
+     keyboard can scroll a wide block (our attributes, not the content's; a scroll region needs the
+     focus, which Svelte's tabindex rule does not know). -->
 {#snippet code({ lang, text: source }: CodeSnippetProps)}
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex -- a scrolling region must take the focus for the arrows to scroll it. -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <pre tabindex="0" role="region" aria-label={t.codeBlock}>{#if lang}<span class="code-lang"
         >{lang}</span
       >{/if}<code>{source}</code></pre>
@@ -164,14 +165,14 @@
 <!-- `content-table`: its own horizontal scroll, for Markdown and HTML tables alike, reachable by
      keyboard. -->
 {#snippet table({ children }: TableSnippetProps)}
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex -- a scrolling region must take the focus for the arrows to scroll it. -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <div class="table" tabindex="0" role="region" aria-label={t.tableRegion}>
     <table>{@render children?.()}</table>
   </div>
 {/snippet}
 
 {#snippet html_table({ attributes, children }: HtmlSnippetProps)}
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex -- a scrolling region must take the focus for the arrows to scroll it. -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <div class="table" tabindex="0" role="region" aria-label={t.tableRegion}>
     <table {...attributes}>{@render children?.()}</table>
   </div>
