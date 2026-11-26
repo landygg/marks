@@ -16,6 +16,7 @@ Investigado el 2026-11-10. Las fuentes oficiales (Chrome, Apple, agentskills.io)
 | El estado no vive en memoria (los service workers mueren); usar `storage` | Chrome, guías MV3 | Cumple: `background.js` (service worker) no guarda nada en memoria; el token está en `storage.local` y llega con cada mensaje |
 | Mismo código para varios navegadores con un shim de namespace | Ejemplos open source (Save In) | Cumple: `ext = browser ?? chrome` solo en `i18n.js`; transporte según protocolo |
 | `externally_connectable` y `web_accessible_resources` mínimos | Chrome | Cumple: no declara ninguno |
+| HTML, CSS y JS según la guía, filtrados por el suelo de motores (`AGENTS.md`, «Navegadores») | `modern-web-guidance` (skill `2026_11_16-268fb9ea`) | Auditada el 2026-11-25 (auditoría del 2026-11-25, notas del proyecto). Arreglado en la 1.2.0: la región de estado de las opciones anuncia cada resultado, el token se guarda con Enter (`<form>`), las dos páginas tienen `<title>`, el borde de campo y la barra de 2px con contraste en claro, y un manifiesto por navegador (`dist/chromium` sin `nativeMessaging` y con `minimum_chrome_version`, `dist/safari`). Pendiente: la captura desde el navegador (E3, E7, E8, E10–E16 y E18) |
 
 ## Riesgo resuelto: el guardado vivía en el popup
 

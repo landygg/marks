@@ -86,6 +86,7 @@ Dos mitades con una frontera estrecha: `src-tauri` (Rust) solo expone `crates/co
 ## Más contexto
 
 - Buenas prácticas externas, estado actual frente a ellas y fuentes: [references/best-practices.md](references/best-practices.md)
+- Guía web: antes de añadir o cambiar un componente, un formulario, un manejador de teclado o un estilo, consultar `modern-web-guidance` (`search` y luego `retrieve`) y filtrar cada recomendación con la política de motores de `AGENTS.md` («Navegadores»: Safari 18.0 y Chrome 123, sin polyfills).
 - Interfaz: `DESIGN.md` (leerlo antes de tocar pantallas)
 - Decisiones: `docs/adr/0001` (Svelte), `0005` (API loopback con token), `0008` (webview oculta), `0009` (un SQLite por perfil), `0011` (lectura con listas blancas), `0014` (importar y exportar `bookmarks.html`), `0015` (idiomas y catálogos por capa)
 - Extensión del navegador: skill `marks-extension`

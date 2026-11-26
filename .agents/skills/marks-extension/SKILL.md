@@ -59,3 +59,4 @@ El popup solo manda el mensaje; el service worker inyecta, extrae y guarda (red)
 
 - Buenas prácticas externas, estado actual frente a ellas y fuentes: [references/best-practices.md](references/best-practices.md)
 - Decisiones: `docs/adr/0005` (API loopback con token), `0010` (Defuddle en el navegador), `0007` (appex de Safari a mano).
+- Guía web: antes de añadir o cambiar un componente, un formulario, un manejador de teclado o un estilo, consultar `modern-web-guidance` (`search` y luego `retrieve`) y filtrar cada recomendación con la política de motores de `AGENTS.md` («Navegadores»: Safari 18.0 y Chrome 123, sin polyfills).
