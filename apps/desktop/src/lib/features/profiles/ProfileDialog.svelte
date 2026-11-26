@@ -35,7 +35,7 @@
 >
   <!-- novalidate: the backend validates, so its message shows here instead of WebKit's bubble. -->
   <form novalidate onsubmit={save}>
-    <h2 id="{uid}-title">{profileDialog.id === null ? t.newProfile : t.renameProfileTitle}</h2>
+    <h1 id="{uid}-title">{profileDialog.id === null ? t.newProfile : t.renameProfileTitle}</h1>
 
     <Field label={t.profileNameLabel} for="{uid}-name">
       <!-- Inside a modal dialog autofocus is the expected focus target, not a surprise jump. -->
@@ -85,7 +85,7 @@
     gap: var(--space-md);
   }
 
-  h2 {
+  h1 {
     margin: 0;
     font: var(--type-headline-lg);
     letter-spacing: var(--tracking-headline-lg);
