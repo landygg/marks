@@ -306,13 +306,12 @@
           </CommandItem>
         {/each}
       {/if}
-      {#if palette.error}
-        <p class="error-text" role="alert">{palette.error}</p>
-      {:else if count === 0 && !palette.searching && (palette.mode !== 'bookmarks' || query !== '')}
-        <p>{t.paletteEmpty}</p>
-      {/if}
     </div>
   </div>
+  <!-- Always in the DOM, so a screen reader hears what appears in it; empty when there is nothing to say. -->
+  <p role="status" class={{ 'error-text': palette.error }}>
+    {#if palette.error}{palette.error}{:else if count === 0 && !palette.searching && (palette.mode !== 'bookmarks' || query !== '')}{t.paletteEmpty}{/if}
+  </p>
 
   <footer>
     {#each MODES as mode (mode)}
@@ -354,6 +353,10 @@
   p {
     margin: 0;
     padding: var(--space-sm) var(--space-md);
+  }
+
+  p:empty {
+    padding: 0;
   }
 
   p:not(.error-text) {

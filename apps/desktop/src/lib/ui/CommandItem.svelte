@@ -34,7 +34,14 @@
   }: Props = $props();
 </script>
 
-<button type="button" role="option" aria-selected={selected} class={{ hit: detail }} {...rest}>
+<button
+  type="button"
+  role="option"
+  tabindex="-1"
+  aria-selected={selected}
+  class={{ hit: detail }}
+  {...rest}
+>
   {#if icon}<span class="icon"><Icon name={icon} /></span>{/if}
   {#if lead}<span class="lead">{@render lead()}</span>{/if}
   <span class={['label', { mono }]}>
