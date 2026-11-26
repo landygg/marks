@@ -32,7 +32,7 @@
     type Point,
   } from './searchText';
   import { modal } from '../../modal';
-  import { ENTER_KEY, paletteModeShortcut } from '../../shortcuts';
+  import { ENTER_KEY, isComposing, paletteModeShortcut } from '../../shortcuts';
   import { ALL, FAILED } from '../library/sidebar';
   import { isBlocked } from '../library/detailMeta';
   import { isExtracting } from '../library/extracting';
@@ -209,6 +209,7 @@
   }
 
   function onKeydown(event: KeyboardEvent): void {
+    if (isComposing(event)) return; // the input method's Enter and arrows pick its candidate
     chosen = null; // any key (arrows, typing, ⌘1…) hands the selection back to the keyboard
     const mode = paletteModeShortcut(event);
     if (mode) {
