@@ -4,6 +4,33 @@ All notable changes to marks are listed here. The format follows [Keep a Changel
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-26
+
+**Requires macOS 15 or later. On macOS 14, don't install this update: marks would no longer open. If you already did, reinstall marks 1.1.0 from the releases page; your bookmarks are untouched.**
+
+### Fixed
+
+- With an input method (Japanese, Chinese, Korean), the Enter, Esc and arrow keys that pick a candidate no longer run the palette, add half-typed tags, rename a group or leave the title.
+- A middle click, the “Open Link” menu or a link dropped on the window no longer loads a web page in place of marks.
+- Wide code blocks and tables in the reader can be reached and scrolled with the keyboard.
+- Tab in the command palette stays in its field, and “No results” and search errors are read out by screen readers.
+- A disabled “Extract with AI” tells keyboard and screen reader users why.
+- Closing a focused notification with the keyboard moves the focus to the next one, or to the bell, instead of losing it.
+- When adding a URL fails, the URL field is marked with the error and gets the focus.
+- Copying to the clipboard says so when it fails.
+- Tag, URL, group name, initials and endpoint fields are no longer autocorrected or capitalized.
+- On the light theme, the selected row, links, fields and “Warning” notices have enough contrast.
+- A pinned theme no longer flashes the system one when marks starts.
+- On the extension's options page, every result is read out, also the same one twice, and Enter saves the token.
+
+### Changed
+
+- marks needs macOS 15 or later. From this version on, it won't offer an update that needs a newer macOS than the one your Mac has.
+- The reader keeps lines to about 70 characters.
+- The command palette closes with a click outside it.
+- The Chromium extension no longer asks for native messaging, which only Safari uses, and needs Chrome 123 or later.
+- From source, the unpacked extension now loads from `apps/extension/dist/chromium`; reload it from there if you loaded `apps/extension/dist`.
+
 ## [1.1.0] - 2026-11-24
 
 ### Added
@@ -65,7 +92,8 @@ Second release candidate of 1.0.0, published as a prerelease so that 1.0.0-rc.1 
 
 Release candidate of 1.0.0, published as a prerelease to test automatic updates. It has everything listed under 1.0.0.
 
-[Unreleased]: https://github.com/landygg/marks/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/landygg/marks/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/landygg/marks/releases/tag/v1.2.0
 [1.1.0]: https://github.com/landygg/marks/releases/tag/v1.1.0
 [1.0.1]: https://github.com/landygg/marks/releases/tag/v1.0.1
 [1.0.0]: https://github.com/landygg/marks/releases/tag/v1.0.0
