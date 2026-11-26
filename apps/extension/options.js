@@ -5,10 +5,14 @@ const input = document.getElementById("token");
 const status = document.getElementById("status");
 const statusText = document.getElementById("status-text");
 
+// Emptied first and written a frame later, so the same result twice is announced twice.
 function show(key, profile) {
-	statusText.textContent = messageFor(key, t, profile);
-	status.dataset.state = stateOf(key);
-	status.hidden = false;
+	statusText.textContent = "";
+	delete status.dataset.state;
+	requestAnimationFrame(() => {
+		statusText.textContent = messageFor(key, t, profile);
+		status.dataset.state = stateOf(key);
+	});
 }
 
 translatePage();
@@ -17,7 +21,8 @@ ext.storage.local.get(TOKEN_KEY).then((stored) => {
 	input.value = stored[TOKEN_KEY] ?? "";
 });
 
-document.getElementById("save").addEventListener("click", async () => {
+document.getElementById("token-form").addEventListener("submit", async (event) => {
+	event.preventDefault();
 	const token = input.value.trim();
 	try {
 		await ext.storage.local.set({ [TOKEN_KEY]: token });

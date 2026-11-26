@@ -4,6 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="optionsTitle"></title>
     <link rel="stylesheet" href="extension.css" />
   </head>
   <body class="options">
@@ -11,16 +12,19 @@
       <span class="wordmark" data-i18n="extName"></span>
     </header>
     <h1 data-i18n="optionsTitle"></h1>
-    <div class="field">
-      <label for="token" data-i18n="tokenLabel"></label>
-      <input id="token" class="input mono" type="password" autocomplete="off" spellcheck="false" />
-      <span class="help" data-i18n="tokenHelp"></span>
-    </div>
-    <div class="row">
-      <button id="save" class="primary" data-i18n="saveToken"></button>
-      <button id="test" data-i18n="testConnection"></button>
-    </div>
-    <p id="status" class="status" role="status" hidden>
+    <form id="token-form" class="options-form">
+      <div class="field">
+        <label for="token" data-i18n="tokenLabel"></label>
+        <input id="token" class="input mono" type="password" autocomplete="off" spellcheck="false" />
+        <span class="help" data-i18n="tokenHelp"></span>
+      </div>
+      <div class="row">
+        <button id="save" type="submit" class="primary" data-i18n="saveToken"></button>
+        <button id="test" type="button" data-i18n="testConnection"></button>
+      </div>
+    </form>
+    <!-- Always in the page and empty until a result, so a screen reader hears each one. -->
+    <p id="status" class="status" role="status">
       <span class="dot" aria-hidden="true"></span>
       <span id="status-text"></span>
     </p>
