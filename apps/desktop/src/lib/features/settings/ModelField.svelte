@@ -44,7 +44,12 @@
 <SettingRow {label} for="{uid}-model" {help} helpId="{uid}-help">
   {#snippet note()}
     {#if command}
-      <CommandLine {command} copyLabel={t.copyCommand} copiedLabel={t.commandCopied} />
+      <CommandLine
+        {command}
+        copyLabel={t.copyCommand}
+        copiedLabel={t.commandCopied}
+        failedLabel={t.copyFailed}
+      />
     {/if}
   {/snippet}
   {#if rec && value.trim() !== rec.model}

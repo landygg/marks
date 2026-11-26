@@ -213,6 +213,7 @@ export const en = {
   titleLabel: 'Title',
   copyLink: 'Copy link',
   linkCopied: 'Link copied',
+  copyFailed: "Couldn't copy",
   copyMessage: 'Copy message',
   messageCopied: 'Message copied',
   showMore: 'Show more',

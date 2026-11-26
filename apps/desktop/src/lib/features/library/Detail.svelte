@@ -187,6 +187,7 @@
                 text={bookmark.original_url}
                 label={t.copyLink}
                 copiedLabel={t.linkCopied}
+                failedLabel={t.copyFailed}
               />
             </div>
             {#if meta.length || faviconSrc}
@@ -215,6 +216,7 @@
                   text={bookmark.error}
                   label={t.copyMessage}
                   copiedLabel={t.messageCopied}
+                  failedLabel={t.copyFailed}
                 />
               </div>
             {/if}

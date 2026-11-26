@@ -19,6 +19,7 @@ beforeEach(() => {
       text: 'https://example.com/very/long',
       label: 'Copy link',
       copiedLabel: 'Link copied',
+      failedLabel: "Couldn't copy",
     },
   });
   flushSync();
@@ -49,12 +50,17 @@ describe('CopyButton', () => {
     expect(status()).toBe('');
   });
 
-  it('changes nothing when the clipboard refuses', async () => {
+  it('says so when the clipboard refuses, with the icon unchanged, then goes back', async () => {
     writeText.mockRejectedValue(new Error('denied'));
     button()?.click();
     await tick();
     flushSync();
     expect(button()?.getAttribute('aria-label')).toBe('Copy link');
+    expect(button()?.classList.contains('success')).toBe(false);
+    expect(status()).toBe("Couldn't copy");
+
+    vi.advanceTimersByTime(1500);
+    flushSync();
     expect(status()).toBe('');
   });
 });

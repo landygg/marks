@@ -216,6 +216,7 @@ export const es = {
   titleLabel: 'Título',
   copyLink: 'Copiar enlace',
   linkCopied: 'Enlace copiado',
+  copyFailed: 'No se pudo copiar',
   copyMessage: 'Copiar mensaje',
   messageCopied: 'Mensaje copiado',
   showMore: 'Ver más',
