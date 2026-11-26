@@ -715,10 +715,19 @@ pub fn update_info(app: AppHandle, state: State<'_, AppState>) -> Result<UpdateI
 /// Manual check: the new version, if any. The cause goes to the log; the user gets one sentence.
 #[tauri::command]
 pub async fn check_update(app: AppHandle) -> Result<Option<String>, String> {
-    updater::check(&app).await.map_err(|e| {
+    let found = updater::check(&app).await.map_err(|e| {
         log::warn!("{LOG_UPDATE_FAILED}: {e:#}");
         AppText::UpdateCheckFailed.localize()
-    })
+    })?;
+    match found {
+        updater::Found::UpToDate => Ok(None),
+        updater::Found::Available(version) => Ok(Some(version)),
+        updater::Found::NeedsMacos {
+            version,
+            minimum,
+            current,
+        } => Err(updater::needs_macos_text(version, minimum, current)),
+    }
 }
 
 /// Installs and restarts, like `set_locale`: it only returns when the install failed.

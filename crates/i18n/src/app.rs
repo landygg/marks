@@ -30,6 +30,12 @@ pub enum AppText {
     },
     UpdateCheckFailed,
     UpdateInstallFailed,
+    /// The update found needs a newer macOS than this Mac's: it is not offered.
+    UpdateNeedsNewerMacos {
+        version: String,
+        minimum: String,
+        current: String,
+    },
     Menu(MenuText),
 }
 
@@ -86,6 +92,17 @@ impl Localize for AppText {
             }
             AppText::UpdateCheckFailed => fl!(l, "app-update-check-failed"),
             AppText::UpdateInstallFailed => fl!(l, "app-update-install-failed"),
+            AppText::UpdateNeedsNewerMacos {
+                version,
+                minimum,
+                current,
+            } => fl!(
+                l,
+                "app-update-needs-macos",
+                version = version.as_str(),
+                minimum = minimum.as_str(),
+                current = current.as_str()
+            ),
             AppText::Menu(m) => m.localize(),
         }
     }
@@ -149,6 +166,17 @@ mod tests {
                 }
             ),
             "Hay una versión nueva de marks: 1.0.1."
+        );
+        assert_eq!(
+            localize_in(
+                Locale::En,
+                &AppText::UpdateNeedsNewerMacos {
+                    version: "1.3.0".into(),
+                    minimum: "16.0".into(),
+                    current: "15.4".into(),
+                }
+            ),
+            "marks 1.3.0 needs macOS 16.0 or later, and this Mac has macOS 15.4. marks stays on this version."
         );
     }
 }
