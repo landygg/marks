@@ -13,7 +13,7 @@ All notable changes to marks are listed here. The format follows [Keep a Changel
 - With an input method (Japanese, Chinese, Korean), the Enter, Esc and arrow keys that pick a candidate no longer run the palette, add half-typed tags, rename a group or leave the title.
 - A middle click, the “Open Link” menu or a link dropped on the window no longer loads a web page in place of marks.
 - Wide code blocks and tables in the reader can be reached and scrolled with the keyboard.
-- Tab in the command palette stays in its field, and “No results” and search errors are read out by screen readers.
+- Tab in the command palette no longer walks through every result, and “No results” and search errors are read out by screen readers.
 - A disabled “Extract with AI” tells keyboard and screen reader users why.
 - Closing a focused notification with the keyboard moves the focus to the next one, or to the bell, instead of losing it.
 - When adding a URL fails, the URL field is marked with the error and gets the focus.

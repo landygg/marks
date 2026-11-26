@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { manifestFor } from "./build.mjs";
@@ -14,7 +15,11 @@ const MAX_PAGE_EXTRACT_BYTES = 900 * 1024;
 const base = JSON.parse(readFileSync(join(root, "manifest.json"), "utf8"));
 const readJson = (path) => JSON.parse(readFileSync(path, "utf8"));
 
-execFileSync("node", [join(root, "build.mjs")], { cwd: root });
+// Through a symlink to this folder, as from a clone under /tmp on macOS: the build must still run.
+const link = join(mkdtempSync(join(tmpdir(), "marks-ext-")), "extension");
+symlinkSync(root, link);
+rmSync(dist, { recursive: true, force: true });
+execFileSync("node", [join(link, "build.mjs")], { cwd: link });
 
 // Every file under `dir`, as paths relative to it.
 function files(dir) {

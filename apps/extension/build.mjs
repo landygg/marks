@@ -1,6 +1,7 @@
 // Bundles the extension into dist/chromium and dist/safari: ESM entry points, the injected
 // page-extract IIFE, the static files and a manifest written for each browser.
 import { build, context } from "esbuild";
+import { realpathSync } from "node:fs";
 import { cp, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,4 +62,5 @@ async function main() {
   await writeManifest(base, "safari", SAFARI_DIR);
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) await main();
+// Real paths on both sides: run through a symlink (/tmp on macOS), argv[1] keeps the link.
+if (realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) await main();
