@@ -5,6 +5,7 @@ import {
   TOAST_MS,
   actionsFor,
   createToastTimer,
+  focusAfterClose,
   settingsSectionFor,
   upsertToast,
   visibleToasts,
@@ -152,5 +153,14 @@ describe('createToastTimer', () => {
     timer.resume();
     vi.advanceTimersByTime(TOAST_MS * 2);
     expect(onExpire).not.toHaveBeenCalled();
+  });
+});
+
+describe('focusAfterClose', () => {
+  it('moves to the next toast, else the previous one, else the bell (null)', () => {
+    expect(focusAfterClose([1, 2, 3], 2)).toBe(3);
+    expect(focusAfterClose([1, 2, 3], 3)).toBe(2);
+    expect(focusAfterClose([1], 1)).toBeNull();
+    expect(focusAfterClose([1, 2], 9)).toBeNull();
   });
 });

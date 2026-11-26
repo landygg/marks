@@ -8,14 +8,24 @@
     onpointerleave?: () => void;
     onfocusin?: () => void;
     onfocusout?: () => void;
+    /** Marks the box, so the stack can find it to move the focus. */
+    toastId?: number;
   }
 
-  let { onpointerenter, onpointerleave, onfocusin, onfocusout, ...item }: Props = $props();
+  let { onpointerenter, onpointerleave, onfocusin, onfocusout, toastId, ...item }: Props = $props();
 </script>
 
 <!-- The handlers only pause and resume its timer; the toast itself is not a control. No live role of
      its own: the stack around it (`role="status"`) announces it, once. -->
-<div class={item.severity} role="group" {onpointerenter} {onpointerleave} {onfocusin} {onfocusout}>
+<div
+  class={item.severity}
+  role="group"
+  data-toast-id={toastId}
+  {onpointerenter}
+  {onpointerleave}
+  {onfocusin}
+  {onfocusout}
+>
   <NotificationItem {...item} unread={false} />
 </div>
 
